@@ -1,0 +1,14 @@
+image: docker
+
+services:
+    - docker:dind
+    
+stages:
+    - test
+    
+test:
+    stage: test
+    only:
+        - mosip-technoforte-qa
+    script:
+        - echo run tests in this section

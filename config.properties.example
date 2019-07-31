@@ -1,0 +1,29 @@
+# Login - SendOTP and ValidateOTP
+sendOtpID = mosip.pre-registration.login.sendotp
+validateOtpID = mosip.pre-registration.login.useridotp
+# Demographic Create ID
+demographicCreateID = mosip.pre-registration.demographic.create
+# Demographic Update ID
+demographicUpdateID = mosip.pre-registration.demographic.update
+# Document Upload ID
+documentUploadID = mosip.pre-registration.document.upload
+# Booking Book ID
+bookingBookID = mosip.pre-registration.booking.book
+# Auth
+authenticationServiceID = mosip.identity.auth
+
+# API version
+apiver = 1.0
+# Log method
+log = DEBUG
+
+# Persona Sheet Path
+PERSONA_SHEET=\\src\\main\\resources\\PersonaSheet.csv
+# Macros Sheet Path
+MACROS_SHEET=\\src\\main\\resources\\MacrosSheet.csv
+# Documents Sheet Path
+DOCUMENTS_SHEET=\\src\\main\\resources\\DocumentsSheet.csv
+# Document Data sheet path
+DOCUMENT_DATA_PATH=\\src\\main\\resources\\data\\documents\\
+# DSL/Input Scenarios sheet path
+SCENARIO_SHEET = \\src\\main\\resources\\ScenarioSheet.csv
