@@ -24,11 +24,9 @@ public class GetAppointment extends Step implements StepInterface {
 
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     *
-     * @param step
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
 
         Person person = this.store.getScenarioData().getPersona().getPersons().get(index);
@@ -80,24 +78,8 @@ public class GetAppointment extends Step implements StepInterface {
                 this.hasError = true;
                 return;
             }
-        } else {
-            // ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-
-            /* Assertion policies execution */
-            if (step.getAsserts().size() > 0) {
-                for (Scenario.Step.Assert pr_assert : step.getAsserts()) {
-                    switch (pr_assert.type) {
-                        case DONT:
-                            break;
-
-//                        default:
-//                            extentTest.log(Status.WARNING, "Skipping assert "+assertion_type);
-//                            Utils.auditLog.warning("Skipping assert "+assertion_type);
-//                            break;
-                    }
-                }
-            }
-
         }
+
+
     }
 }

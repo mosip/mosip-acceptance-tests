@@ -25,13 +25,8 @@ import static io.restassured.RestAssured.given;
 
 public class GetTransactionInfo extends Step implements StepInterface {
 
-    /**
-     * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     *
-     * @param step
-     */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
         String registrationId = store.getScenarioData().getPersona().getPersons().get(index).getRegistrationId();
 

@@ -61,11 +61,11 @@ public class MutationEngine {
     }
 
     private String mutateEmail(String par){
-        return par.replace("@", this.key+"@");
+        return par.replace("@", this.key+"@").toLowerCase();
     }
 
     private String mutateUserid(String par){
-        return par.replace("@", this.key+"@");
+        return par.replace("@", this.key+"@").toLowerCase();
     }
 
     private String generatePhone(){

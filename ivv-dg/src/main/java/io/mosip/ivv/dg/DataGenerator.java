@@ -1,11 +1,10 @@
 package io.mosip.ivv.dg;
 
 import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.structures.BiometricsDTO.BIOMETRIC_CAPTURE;
 import io.mosip.ivv.core.structures.ProofDocument.DOCUMENT_CATEGORY;
-import io.mosip.ivv.core.structures.Biometrics.BIOMETRIC_CAPTURE;
 import io.mosip.ivv.dg.Utils.MutationEngine;
 import io.mosip.ivv.dg.exceptions.PersonaNotFoundException;
-import io.mosip.ivv.dg.exceptions.UserNotFoundException;
 import io.mosip.ivv.parser.Parser;
 
 import java.util.ArrayList;
@@ -19,9 +18,10 @@ public class DataGenerator implements DataGeneratorInterface {
     private HashMap<String, String> globals = null;
     private HashMap<String, String> configs = null;
     private ArrayList<Persona> personas = null;
-    private ArrayList<Person> reg_users = null;
+    private ArrayList<RegistrationUser> reg_users = null;
+    private ArrayList<Partner> partners = null;
     private ArrayList<ProofDocument> documents = null;
-    private ArrayList<Biometrics> biometrics = null;
+    private ArrayList<BiometricsDTO> biometrics = null;
 
     public DataGenerator(String USER_DIR, String CONFIG_FILE) {
         this.user_dir = USER_DIR;
@@ -57,13 +57,14 @@ public class DataGenerator implements DataGeneratorInterface {
         this.configs = parser.getConfigs();
         this.personas = addDataToPersonas(parser.getPersonas());
         this.reg_users = addDataToRCUsers(parser.getRCUsers());
+        this.partners = addDataToPartners(parser.getPartners());
         ArrayList<Scenario> scenarios = parser.getScenarios();
         this.generatedScenarios = new ArrayList<Scenario>();
         for (Scenario scenario : scenarios){
             scenario.setData(new Scenario.Data());
             scenario.getData().setPersona(addPersonaData(scenario, this.personas));
-            scenario.getData().setOperator(addOperatorData(this.reg_users));
-            scenario.getData().setSupervisor(addSupervisorData(this.reg_users));
+            scenario.getData().setRegistrationUsers(this.reg_users);
+            scenario.getData().setPartners(partners);
             this.generatedScenarios.add(scenario);
         }
     }
@@ -72,15 +73,22 @@ public class DataGenerator implements DataGeneratorInterface {
         for(int i=0;i<personas.size();i++){
             for(int j=0;j<personas.get(i).getPersons().size();j++){
                 personas.get(i).getPersons().set(j, attachDocuments(personas.get(i).getPersons().get(j)));
-                personas.get(i).getPersons().set(j, attachBiometrics(personas.get(i).getPersons().get(j)));
+                personas.get(i).getPersons().get(j).setBiometrics(attachBiometrics());
             }
         }
         return personas;
     }
 
-    private ArrayList<Person> addDataToRCUsers(ArrayList<Person> persons){
+    private ArrayList<RegistrationUser> addDataToRCUsers(ArrayList<RegistrationUser> persons){
         for(int i=0;i<persons.size();i++){
-            persons.set(i, attachBiometrics(persons.get(i)));
+            persons.get(i).setBiometrics(attachBiometrics());
+        }
+        return persons;
+    }
+
+    private ArrayList<Partner> addDataToPartners(ArrayList<Partner> persons){
+        for(int i=0;i<persons.size();i++){
+            persons.get(i).setBiometrics(attachBiometrics());
         }
         return persons;
     }
@@ -97,14 +105,23 @@ public class DataGenerator implements DataGeneratorInterface {
         return person;
     }
 
-    private Person attachBiometrics(Person person){
-        person.setFace(getBiometricsByCategory(BIOMETRIC_CAPTURE.STILL_PHOTO));
-        person.setLeftIris(getBiometricsByCategory(BIOMETRIC_CAPTURE.LEFT_EYE));
-        person.setRightIris(getBiometricsByCategory(BIOMETRIC_CAPTURE.RIGHT_EYE));
-        person.setThumbs(getBiometricsByCategory(BIOMETRIC_CAPTURE.TWO_THUMBS));
-        person.setLeftSlap(getBiometricsByCategory(BIOMETRIC_CAPTURE.LEFT_SLAP));
-        person.setRightSlap(getBiometricsByCategory(BIOMETRIC_CAPTURE.RIGHT_SLAP));
-        return person;
+    private PersonaDef.Biometrics attachBiometrics(){
+        PersonaDef.Biometrics biometrics = new PersonaDef.Biometrics();
+        biometrics.setExceptionPhoto(getBiometricsByCategory(BIOMETRIC_CAPTURE.exceptionPhoto));
+        biometrics.setFace(getBiometricsByCategory(BIOMETRIC_CAPTURE.face));
+        biometrics.setLeftEye(getBiometricsByCategory(BIOMETRIC_CAPTURE.leftEye));
+        biometrics.setRightEye(getBiometricsByCategory(BIOMETRIC_CAPTURE.rightEye));
+        biometrics.setLeftThumb(getBiometricsByCategory(BIOMETRIC_CAPTURE.leftThumb));
+        biometrics.setRightThumb(getBiometricsByCategory(BIOMETRIC_CAPTURE.rightThumb));
+        biometrics.setLeftIndex(getBiometricsByCategory(BIOMETRIC_CAPTURE.leftIndex));
+        biometrics.setLeftMiddle(getBiometricsByCategory(BIOMETRIC_CAPTURE.leftMiddle));
+        biometrics.setLeftRing(getBiometricsByCategory(BIOMETRIC_CAPTURE.leftRing));
+        biometrics.setLeftLittle(getBiometricsByCategory(BIOMETRIC_CAPTURE.leftLittle));
+        biometrics.setRightIndex(getBiometricsByCategory(BIOMETRIC_CAPTURE.rightIndex));
+        biometrics.setRightMiddle(getBiometricsByCategory(BIOMETRIC_CAPTURE.rightMiddle));
+        biometrics.setRightRing(getBiometricsByCategory(BIOMETRIC_CAPTURE.rightRing));
+        biometrics.setRightLittle(getBiometricsByCategory(BIOMETRIC_CAPTURE.rightLittle));
+        return biometrics;
     }
 
     private ProofDocument getProofDocumentByCategory(DOCUMENT_CATEGORY cat){
@@ -116,8 +133,8 @@ public class DataGenerator implements DataGeneratorInterface {
         return null;
     }
 
-    private Biometrics getBiometricsByCategory(BIOMETRIC_CAPTURE cap){
-        for(Biometrics bio: this.biometrics){
+    private BiometricsDTO getBiometricsByCategory(BIOMETRIC_CAPTURE cap){
+        for(BiometricsDTO bio: this.biometrics){
             if(bio.getCapture().equals(cap)){
                 return bio;
             }
@@ -140,24 +157,6 @@ public class DataGenerator implements DataGeneratorInterface {
             }
         }
         throw new PersonaNotFoundException("Persona not found");
-    }
-
-    private Person addOperatorData(ArrayList<Person> reg_users){
-        for(Person person: reg_users){
-            if(person.getPersonaDef().role.equals(PersonaDef.ROLE.OPERATOR)){
-                return person;
-            }
-        }
-        throw new UserNotFoundException("Operator not found");
-    }
-
-    private Person addSupervisorData(ArrayList<Person> reg_users){
-        for(Person person: reg_users){
-            if(person.getPersonaDef().role.equals(PersonaDef.ROLE.SUPERVISOR)){
-                return person;
-            }
-        }
-        throw new UserNotFoundException("Supervisor not found");
     }
 
 }

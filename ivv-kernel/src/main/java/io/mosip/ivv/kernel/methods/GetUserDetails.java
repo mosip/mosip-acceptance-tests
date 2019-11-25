@@ -1,19 +1,18 @@
 package io.mosip.ivv.kernel.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
+import io.mosip.ivv.core.structures.RegistrationUser;
 import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import net.minidev.json.JSONArray;
 
 import static io.restassured.RestAssured.given;
 
@@ -22,14 +21,13 @@ public class GetUserDetails extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
+    public void run() {
         /* getting active user from persons */
-        Person person = this.store.getScenarioData().getOperator();
+        RegistrationUser person = this.store.getCurrentRegistrationUSer();
 
-        String url = "/"+System.getProperty("ivv.global.version")+"/syncdata/userdetails/"+person.getCenter_id();
+        String url = "/"+System.getProperty("ivv.global.version")+"/syncdata/userdetails/"+person.getCenterId();
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
         Response api_response = (Response) given()
                 .cookie("Authorization", this.store.getHttpData().getCookie())
@@ -46,6 +44,7 @@ public class GetUserDetails extends Step implements StepInterface {
             return;
         }
 
+
         if (step.getErrors() != null && step.getErrors().size()>0) {
             ErrorMiddleware.MiddlewareResponse emr = new ErrorMiddleware(step, api_response, extentInstance).inject();
             if(!emr.getStatus()){
@@ -58,6 +57,21 @@ public class GetUserDetails extends Step implements StepInterface {
                 for (Scenario.Step.Assert pr_assert : step.getAsserts()) {
                     switch (pr_assert.type) {
                         case DONT:
+                            break;
+                        case USERCOUNT:
+                            Object idValues = ctx.read("$['response']['userDetails']");
+                            int size=0;
+                            if(idValues!=null){
+                                size=((JSONArray)idValues).size();
+                                if(size !=Integer.valueOf(person.getNo_Of_User())){
+                                    logInfo("No of User expected "+Integer.valueOf(person.getNo_Of_User())+" but found  "+size);
+                                    this.hasError=true;
+                                    return;
+                                }
+                            }else{
+                                logInfo("No user details found for the  CenterId :"+ person.getCenterId());
+                            }
+
                             break;
 
                         case DEFAULT:

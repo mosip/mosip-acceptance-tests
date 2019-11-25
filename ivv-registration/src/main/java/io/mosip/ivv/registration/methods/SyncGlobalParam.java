@@ -21,7 +21,7 @@ import java.util.Map;
 public class SyncGlobalParam extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
 
         GlobalParamService gps = store.getRegApplicationContext().getBean(GlobalParamService.class);
         ResponseDTO responseDTO = gps.synchConfigData(false);

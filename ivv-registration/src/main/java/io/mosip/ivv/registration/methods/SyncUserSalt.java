@@ -1,29 +1,21 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.operator.UserDetailService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
-
-import java.util.ArrayList;
 
 public class SyncUserSalt extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         UserSaltDetailsService serv = store.getRegApplicationContext().getBean(UserSaltDetailsService.class);
         ResponseDTO responseDTO = null;
         try {
-            responseDTO = serv.getUserSaltDetails(store.getScenarioData().getOperator().getUserid());
+            responseDTO = serv.getUserSaltDetails(store.getCurrentRegistrationUSer().getUserId());
         } catch (RegBaseCheckedException e) {
             e.printStackTrace();
             logSevere(e.getMessage());

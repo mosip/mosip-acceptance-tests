@@ -28,10 +28,10 @@ public class AddApplicationAll extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
         ArrayList<Person> persons = this.store.getScenarioData().getPersona().getPersons();
         for (int index = 0; index < persons.size(); index++) {
@@ -185,6 +185,15 @@ public class AddApplicationAll extends Step implements StepInterface {
             this.callRecord = new CallRecord(RestAssured.baseURI + url, "POST", api_input.toString(), api_response);
             Helpers.logCallRecord(this.callRecord);
 
+            ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
+            /* Response data parsing */
+            try {
+                this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
+                this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationStatusCode("$['response']['statusCode']");
+            } catch (PathNotFoundException e) {
+
+            }
+
             /* check for api status */
             if (api_response.getStatusCode() != 200) {
                 logSevere("API HTTP status return as " + api_response.getStatusCode());
@@ -199,14 +208,7 @@ public class AddApplicationAll extends Step implements StepInterface {
                     return;
                 }
             } else {
-                ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-                /* Response data parsing */
-                try {
-                    this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
-                    this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationStatusCode("$['response']['statusCode']");
-                } catch (PathNotFoundException e) {
 
-                }
 
                 /* Assertion policies execution */
                 if (step.getAsserts().size() > 0) {
@@ -221,7 +223,7 @@ public class AddApplicationAll extends Step implements StepInterface {
                                     this.hasError = true;
                                     return;
                                 } else {
-                                    Boolean responseMatched = responseMatch(persons);
+                                    Boolean responseMatched = responseMatch(persons,getAppRecord.getResponse());
                                     if (!responseMatched) {
                                         logInfo("Assert API_CALL failed");
                                         this.hasError = true;
@@ -270,7 +272,7 @@ public class AddApplicationAll extends Step implements StepInterface {
 //                            break;
 //
                         default:
-                            logWarning("Assert not found or implemented: " + pr_assert.type);
+                            logInfo("Assert not found or implemented: " + pr_assert.type);
                             break;
                         }
                     }
@@ -300,7 +302,8 @@ public class AddApplicationAll extends Step implements StepInterface {
         GetApplication st = new GetApplication();
         st.setExtentInstance(extentInstance);
         st.setState(this.store);
-        st.run(nstep);
+        st.setStep(nstep);
+        st.run();
         this.store = st.getState();
 
         String identifier = "Sub Step: " + nstep.getName() + ", module: " + nstep.getModule() + ", variant: " + nstep.getVariant();
@@ -312,8 +315,8 @@ public class AddApplicationAll extends Step implements StepInterface {
         }
     }
 
-    private Boolean responseMatch(ArrayList<Person> persons) {
-        ReadContext ctx = JsonPath.parse(this.callRecord.getResponse().getBody().asString());
+    private Boolean responseMatch(ArrayList<Person> persons,Response response) {
+        ReadContext ctx = JsonPath.parse(response.getBody().asString());
         HashMap<String, String> app_info = ctx.read("$['response']");
 
         for (int i = 0; i < persons.size(); i++) {

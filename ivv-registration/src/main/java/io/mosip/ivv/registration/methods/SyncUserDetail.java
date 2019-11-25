@@ -24,7 +24,7 @@ import java.util.Map;
 public class SyncUserDetail extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         UserDetailService serv = store.getRegApplicationContext().getBean(UserDetailService.class);
         ResponseDTO responseDTO = null;
         try {

@@ -19,9 +19,9 @@ public abstract class Helpers {
 	  private static ArrayList<ExtentLogger> reports = new ArrayList<>();
 
     public static void logCallRecord(CallRecord c){
-        Utils.auditLog.info(c.getUrl());
-        Utils.auditLog.info(c.getInputData());
-        Utils.auditLog.info(c.getResponse().asString());
+        Utils.auditLog.info("EndPoint : "+c.getUrl());
+        Utils.auditLog.info("Request PayLoad :"+c.getInputData());
+        Utils.auditLog.info("Response :"+c.getResponse().asString());
     }
 
 	public static void dbVerification(String sqlStatement, String colName1, String colName2, String... columns)

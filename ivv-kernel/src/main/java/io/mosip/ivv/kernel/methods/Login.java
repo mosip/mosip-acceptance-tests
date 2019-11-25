@@ -1,12 +1,15 @@
 package io.mosip.ivv.kernel.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.exceptions.RigInternalError;
+import io.mosip.ivv.core.structures.CallRecord;
+import io.mosip.ivv.core.structures.Partner;
+import io.mosip.ivv.core.structures.RegistrationUser;
+import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.restassured.RestAssured;
@@ -14,27 +17,54 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static io.restassured.RestAssured.given;
 
 public class Login extends Step implements StepInterface{
 
+    private enum users {
+        regUser, partner
+    }
+
+    @Override
+    public void validateStep() throws RigInternalError {
+        if(step.getParameters().size() > 0){
+            try {
+                users.valueOf(step.getParameters().get(0));
+            } catch (IllegalArgumentException ex) {
+                throw new RigInternalError("DSL error: Key does not match a valid field");
+            }
+        } else {
+            step.getParameters().add(0, users.regUser.name());
+        }
+
+    }
+
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
-        /* getting active user from persons */
-        Person person = this.store.getScenarioData().getOperator();
-
+    public void run() {
         JSONObject request_json = new JSONObject();
-        request_json.put("appId", "registrationprocessor");
-        request_json.put("password", person.getPassword());
-        request_json.put("userName", person.getUserid());
+
+        switch(users.valueOf(step.getParameters().get(0))){
+
+            case partner:
+                Partner partner = this.store.getCurrentPartner();
+                request_json.put("appId", "registrationprocessor");
+                request_json.put("password", partner.getPassword());
+                request_json.put("userName", partner.getUserId());
+                break;
+
+            default:
+                RegistrationUser regUser = this.store.getCurrentRegistrationUSer();
+                request_json.put("appId", "registrationprocessor");
+                request_json.put("password", regUser.getPassword());
+                request_json.put("userName", regUser.getUserId());
+                break;
+        }
 
         JSONObject api_input = new JSONObject();
         api_input.put("id", "");
@@ -82,15 +112,17 @@ public class Login extends Step implements StepInterface{
 
                         case DEFAULT:
                             try {
-                                if(ctx.read("$['response']") == null){
+                                if (ctx.read("$['response']") == null) {
                                     logInfo("Assert failed: Expected response not empty but found empty");
-                                    this.hasError=true;
+                                    logInfo("Error Code: "+ctx.read("$['errors'][0]['errorCode']"));
+                                    logInfo("Error Message: "+ctx.read("$['errors'][0]['errorMessage']"));
+                                    this.hasError = true;
                                     return;
                                 }
                             } catch (PathNotFoundException e) {
                                 e.printStackTrace();
-                                logInfo("Assert failed: Expected response not empty but found empty");
-                                this.hasError=true;
+                                logSevere(e.getMessage());
+                                this.hasError = true;
                                 return;
                             }
                             logInfo("Assert [DEFAULT] passed");

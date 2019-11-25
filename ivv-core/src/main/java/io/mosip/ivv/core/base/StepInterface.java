@@ -2,6 +2,7 @@ package io.mosip.ivv.core.base;
 
 
 import com.aventstack.extentreports.ExtentTest;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.structures.CallRecord;
 import io.mosip.ivv.core.structures.ExtentLogger;
 import io.mosip.ivv.core.structures.Scenario;
@@ -16,8 +17,14 @@ public interface StepInterface {
 
     Store getState();
 
+    void validateStep() throws RigInternalError;
+
     void setExtentInstance(ExtentTest e);
 
+    void setStep(Scenario.Step s);
+
+    void setup() throws RigInternalError;
+
     CallRecord getCallRecord();
-    void run(Scenario.Step step);
+    void run();
 }

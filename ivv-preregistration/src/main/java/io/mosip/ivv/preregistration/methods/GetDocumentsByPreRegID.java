@@ -23,16 +23,16 @@ public class GetDocumentsByPreRegID extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         switch (step.getVariant()) {
             case "DEFAULT":
                 break;
 
             default:
-                logWarning("Skipping step " + step.getName() + " as variant " + step.getVariant() + " not found");
+                logInfo("Skipping step " + step.getName() + " as variant " + step.getVariant() + " not found");
                 return;
         }
 

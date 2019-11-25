@@ -1,44 +1,109 @@
 package io.mosip.ivv.preregistration.methods;
 
-import com.aventstack.extentreports.Status;
+import com.jayway.jsonpath.PathNotFoundException;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.utils.MailHelper;
 import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.preregistration.base.PRStepInterface;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.preregistration.utils.Helpers;
-import io.mosip.ivv.core.utils.OTPReader;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static io.restassured.RestAssured.given;
 
 public class ValidateOTP extends Step implements StepInterface {
+    private Person person;
+    private String otp;
+    private String msg;
 
-    /**
-     * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     *
-     * @param step
-     */
-    @SuppressWarnings("unchecked")
-	@Override
-    public void run(Scenario.Step step) {
+    @Override
+    public void run() {
         this.index = Utils.getPersonIndex(step);
-        Person person = this.store.getScenarioData().getPersona().getPersons().get(index);
+        this.person = store.getScenarioData().getPersona().getPersons().get(index);
 
+        int counter = 0;
+        int repeats = 10;
+        String expectedStatus = "";
+        try {
+            repeats = Integer.parseInt(step.getParameters().get(0));
+        } catch (IndexOutOfBoundsException | NumberFormatException e) {
+
+        }
+
+        try {
+            expectedStatus = step.getParameters().get(1);
+        } catch (IndexOutOfBoundsException e) {
+
+        }
+
+        try {
+            logInfo("Sleeping for 10 seconds");
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            logSevere(e.getMessage());
+            this.hasError = true;
+            return;
+        }
+
+        while (counter < repeats) {
+            logInfo("Checking the User email (" + person.getUserid() + ") for OTP");
+            String otp = checkForOTP();
+            if (otp != null && !otp.isEmpty()) {
+                logInfo("OTP retrieved: " + otp);
+                validate(step, otp);
+                return;
+            } else {
+                if (hasError) {
+                    return;
+                }
+            }
+            counter++;
+        }
+        logInfo("OTP not found even after " + repeats + " retries");
+        this.hasError = true;
+
+    }
+
+    private String checkForOTP() {
+        try {
+            logInfo("Retrying after 10 seconds...");
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            logSevere(e.getMessage());
+            this.hasError = true;
+            return "";
+        }
+
+        String otp = "";
+        ArrayList<String> subjects = new ArrayList<String>() {{
+            add("Message Otp");
+        }};
+        String regex = "otp\\s([0-9]{6})";
+        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, person.getUserid(), 10);
+        if (mailHelperResponse != null) {
+            logInfo("Msg found: " + mailHelperResponse.getBody().trim());
+            otp = mailHelperResponse.getRegexout();
+        }
+
+        return otp;
+    }
+
+
+    private void validate(Scenario.Step step, String otp) {
         Boolean setTokenIsNotPresentInTheHeader = false;
-       // String otp = OTPReader.readOTP(person.getUserid());
-        String otp = OTPReader.readOTP("mosip-test@technoforte.co.in");
 
         JSONObject request_json = new JSONObject();
         request_json.put("otp", otp.trim());
-      //  request_json.put("userId", person.getUserid());
-        request_json.put("userId", "mosip-test@technoforte.co.in");
+        request_json.put("userId", person.getUserid());
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.login.useridotp");
         api_input.put("version", "1.0");
@@ -102,7 +167,7 @@ public class ValidateOTP extends Step implements StepInterface {
         if (!setTokenIsNotPresentInTheHeader) {
             api_response =
                     (Response) given()
-                            .cookie("Authorization", this.store.getHttpData()!=null ? this.store.getHttpData().getCookie() : "")
+                            .cookie("Authorization", this.store.getHttpData() != null ? this.store.getHttpData().getCookie() : "")
                             .contentType("application/json")
                             .body(api_input)
                             .post(url);
@@ -115,7 +180,7 @@ public class ValidateOTP extends Step implements StepInterface {
                             .post(url);
         }
 
-        this.callRecord = new CallRecord(RestAssured.baseURI+url, "POST", api_input.toString(), api_response);
+        this.callRecord = new CallRecord(RestAssured.baseURI + url, "POST", api_input.toString(), api_response);
         Helpers.logCallRecord(this.callRecord);
 
         Collection<String> values = api_response.getCookies().values();
@@ -135,6 +200,22 @@ public class ValidateOTP extends Step implements StepInterface {
             if (!emr.getStatus()) {
                 this.hasError = true;
                 return;
+            }
+        } else {
+            /* Assertion policies execution */
+            if (step.getAsserts().size() > 0) {
+                for (Scenario.Step.Assert pr_assert : step.getAsserts()) {
+                    switch (pr_assert.type) {
+                        case DONT:
+                        case DB_VERIFICATION:
+                        case COMM_SINK:
+                            logInfo("Assert not yet implemented: " + pr_assert.type);
+                            break;
+                        default:
+                            logInfo("API HTTP status return as " + pr_assert.type);
+                            break;
+                    }
+                }
             }
         }
 

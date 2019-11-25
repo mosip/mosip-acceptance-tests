@@ -1,3 +1,9 @@
 mvn assembly:assembly -Dmaven.test.skip=true  -DdescriptorId=jar-with-dependencies
+-Dfile.encoding=UTF-8 -Dspring.profiles.active=qa
+connect 'jdbc:derby:reg;bootPassword=mosip12345';
 
--Dfile.encoding=UTF-8 -Dspring.profiles.active=qa -Dmosip.reg.dbpath=C:/Users/hades/IdeaProjects/ivv-rig/ivv-orchestrator/reg -Dmosip.reg.db.key=C:/Users/hades/IdeaProjects/ivv-rig/ivv-orchestrator/src/main/resources/db.properties -Dmosip.reg.healthcheck.url=https://tf-proxy.southeastasia.cloudapp.azure.com/v1/authmanager/actuator/health
+update reg.global_param set val='eng' where name='mosip.primary-language';
+
+# for id auth utility #
+mvn clean package spring-boot:repackage -Dmaven.test.skip=true
+java -jar dependency_jars/authentication-partnerdemo-service-0.9.1.jar

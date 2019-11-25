@@ -19,15 +19,11 @@ import java.util.List;
 
 public class SyncPacket extends Step implements StepInterface {
 
-    private Person person;
-
     @Override
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
-        this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
+    public void run() {
         PacketSynchService packetSynchService = store.getRegApplicationContext().getBean(PacketSynchService.class);
         try {
-            String response = packetSynchService.packetSync(person.getRegistrationId());
+            String response = packetSynchService.packetSync(store.getCurrentPerson().getRegistrationId());
             logInfo("Response: "+response);
         } catch (RegBaseCheckedException e) {
             this.hasError = true;

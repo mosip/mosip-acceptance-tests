@@ -30,11 +30,11 @@ public class UpdateApplication extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @SuppressWarnings({ "unchecked", "serial" })
 	@Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
         /* getting active user from persons */
         this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
@@ -43,7 +43,7 @@ public class UpdateApplication extends Step implements StepInterface {
         identity_json.put("dateOfBirth", person.getDateOfBirth());
         identity_json.put("email", person.getEmail());
         identity_json.put("phone", person.getPhone());
-        identity_json.put("CNIENumber", person.getReferenceIdentityNumber());
+        identity_json.put("referenceIdentityNumber", person.getReferenceIdentityNumber());
         identity_json.put("IDSchemaVersion", 1);
         identity_json.put("postalCode", person.getPostalCode());
 
@@ -56,7 +56,7 @@ public class UpdateApplication extends Step implements StepInterface {
         demographic.put("region", person.getRegion());
         demographic.put("province", person.getProvince());
         demographic.put("city", person.getCity());
-        demographic.put("localAdministrativeAuthority", person.getZone());
+        demographic.put("zone", person.getZone());
         demographic.put("residenceStatus", person.getResidenceStatus());
 
         JSONObject request_json = new JSONObject();
@@ -251,7 +251,7 @@ public class UpdateApplication extends Step implements StepInterface {
     						break;
 
                         default:
-                            logWarning("API HTTP status return as " + pr_assert.type);
+                            logInfo("API HTTP status return as " + pr_assert.type);
                             break;
                     }
                 }

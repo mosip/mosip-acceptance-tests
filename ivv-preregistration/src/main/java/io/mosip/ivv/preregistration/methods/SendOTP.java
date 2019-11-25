@@ -7,6 +7,7 @@ import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.utils.MailHelper;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.base.PRStepInterface;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
@@ -22,22 +23,19 @@ import java.util.Collection;
 import static io.restassured.RestAssured.given;
 
 public class SendOTP extends Step implements StepInterface {
-    public String tempAuthCookies =null;
-
+    private Person person;
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
-        Person person = this.store.getScenarioData().getPersona().getPersons().get(index);
-//        OTPReader.deleteOTPEmails();
+        this.person = store.getScenarioData().getPersona().getPersons().get(index);
+        //MailHelper.deleteOTPEmails(System.getProperty("ivv.email.server.user"), System.getProperty("ivv.email.server.pass"));
         JSONObject request_json = new JSONObject();
-        //request_json.put("langCode", "fra");
-       // request_json.put("userId", person.getUserid());
-        request_json.put("userId", "mosip-test@technoforte.co.in");
+        request_json.put("userId", person.getUserid());
 
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.login.sendotp");
@@ -88,7 +86,7 @@ public class SendOTP extends Step implements StepInterface {
 
 
         this.callRecord = new CallRecord(RestAssured.baseURI+url, "POST", api_input.toString(), api_response);
-        Helpers.logCallRecord(this.callRecord);
+       // Helpers.logCallRecord(this.callRecord);
         ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
 
         /* check for api status */
@@ -129,21 +127,13 @@ public class SendOTP extends Step implements StepInterface {
                             break;
 
                         default:
-                            logWarning("API HTTP status return as " + pr_assert.type);
+                            logInfo("API HTTP status return as " + pr_assert.type);
                             break;
                     }
                 }
             }
         }
 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            logSevere(e.getMessage());
-            this.hasError = true;
-            return;
-        }
     }
 
 }

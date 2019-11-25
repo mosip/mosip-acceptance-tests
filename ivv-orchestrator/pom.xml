@@ -44,6 +44,16 @@
             <artifactId>ivv-kernel</artifactId>
             <version>0.1.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.ida</groupId>
+            <artifactId>ivv-ida</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.mutators</groupId>
+            <artifactId>ivv-mutators</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>

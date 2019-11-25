@@ -1,13 +1,11 @@
 package io.mosip.ivv.core.base;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
+import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.structures.Store;
 import io.mosip.ivv.core.utils.Utils;
-
-import java.util.ArrayList;
 
 public class Step {
     public Boolean hasError = false;
@@ -15,9 +13,14 @@ public class Step {
     public int index = 0;
     public CallRecord callRecord;
     public ExtentTest extentInstance;
+    public Scenario.Step step;
 
     public Boolean hasError() {
         return hasError;
+    }
+
+    public void setStep(Scenario.Step s) {
+        this.step = s;
     }
 
     public void setState(Store s) {
@@ -35,6 +38,24 @@ public class Step {
     public void setExtentInstance(ExtentTest e){
         this.extentInstance = e;
     }
+
+    public void setup() throws RigInternalError {
+        try {
+            if(store.getCurrentPerson() == null){
+                store.setCurrentPerson(store.getScenarioData().getPersona().getPersons().get(0));
+            }
+            if(store.getCurrentRegistrationUSer() == null){
+                store.setCurrentRegistrationUSer(store.getScenarioData().getRegistrationUsers().get(0));
+            }
+            if(store.getCurrentPartner() == null){
+                store.setCurrentPartner(store.getScenarioData().getPartners().get(0));
+            }
+        } catch (RuntimeException e){
+            throw new RigInternalError("Error during setup "+e.getMessage());
+        }
+    }
+
+    public void validateStep() throws RigInternalError {return;}
 
     public void logInfo(String msg){
         Utils.auditLog.info(msg);

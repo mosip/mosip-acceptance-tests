@@ -1,6 +1,5 @@
 package io.mosip.ivv.core.structures;
 
-import io.mosip.ivv.core.policies.ErrorPolicy;
 import io.mosip.ivv.core.policies.AssertionPolicy;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +22,7 @@ public class Scenario {
     public static class Step
     {
         public enum modules {
-            pr, rc, rp, ia, kr
+            pr, rc, rp, ia, kr, mt
         }
         private String name = ""; // needs to be passed
         private String variant = "DEFAULT"; // default
@@ -36,7 +35,7 @@ public class Scenario {
         private ArrayList<Integer> index;
 
         public static class Error{
-            public ErrorPolicy type;
+            public String type;
             public ArrayList<String> parameters = new ArrayList<>();
         }
 
@@ -66,8 +65,8 @@ public class Scenario {
     {
         private String personaClass,tag,groupName;
         private Persona persona;
-        private Person operator;
-        private Person supervisor;
+        private ArrayList<RegistrationUser> registrationUsers;
+        private ArrayList<Partner> partners;
         private Person user;
     }
 

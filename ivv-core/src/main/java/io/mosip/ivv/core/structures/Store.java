@@ -1,6 +1,5 @@
 package io.mosip.ivv.core.structures;
 
-import io.mosip.ivv.core.structures.Scenario;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationContext;
@@ -26,4 +25,8 @@ public class Store {
     private Object regLocalContext;
     private Object registrationDto;
     private Properties properties;
+    private Person currentPerson;
+    private Person currentIntroducer;
+    private RegistrationUser currentRegistrationUSer;
+    private Partner currentPartner;
 }

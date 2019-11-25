@@ -10,3 +10,5 @@ target/
 # properties file #
 *logs/*
 *local/*
+
+dependency_jars/*.jar

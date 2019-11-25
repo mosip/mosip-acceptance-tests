@@ -1,14 +1,12 @@
 package io.mosip.ivv.kernel.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
+import io.mosip.ivv.core.structures.RegistrationUser;
 import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
@@ -22,12 +20,11 @@ public class GetGlobalConfig extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
+    public void run() {
         /* getting active user from persons */
-        Person person = this.store.getScenarioData().getOperator();
+        RegistrationUser person = store.getCurrentRegistrationUSer();
 
         String url = "/"+System.getProperty("ivv.global.version")+"/syncdata/configs";
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");

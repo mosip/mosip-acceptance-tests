@@ -27,10 +27,10 @@ public class AddDocument extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         String fileLocation = null;
         String preRegistrationID = null;
         String pre_registration_id_OtherUser = "";
@@ -50,13 +50,15 @@ public class AddDocument extends Step implements StepInterface {
             request_json.put("langCode", person.getLangCode());
 
             JSONObject api_input = new JSONObject();
-            api_input.put("id", System.getProperty("documentUploadID"));
+            api_input.put("id", "mosip.pre-registration.document.upload");
             api_input.put("version", System.getProperty("ivv.prereg.apiversion"));
             api_input.put("requesttime", Utils.getCurrentDateAndTimeForAPI());
 
             switch (step.getVariant()) {
                 case "InvalidSize":
-                    fileLocation = System.getProperty("user.dir") + System.getProperty("ivv.path.documents") + "Invalidsize.pdf";
+
+                case "ValidateDocumentExceedingPermittedSize":
+                    fileLocation = System.getProperty("user.dir") + System.getProperty("ivv.path.documents") + "invalid_size.pdf";
                     break;
 
                 case "InvalidPRID":
@@ -85,10 +87,6 @@ public class AddDocument extends Step implements StepInterface {
 
                 case "ValidatePastRequestDate":
                     api_input.put("requesttime", "2019-01-01T05:59:15.241Z");
-                    break;
-
-                case "ValidateDocumentExceedingPermittedSize":
-                    fileLocation = System.getProperty("user.dir") + System.getProperty("ivv.path.documents") + "Invalidsize.pdf";
                     break;
 
                 case "ValidateInvalidDocumentCategoryCode":
@@ -136,6 +134,19 @@ public class AddDocument extends Step implements StepInterface {
             this.callRecord = new CallRecord(RestAssured.baseURI + url, "POST", api_input.toString(), api_response);
             Helpers.logCallRecord(this.callRecord);
 
+
+            ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
+
+            try {
+                // this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
+                if(ctx.read("$['response']")!=null) {
+                    this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
+                    this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationStatusCode("$['response']['statusCode']");
+                }
+            } catch (PathNotFoundException e) {
+                e.printStackTrace();
+            }
+
             /* check for api status */
             if (api_response.getStatusCode() != 200) {
                 logSevere("API HTTP status return as " + api_response.getStatusCode());
@@ -150,17 +161,6 @@ public class AddDocument extends Step implements StepInterface {
                     this.hasError = true;
                     return;
                 }
-            } else {
-                ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-                /* Response data parsing */
-                try {
-                    this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
-                    //this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationStatusCode(ctx.read("$['response']['statusCode']"));
-                    this.store.getScenarioData().getPersona().getPersons().get(index).getDocuments().get(j).setDocId(ctx.read("$['response']['docId']"));
-                } catch (PathNotFoundException e) {
-
-                }
-
             }
 
             /* Assertion policies execution */
@@ -176,7 +176,7 @@ public class AddDocument extends Step implements StepInterface {
                                 this.hasError = true;
                                 return;
                             }else{
-                                Boolean responseMatched = responseMatch(proofDocument);
+                                Boolean responseMatched = responseMatch(proofDocument,getAppRecord.getResponse());
                                 if(!responseMatched){
                                     logInfo("Assert API_CALL failed");
                                     this.hasError = true;
@@ -213,7 +213,7 @@ public class AddDocument extends Step implements StepInterface {
 //                                break;
 //
                             default:
-                                logWarning("Assert not found or implemented: " + pr_assert.type);
+                                logInfo("Assert not found or implemented: " + pr_assert.type);
                                 break;
                     }
                 }
@@ -241,7 +241,8 @@ public class AddDocument extends Step implements StepInterface {
         GetDocuments st = new GetDocuments();
         st.setExtentInstance(extentInstance);
         st.setState(this.store);
-        st.run(nstep);
+        st.setStep(nstep);
+        st.run();
         this.store = st.getState();
 
         String identifier = "Sub Step: "+nstep.getName()+", module: "+nstep.getModule()+", variant: "+nstep.getVariant();
@@ -253,17 +254,18 @@ public class AddDocument extends Step implements StepInterface {
         }
     }
 
-    private Boolean responseMatch(ProofDocument proofDocument){
+    private Boolean responseMatch(ProofDocument proofDocument,Response response) {
         ReadContext ctx = JsonPath.parse(this.callRecord.getResponse().getBody().asString());
         HashMap<String, String> app_info = ctx.read("$['response']");
-
-        if (!proofDocument.getDocTypeCode().equals(app_info.get("docTypCode"))) {
-            logInfo("Response matcher: docTypCode does not match");
-            return false;
-        }
-        if (!proofDocument.getDocCatCode().equals(app_info.get("docCatCode"))) {
-            logInfo("Response matcher: docCatCode does not match");
-            return false;
+        if (proofDocument != null && app_info != null) {
+            if (!proofDocument.getDocTypeCode().equals(app_info.get("docTypCode"))) {
+                logInfo("Response matcher: docTypCode does not match");
+                return false;
+            }
+            if (!proofDocument.getDocCatCode().toString().equals(app_info.get("docCatCode"))) {
+                logInfo("Response matcher: docCatCode does not match");
+                return false;
+            }
         }
         return true;
     }

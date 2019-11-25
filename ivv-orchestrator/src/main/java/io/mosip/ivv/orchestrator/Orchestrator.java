@@ -6,27 +6,29 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.structures.Store;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.dg.DataGenerator;
 import io.mosip.ivv.registration.config.Setup;
 import org.springframework.context.ApplicationContext;
+import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.Set;
 
-@Test
 public class Orchestrator {
     private Boolean regClientSetup = false;
     private static ExtentHtmlReporter htmlReporter;
     private static ExtentReports extent;
-    private ExtentTest extentTest;
     private ApplicationContext applicationContext;
     private Object localApplicationContext;
     private Properties properties;
@@ -35,7 +37,8 @@ public class Orchestrator {
         put("rc", "io.mosip.ivv.registration.methods");
         put("rp", "io.mosip.ivv.regprocessor.methods");
         put("kr", "io.mosip.ivv.kernel.methods");
-        put("ia", "io.mosip.ivv.idauthentication.methods");
+        put("ia", "io.mosip.ivv.ida.methods");
+        put("mt", "io.mosip.ivv.mutators.methods");
     }};
 
     @BeforeSuite
@@ -47,6 +50,7 @@ public class Orchestrator {
         htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+this.properties.getProperty("ivv.path.reports"));
         extent = new ExtentReports();
         extent.attachReporter(htmlReporter);
+        this.regClientSetup();
     }
 
     @BeforeTest
@@ -59,7 +63,7 @@ public class Orchestrator {
         extent.flush();
     }
 
-    @DataProvider(name="ScenarioDataProvider")
+    @DataProvider(name="ScenarioDataProvider", parallel = false)
     public static Object[][] dataProvider(ITestContext context) {
         DataGenerator dg = new DataGenerator(System.getProperty("user.dir"), "config.properties");
         ArrayList<Scenario> scenariosToRun = dg.getScenarios();
@@ -85,57 +89,71 @@ public class Orchestrator {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String stepsAsString = mapper.writeValueAsString(scenario.getSteps());
-            System.out.println(stepsAsString);
-            System.out.println(mapper.writeValueAsString(scenario.getData()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-        this.extentTest = extent.createTest("Scenario_" + scenario.getName() + ": " + scenario.getDescription());
+        Utils.auditLog.info("");
+        Utils.auditLog.info("-- *** Scenario "+ scenario.getName() + ": " + scenario.getDescription()+
+                " *** --");
+        ExtentTest extentTest = extent.createTest("Scenario_" + scenario.getName() + ": " + scenario.getDescription());
         Store store = new Store();
         store.setConfigs(configs);
         store.setGlobals(globals);
         store.setScenarioData(scenario.getData());
         store.setProperties(this.properties);
-
-        if(scenario.getModules().contains(Scenario.Step.modules.rc)){
-            this.regClientSetup();
-            store.setRegApplicationContext(this.applicationContext);
-            store.setRegLocalContext(this.localApplicationContext);
-        }
+        store.setRegApplicationContext(this.applicationContext);
+        store.setRegLocalContext(this.localApplicationContext);
 
         for(Scenario.Step step: scenario.getSteps()){
-            String identifier = "Step: "+step.getName()+", module: "+step.getModule()+", variant: "+step.getVariant();
+            Utils.auditLog.info("" );
+            String identifier =
+                    "> #[Test Step: " + step.getName()+ "] [module: "+step.getModule()+"] [variant: "+step.getVariant()+
+                            "]";
+            Utils.auditLog.info(identifier);
             try {
-                this.extentTest.info(identifier+" - running");
+                extentTest.info(identifier+" - running");
+                //extentTest.info("parameters: "+step.getParameters().toString());
                 StepInterface st = getInstanceOf(step);
-                st.setExtentInstance(this.extentTest);
+                st.setExtentInstance(extentTest);
                 st.setState(store);
-                st.run(step);
+                st.setStep(step);
+                st.setup();
+                st.validateStep();
+                st.run();
                 store = st.getState();
                 if(st.hasError()){
-                    this.extentTest.fail(identifier+" - failed");
+                    extentTest.fail(identifier+" - failed");
                     if(System.getProperty("ivv.scenario.continueOnFailure") == null || System.getProperty("ivv.scenario.continueOnFailure").equals("N")){
+                        Assert.assertEquals(java.util.Optional.of(true), st.hasError());
                         return;
                     }
                 }else{
-                    this.extentTest.pass(identifier+" - passed");
+                    extentTest.pass(identifier+" - passed");
                 }
             } catch (ClassNotFoundException e) {
-                this.extentTest.error(identifier+" - error");
+                extentTest.error(identifier+" - ClassNotFoundException --> "+e.toString());
                 e.printStackTrace();
+                Assert.assertEquals(java.util.Optional.of(true), false);
                 return;
             } catch (IllegalAccessException e) {
-                this.extentTest.error(identifier+" - error");
+                extentTest.error(identifier+" - IllegalAccessException --> "+e.toString());
                 e.printStackTrace();
+                Assert.assertEquals(java.util.Optional.of(true), false);
                 return;
             } catch (InstantiationException e) {
-                this.extentTest.error(identifier+" - error");
+                extentTest.error(identifier+" - InstantiationException --> "+e.toString());
                 e.printStackTrace();
+                Assert.assertEquals(java.util.Optional.of(true), false);
+                return;
+            } catch(RigInternalError e){
+                extentTest.error(identifier+" - RigInternalError --> "+e.toString());
+                e.printStackTrace();
+                Assert.assertEquals(java.util.Optional.of(true), false);
                 return;
             } catch (RuntimeException e){
-                this.extentTest.error(identifier+" - error");
+                extentTest.error(identifier+" - RuntimeException --> "+e.toString());
                 e.printStackTrace();
+                Assert.assertEquals(java.util.Optional.of(true), false);
                 return;
             }
         }
@@ -155,8 +173,6 @@ public class Orchestrator {
 
     private String getPackage(Scenario.Step step){
         String pack = packages.get(step.getModule().toString());
-        System.out.println(step.getModule());
-        System.out.println(pack);
         return pack;
     }
 
@@ -165,16 +181,10 @@ public class Orchestrator {
 
     }
 
+
     public StepInterface getInstanceOf(Scenario.Step step) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         String className = getPackage(step) +"."+  step.getName().substring(0, 1).toUpperCase() + step.getName().substring(1);
-        System.out.println(className);
         return (StepInterface) Class.forName(className).newInstance();
-    }
-
-    private void printReport(ArrayList<ExtentLogger> reportList){
-        for (ExtentLogger el : reportList){
-            this.extentTest.log(el.getType(), el.getMsg());
-        }
     }
 
     private void configToSystemProperties(){

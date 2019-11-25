@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class SyncPublicKey  extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         PublicKeySync serv = store.getRegApplicationContext().getBean(PublicKeySync.class);
         ResponseDTO responseDTO = null;
         try {

@@ -2,14 +2,15 @@ package io.mosip.ivv.core.structures;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class Person {
-    private PersonaDef personaDef = null;
+public class Person extends PersonaDef {
+    private String id = "";
     private String name = "";
     private String userid = "";
     private String password = "";
@@ -31,6 +32,12 @@ public class Person {
 
     /* system info */
     private String macAddress = "";
+
+    /* IDA fields */
+    private String staticToken = "";
+    private String authenticationOTP = "";
+    private JSONObject authenticationJSON = new JSONObject();
+    private ArrayList<String> authParams = new ArrayList<String>();
 
     // required in create pre-registration api
     private String preferredLang = "";
@@ -61,28 +68,7 @@ public class Person {
 
     private String uin = "";
     private List<String> vids = new ArrayList<String>();
-    private boolean hasBiometricException = false;
-
-    private ArrayList<String> bioCaptureList;
-    private Biometrics thumbs = null;
-    private Biometrics leftSlap = null;
-    private Biometrics rightSlap = null;
-    private Biometrics leftIris = null;
-    private Biometrics rightIris = null;
-    private Biometrics face = null;
 
     //@Deprecated
     public ArrayList<ProofDocument> documents;
-
-    public Person() {
-        personaDef = new PersonaDef();
-    }
-
-    public void setRole(PersonaDef.ROLE p) {
-        this.personaDef.role = p;
-    }
-
-    public String getRole() {
-        return personaDef.role.toString();
-    }
 }

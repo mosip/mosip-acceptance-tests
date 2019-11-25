@@ -20,10 +20,10 @@ public class OperatorAuthentication extends Step implements StepInterface {
 
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         RegistrationDTO registrationDTO = (RegistrationDTO) this.store.getRegistrationDto();
         BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
         biometricInfoDTO.setFace(this.getFace());
@@ -31,7 +31,9 @@ public class OperatorAuthentication extends Step implements StepInterface {
         biometricInfoDTO.setFingerprintDetailsDTO(this.getFingetprint());
         //TODO add applicant's biometric data in biometricInfoDTO
 
-        registrationDTO.getBiometricDTO().setOperatorBiometricDTO(biometricInfoDTO);
+//        registrationDTO.getBiometricDTO().setOperatorBiometricDTO(biometricInfoDTO);
+        registrationDTO.getOsiDataDTO().setOperatorAuthenticatedByPassword(true);
+//        registrationDTO.getOsiDataDTO().setOperatorID(store.getScenarioData().getOperator().getUserId());
         this.store.setRegistrationDto(registrationDTO);
     }
 
@@ -39,8 +41,8 @@ public class OperatorAuthentication extends Step implements StepInterface {
         FaceDetailsDTO dt = new FaceDetailsDTO();
         dt.setQualityScore(8);
         dt.setPhotographName("face");
-        byte [] file = Utils.readFileAsByte(store.getScenarioData().getOperator().getFace().getPath());
-        dt.setFaceISO(file);
+//        byte [] file = Utils.readFileAsByte(store.getScenarioData().getOperator().getBiometrics().getFace().getPath());
+//        dt.setFaceISO(file);
         return dt;
     }
 
@@ -52,7 +54,8 @@ public class OperatorAuthentication extends Step implements StepInterface {
         lt.setIrisType("LEFT");
         lt.setQualityScore(8);
         lt.setIrisImageName("left iris");
-        byte [] lfile = Utils.readFileAsByte(store.getScenarioData().getOperator().getLeftIris().getPath());
+        byte[] lfile = "left_eye".getBytes();
+//        byte [] lfile = Utils.readFileAsByte(store.getScenarioData().getOperator().getLeftIris().getPath());
         lt.setIrisIso(lfile);
 
         /* right iris */
@@ -60,7 +63,8 @@ public class OperatorAuthentication extends Step implements StepInterface {
         rt.setIrisType("RIGHT");
         rt.setQualityScore(8);
         rt.setIrisImageName("left iris");
-        byte [] rfile = Utils.readFileAsByte(store.getScenarioData().getOperator().getRightIris().getPath());
+        byte[] rfile = "right_eye".getBytes();
+//        byte [] rfile = Utils.readFileAsByte(store.getScenarioData().getOperator().getRightIris().getPath());
         rt.setIrisIso(rfile);
 
         ls.add(lt);
@@ -90,8 +94,8 @@ public class OperatorAuthentication extends Step implements StepInterface {
         tb.setFingerType("leftThumb");
         tb.setQualityScore(8);
         tb.setFingerprintImageName("left thumb");
-        byte [] tbfile = Utils.readFileAsByte(store.getScenarioData().getOperator().getThumbs().getPath());
-        tb.setFingerPrintISOImage(tbfile);
+//        byte [] tbfile = Utils.readFileAsByte(store.getScenarioData().getOperator().getBiometrics().getThumbs().getPath());
+//        tb.setFingerPrintISOImage(tbfile);
         tb.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
 //        ls.add(lf);
 //        ls.add(rf);

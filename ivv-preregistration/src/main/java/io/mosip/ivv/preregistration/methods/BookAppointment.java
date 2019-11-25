@@ -3,9 +3,12 @@ package io.mosip.ivv.preregistration.methods;
 import static io.restassured.RestAssured.given;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.ivv.core.structures.*;
 import org.json.simple.JSONObject;
 
 import com.google.gson.Gson;
@@ -15,10 +18,6 @@ import com.jayway.jsonpath.ReadContext;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.BookingSlot;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.utils.Helpers;
@@ -33,11 +32,11 @@ public class BookAppointment extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @SuppressWarnings("unchecked")
 	@Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
 
         this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
@@ -49,6 +48,7 @@ public class BookAppointment extends Step implements StepInterface {
             this.hasError = true;
             return;
         }
+        this.store.getScenarioData().getPersona().getPersons().get(index).setSlot(slot);
 
         String preRegistrationID = person.getPreRegistrationId();
 
@@ -67,7 +67,7 @@ public class BookAppointment extends Step implements StepInterface {
             case "InvalidCenter":
 
             case "RegistrationCenterIdNotEntered":
-                request_json.put("registration_center_id", "");
+                request_json.replace("registration_center_id", person.getRegistrationCenterId(),"");
                 break;
 
             case "InvalidPRID":
@@ -158,8 +158,24 @@ public class BookAppointment extends Step implements StepInterface {
                     switch (pr_assert.type) {
                         case DONT:
                             break;
+                        case ALL:
+                            logInfo("Assert not yet implemented: " + pr_assert.type);
+                            break;
 
                         case API_CALL:
+                            CallRecord getAppointmentRecord = getAppointment();
+                            System.out.println(getAppointmentRecord.getResponse().getBody().asString());
+                            if(getAppointmentRecord == null){
+                                this.hasError = true;
+                                return;
+                            }else{
+                                Boolean responseMatched = responseMatch(this.person,getAppointmentRecord.getResponse());
+                                if(!responseMatched){
+                                    logInfo("Assert API_CALL failed");
+                                    this.hasError = true;
+                                    return;
+                                }
+                            }
                             break;
 
                         case DEFAULT:
@@ -186,7 +202,7 @@ public class BookAppointment extends Step implements StepInterface {
                             }
 
                         default:
-                            logWarning("Assert not found or implemented: " + pr_assert.type);
+                            logInfo("Assert not found or implemented: " + pr_assert.type);
                             break;
                     }
                 }
@@ -196,6 +212,61 @@ public class BookAppointment extends Step implements StepInterface {
         this.store.getScenarioData().getPersona().getPersons().get(index).setSlot(slot);
 
     }
+
+    private CallRecord getAppointment(){
+        Scenario.Step nstep = new Scenario.Step();
+        nstep.setName("getAppointment");
+        nstep.setVariant("DEFAULT");
+        nstep.setModule(Scenario.Step.modules.pr);
+        nstep.setIndex(new ArrayList<Integer>());
+        nstep.getIndex().add(this.index);
+        GetAppointment st = new GetAppointment();
+        st.setExtentInstance(extentInstance);
+        st.setState(this.store);
+        st.setStep(nstep);
+        st.run();
+        this.store = st.getState();
+
+        String identifier = "Sub Step: "+nstep.getName()+", module: "+nstep.getModule()+", variant: "+nstep.getVariant();
+        if(st.hasError()){
+            logSevere(identifier+" - failed");
+            return null;
+        }else{
+            return st.getCallRecord();
+        }
+    }
+
+    private Boolean responseMatch(Person person,Response response) {
+        ReadContext ctx = JsonPath.parse(response.getBody().asString());
+        HashMap<String, String> app_info = ctx.read("$['response']");
+        if (person != null && app_info != null) {
+            if (!person.getRegistrationCenterId().equals(app_info.get("registration_center_id"))) {
+                logInfo("Response matcher: Registration_center_id does not match");
+                return false;
+            }
+            if (!person.getSlot().getDate().equals(app_info.get("appointment_date"))) {
+                logInfo("Response matcher: Appointment_date does not match");
+                return false;
+            }
+
+            if (!person.getSlot().getFrom().contains(app_info.get("time_slot_from"))) {
+                logInfo("Response matcher: Time_slot_from does not match");
+                return false;
+            }
+            if (!person.getSlot(). getTo().contains(app_info.get("time_slot_to"))) {
+                logInfo("Response matcher: Time_slot_to does not match");
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+
+
+
+
     
     private String createSQLQuery(Person person,BookingSlot slot) {
 		StringBuilder sqlQuery = new StringBuilder();
@@ -213,7 +284,8 @@ public class BookAppointment extends Step implements StepInterface {
         GetBookingSlots st = new GetBookingSlots();
         setExtentInstance(extentInstance);
         st.setState(this.store);
-        st.run(nstep);
+        st.setStep(nstep);
+        st.run();
         this.store = st.getState();
 
         String identifier = "Sub Step: "+nstep.getName()+", module: "+nstep.getModule()+", variant: "+nstep.getVariant();

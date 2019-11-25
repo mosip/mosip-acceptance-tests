@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class DeletePackets extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         /*  packets with status PROCESSED will be deleted */
         this.index = Utils.getPersonIndex(step);
         RegPacketStatusService serv = store.getRegApplicationContext().getBean(RegPacketStatusService.class);

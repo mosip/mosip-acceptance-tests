@@ -21,7 +21,7 @@ import java.util.Map;
 public class SyncPolicy extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         PolicySyncService pss = store.getRegApplicationContext().getBean(PolicySyncService.class);
         ResponseDTO responseDTO = null;
         try {

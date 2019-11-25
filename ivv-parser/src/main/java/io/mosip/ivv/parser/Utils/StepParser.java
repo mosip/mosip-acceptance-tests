@@ -1,7 +1,6 @@
 package io.mosip.ivv.parser.Utils;
 
 import io.mosip.ivv.core.policies.AssertionPolicy;
-import io.mosip.ivv.core.policies.ErrorPolicy;
 import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.parser.exceptions.StepParsingException;
@@ -19,7 +18,7 @@ public class StepParser {
         ArrayList<String> parameters = new ArrayList<>();
         ArrayList<Integer> indexes = new ArrayList<>();
         Scenario.Step step = new Scenario.Step();
-        Pattern pattern = Pattern.compile("\\.");
+        Pattern pattern = Pattern.compile("\\)(.)");
         String[] str_split = pattern.split(cell);
         for( int i = 0; i < str_split.length; i++) {
             String func = str_split[i];
@@ -29,6 +28,7 @@ public class StepParser {
                 if(nv_split.length < 2){
                     throw new StepParsingException("invalid step format, it should be (module_func_variant): "+func);
                 }
+                System.out.println(Scenario.Step.modules.valueOf(nv_split[0]));
                 step.setModule(Scenario.Step.modules.valueOf(nv_split[0]));
                 step.setName(nv_split[1]);
                 if(nv_split.length>2){
@@ -38,7 +38,9 @@ public class StepParser {
                 }
                 String[] param_array = Pattern.compile("," ).split(Utils.regex("\\((.*?)\\)", str_split[i]).replaceAll("\\s+",""));
                 for(int z=0; z<param_array.length;z++){
-                    parameters.add(param_array[z]);
+                    if(param_array[z] != null && !param_array[z].isEmpty()){
+                        parameters.add(param_array[z]);
+                    }
                 }
                 String[] index_array = Pattern.compile("," ).split(Utils.regex("\\[(.*?)\\]", str_split[i]).replaceAll("\\s+",""));
                 for(int z=0; z<index_array.length;z++){
@@ -60,16 +62,8 @@ public class StepParser {
             for( int j = 0; j < errorKeys.length; j++) {
                 if(func.contains(errorKeys[j])){
                     Scenario.Step.Error er = new Scenario.Step.Error();
-                    String[] ertype = str_split[i].split("\\_", 2);
-                    if(ertype.length>1 && !ertype[1].isEmpty() && ertype[1] != null){
-                        er.type = ErrorPolicy.valueOf(ertype[1]);
-                    }else{
-                        er.type = ErrorPolicy.valueOf("HTTP_ERROR_CODE");
-                    }
-                    String[] param_array = Pattern.compile("," ).split(Utils.regex("\\((.*?)\\)", func).replaceAll("\\s+",""));
-                    for(int z=0; z<param_array.length;z++){
-                        er.parameters.add(param_array[z]);
-                    }
+                    String ertype = Utils.regex("\\((.*?)\\)", str_split[i]);
+                    er.type = ertype;
                     errors.add(er);
                 }
             }

@@ -1,14 +1,11 @@
 package io.mosip.ivv.kernel.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
 import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
@@ -22,11 +19,9 @@ public class GetPublicKey extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
-
+    public void run() {
         String url = "/"+System.getProperty("ivv.global.version")+"/syncdata/publickey/KERNEL?timeStamp="+Utils.getCurrentDateAndTimeForAPI()+"&referenceId=SIGN";
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
         Response api_response = (Response) given()
@@ -40,6 +35,13 @@ public class GetPublicKey extends Step implements StepInterface {
         /* check for api status */
         if (api_response.getStatusCode() != 200) {
             logInfo("API HTTP status return as " + api_response.getStatusCode());
+            this.hasError=true;
+            return;
+        }
+
+        /* check for Publickey  */
+        if (ctx.read("$['response'][''publicKey]") == null) {
+            logInfo("Publickey not found");
             this.hasError=true;
             return;
         }

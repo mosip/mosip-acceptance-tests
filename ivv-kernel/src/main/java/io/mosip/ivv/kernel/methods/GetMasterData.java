@@ -1,35 +1,34 @@
 package io.mosip.ivv.kernel.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
+import io.mosip.ivv.core.structures.RegistrationUser;
 import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.json.simple.JSONObject;
+import net.minidev.json.JSONArray;
+import org.junit.Assert;
 
 import static io.restassured.RestAssured.given;
+
+
 
 public class GetMasterData extends Step implements StepInterface {
 
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
+    public void run() {
         /* getting active user from persons */
-        Person person = this.store.getScenarioData().getOperator();
+        RegistrationUser person = this.store.getCurrentRegistrationUSer();
 
         String url = "/"+System.getProperty("ivv.global.version")+"/syncdata/masterdata?macaddress="+person.getMacAddress();
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
@@ -40,6 +39,15 @@ public class GetMasterData extends Step implements StepInterface {
         this.callRecord = new CallRecord(RestAssured.baseURI+url, "GET", "", api_response);
         Utils.logCallRecord(this.callRecord);
         ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
+
+        Object idValues = ctx.read("$['response']['registrationCenter']");
+        for (int i=0; i < ((JSONArray) idValues).size(); i++) {
+            if (!ctx.read("$['response']['registrationCenter'][" + i + "]['id']").toString().equals(person.getCenterId().toString())) {
+                logInfo("Found other " + ctx.read("$['response']['registrationCenter'][" + i + "]['id']").toString() + " centerID details" );
+                this.hasError=true;
+                return;
+            }
+        }
 
         /* check for api status */
         if (api_response.getStatusCode() != 200) {

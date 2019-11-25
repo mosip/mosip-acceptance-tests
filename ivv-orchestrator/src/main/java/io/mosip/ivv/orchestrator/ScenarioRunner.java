@@ -25,16 +25,7 @@ public class ScenarioRunner {
     }
 
     private void execute(){
-        for(Scenario.Step step: this.scenario.getSteps()){
-            switch(step.getModule()+step.getName()){
-                case "Login":
-                    break;
 
-                default:
-                    System.out.println("step "+step.getName()+" not found");
-                    break;
-            }
-        }
     }
 
     private void before(){

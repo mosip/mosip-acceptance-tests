@@ -1,36 +1,23 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UploadPacket extends Step implements StepInterface {
-
-    private Person person;
-
     @Override
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
-        this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
+    public void run() {
         PacketSynchService syncserv = store.getRegApplicationContext().getBean(PacketSynchService.class);
         PacketUploadService serv = store.getRegApplicationContext().getBean(PacketUploadService.class);
         ResponseDTO responseDTO = null;
@@ -39,8 +26,8 @@ public class UploadPacket extends Step implements StepInterface {
         /* Get packet by rid */
         List<PacketStatusDTO> fetchPacketsToBeSynched = syncserv.fetchPacketsToBeSynched();
         for(PacketStatusDTO psdto: fetchPacketsToBeSynched){
-            logInfo("Finding synced packet: ["+psdto.getFileName()+"] equals ["+person.getRegistrationId()+"]");
-            if(psdto.getFileName().equals(person.getRegistrationId())){
+            logInfo("Finding synced packet: ["+psdto.getFileName()+"] equals ["+store.getCurrentPerson().getRegistrationId()+"]");
+            if(psdto.getFileName().equals(store.getCurrentPerson().getRegistrationId())){
                 packetToBeUploaded = psdto;
                 break;
             }

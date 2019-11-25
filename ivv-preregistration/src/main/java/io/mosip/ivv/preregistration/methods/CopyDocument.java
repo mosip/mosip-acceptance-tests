@@ -22,10 +22,10 @@ public class CopyDocument extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         ArrayList<Person> persons = this.store.getScenarioData().getPersona().getPersons();
         ProofDocument proofDocument = persons.get(0).getDocuments().get(0);
         //ProofDocument proofDocument = this.store.getScenarioData().getPersona().getPersons().get(0).getDocuments().get(0);

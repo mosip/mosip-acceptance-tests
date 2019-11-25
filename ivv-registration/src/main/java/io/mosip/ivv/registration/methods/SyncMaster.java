@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class SyncMaster extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         MasterSyncService ms = store.getRegApplicationContext().getBean(MasterSyncService.class);
 
         //TODO variants needs to be added

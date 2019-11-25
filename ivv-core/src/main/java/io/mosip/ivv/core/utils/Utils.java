@@ -250,7 +250,9 @@ public class Utils {
         Pattern pattern = Pattern.compile(exp);
         Matcher m = pattern.matcher(str);
         while(m.find()) {
-            parsed = m.group(1);
+            if(m.group().length() > 0){
+                parsed = m.group(1);
+            }
         }
         return parsed;
     }
@@ -272,6 +274,14 @@ public class Utils {
             index=step.getIndex().get(0);
         }
         return index;
+    }
+
+    public static boolean hasPersonIndex(ArrayList<Integer> indexes, int i){
+        boolean hasIndex = false;
+        if(indexes.size() > i){
+            hasIndex = true;
+        }
+        return hasIndex;
     }
 
     public static String getUUID() {

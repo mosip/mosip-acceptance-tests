@@ -21,10 +21,10 @@ public class GetDocuments extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         String pre_registration_id_OtherUser="";
         this.index = Utils.getPersonIndex(step);
 

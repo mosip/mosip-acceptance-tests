@@ -26,10 +26,10 @@ public class AddDocumentAll extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         String fileLocation = null;
         String preRegistrationID = null;
         String pre_registration_id_OtherUser = "";
@@ -52,7 +52,7 @@ public class AddDocumentAll extends Step implements StepInterface {
                 request_json.put("langCode", person.getLangCode());
 
                 JSONObject api_input = new JSONObject();
-                api_input.put("id", System.getProperty("documentUploadID"));
+                api_input.put("id", "mosip.pre-registration.document.upload");
                 api_input.put("version", System.getProperty("ivv.prereg.apiversion"));
                 api_input.put("requesttime", Utils.getCurrentDateAndTimeForAPI());
 
@@ -178,7 +178,7 @@ public class AddDocumentAll extends Step implements StepInterface {
                                     this.hasError = true;
                                     return;
                                 } else {
-                                    Boolean responseMatched = responseMatch(proofDocument);
+                                    Boolean responseMatched = responseMatch(proofDocument,getAppRecord.getResponse());
                                     if (!responseMatched) {
                                         logInfo("Assert API_CALL failed");
                                         this.hasError = true;
@@ -218,7 +218,7 @@ public class AddDocumentAll extends Step implements StepInterface {
 //                                break;
 //
                             default:
-                                logWarning("Assert not found or implemented: " + pr_assert.type);
+                                logInfo("Assert not found or implemented: " + pr_assert.type);
                                 break;
                         }
                     }
@@ -249,7 +249,8 @@ public class AddDocumentAll extends Step implements StepInterface {
         GetDocuments st = new GetDocuments();
         st.setExtentInstance(extentInstance);
         st.setState(this.store);
-        st.run(nstep);
+        st.setStep(nstep);
+        st.run();
         this.store = st.getState();
 
         String identifier = "Sub Step: "+nstep.getName()+", module: "+nstep.getModule()+", variant: "+nstep.getVariant();
@@ -261,8 +262,8 @@ public class AddDocumentAll extends Step implements StepInterface {
         }
     }
 
-    private Boolean responseMatch(ProofDocument proofDocument){
-        ReadContext ctx = JsonPath.parse(this.callRecord.getResponse().getBody().asString());
+    private Boolean responseMatch(ProofDocument proofDocument,Response response){
+        ReadContext ctx = JsonPath.parse(response.getBody().asString());
         HashMap<String, String> app_info = ctx.read("$['response']");
 
         if (!proofDocument.getDocTypeCode().equals(app_info.get("docTypCode"))) {

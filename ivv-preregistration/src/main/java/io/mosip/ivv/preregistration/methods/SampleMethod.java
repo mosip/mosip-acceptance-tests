@@ -21,10 +21,10 @@ public class SampleMethod extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
         /* getting active user from persons */
         Person person = this.store.getScenarioData().getPersona().getPersons().get(index);

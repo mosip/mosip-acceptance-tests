@@ -376,6 +376,11 @@
 <!--            <scope>system</scope>-->
 <!--        </dependency>-->
         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.45</version>
+        </dependency>
+        <dependency>
             <groupId>io.mosip.registration</groupId>
             <artifactId>registration-services</artifactId>
             <version>0.9.1</version>

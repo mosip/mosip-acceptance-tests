@@ -15,6 +15,7 @@ public class Parser implements ParserInterface {
 
     private String PERSONA_SHEET = "";
     private String RCUSER_SHEET = "";
+    private String PARTNER_SHEET = "";
     private String SCENARIO_SHEET = "";
     private String CONFIGS_SHEET = "";
     private String GLOBALS_SHEET = "";
@@ -28,6 +29,7 @@ public class Parser implements ParserInterface {
         properties = Utils.getProperties(CONFIG_FILE);
         this.PERSONA_SHEET = USER_DIR+properties.getProperty("ivv.sheet.persona");
         this.RCUSER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.rcpersona");
+        this.PARTNER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.partner");
         this.SCENARIO_SHEET = USER_DIR+properties.getProperty("ivv.sheet.scenario");
         this.CONFIGS_SHEET = USER_DIR+properties.getProperty("ivv.sheet.configs");
         this.GLOBALS_SHEET = USER_DIR+properties.getProperty("ivv.sheet.globals");
@@ -55,6 +57,7 @@ public class Parser implements ParserInterface {
             iam.setRole(PersonaDef.ROLE.valueOf("APPLICANT"));
 
             /* persona */
+            iam.setId(data_map.get("id"));
             iam.setUserid(data_map.get("userid"));
             iam.setName(data_map.get("name"));
             iam.setPreferredLang(data_map.get("preffered_lang"));
@@ -66,6 +69,7 @@ public class Parser implements ParserInterface {
             iam.setProvince(data_map.get("province"));
             iam.setCity(data_map.get("city"));
             iam.setZone(data_map.get("zone"));
+            iam.setAgeGroup(PersonaDef.AGE_GROUP.valueOf("ADULT"));
             iam.setPostalCode(data_map.get("postal_code"));
             iam.setEmail(data_map.get("email"));
             iam.setPhone(data_map.get("mobile"));
@@ -95,29 +99,56 @@ public class Parser implements ParserInterface {
                 }
             }
         }
+        System.out.println("total personas parsed: "+persona_list.size());
         return persona_list;
     }
 
-    public ArrayList<Person> getRCUsers(){
+    public ArrayList<RegistrationUser> getRCUsers(){
         ArrayList data = fetchRCUsers();
-        ArrayList<Person> person_list = new ArrayList();
+        ArrayList<RegistrationUser> person_list = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
         while (iter.hasNext()) {
             Object obj = iter.next();
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
-            Person iam = new Person();
+            RegistrationUser iam = new RegistrationUser();
             /* persona definition */
             iam.setRole(PersonaDef.ROLE.valueOf(data_map.get("user_type")));
 
             /* persona */
-            iam.setName(data_map.get("name"));
-            iam.setUserid(data_map.get("user_id"));
+            iam.setId(data_map.get("id"));
+            iam.setUserId(data_map.get("user_id"));
             iam.setPassword(data_map.get("password"));
-            iam.setCenter_id(data_map.get("center_id"));
+            iam.setCenterId(data_map.get("center_id"));
             iam.setMacAddress(data_map.get("mac_address"));
+            iam.setNo_Of_User(data_map.get("no_of_user"));
             person_list.add(iam);
         }
+        System.out.println("total registration users parsed: "+person_list.size());
+        return person_list;
+    }
+
+    public ArrayList<Partner> getPartners(){
+        ArrayList data = fetchPartners();
+        ArrayList<Partner> person_list = new ArrayList();
+        ObjectMapper oMapper = new ObjectMapper();
+        Iterator iter = data.iterator();
+        while (iter.hasNext()) {
+            Object obj = iter.next();
+            HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
+            Partner iam = new Partner();
+            /* persona definition */
+            iam.setRole(PersonaDef.ROLE.valueOf(data_map.get("user_type")));
+
+            /* partner */
+            iam.setId(data_map.get("id"));
+            iam.setUserId(data_map.get("user_id"));
+            iam.setPassword(data_map.get("password"));
+            iam.setPartnerId(data_map.get("partner_id"));
+            iam.setMispLicenceKey(data_map.get("misp_license_key"));
+            person_list.add(iam);
+        }
+        System.out.println("total partners parsed: "+person_list.size());
         return person_list;
     }
 
@@ -169,19 +200,20 @@ public class Parser implements ParserInterface {
         return documents;
     }
 
-    public ArrayList<Biometrics> getBiometrics(){
+    public ArrayList<BiometricsDTO> getBiometrics(){
         ArrayList data = fetchBiometrics();
-        ArrayList<Biometrics> biometrics = new ArrayList<>();
+        ArrayList<BiometricsDTO> biometrics = new ArrayList<>();
         System.out.println("total biometrics found: "+data.size());
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
         while (iter.hasNext()) {
             Object obj = iter.next();
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
-            Biometrics biom = new Biometrics();
-            biom.setType(Biometrics.BIOMETRIC_TYPE.valueOf(data_map.get("type")));
-            biom.setCapture(Biometrics.BIOMETRIC_CAPTURE.valueOf(data_map.get("capture")));
+            BiometricsDTO biom = new BiometricsDTO();
+            biom.setType(BiometricsDTO.BIOMETRIC_TYPE.valueOf(data_map.get("type")));
+            biom.setCapture(BiometricsDTO.BIOMETRIC_CAPTURE.valueOf(data_map.get("capture")));
             biom.setName(data_map.get("name"));
+            biom.setThreshold(data_map.get("threshold"));
             biom.setPath(BIOMETRICS_DATA_PATH+data_map.get("name"));
             biometrics.add(biom);
         }
@@ -243,6 +275,10 @@ public class Parser implements ParserInterface {
 
     private ArrayList fetchRCUsers(){
         return Utils.csvToList(RCUSER_SHEET);
+    }
+
+    private ArrayList fetchPartners(){
+        return Utils.csvToList(PARTNER_SHEET);
     }
 
     private ArrayList<Scenario.Step> formatSteps(HashMap<String, String> data_map){

@@ -6,7 +6,6 @@ public class LoginTest {
 
     @Test
     public void test(){
-        Login lg = new Login();
-        lg.run(new Scenario.Step());
+
     }
 }

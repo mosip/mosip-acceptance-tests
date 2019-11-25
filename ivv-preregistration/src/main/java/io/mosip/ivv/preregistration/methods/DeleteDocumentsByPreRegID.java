@@ -16,6 +16,7 @@ import io.restassured.response.Response;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static io.restassured.RestAssured.given;
 
@@ -24,10 +25,10 @@ public class DeleteDocumentsByPreRegID extends Step implements StepInterface {
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *
-     * @param step
+     *
      */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         String url = null;
         String preRegistrationID = null;
 
@@ -86,6 +87,20 @@ public class DeleteDocumentsByPreRegID extends Step implements StepInterface {
                     switch (pr_assert.type) {
                         case DONT:
                             break;
+                        case API_CALL:
+                            CallRecord getDocumentsRecord = getDocuments();
+                            if(getDocumentsRecord == null){
+                                this.hasError = true;
+                                return;
+                            }else{
+                                Boolean responseMatched = responseMatch(person,getDocumentsRecord.getResponse());
+                                if(!responseMatched){
+                                    logInfo("Assert API_CALL failed");
+                                    this.hasError = true;
+                                    return;
+                                }
+                            }
+                            break;
 
 //                        case STATUS:
 //                            if (!(Boolean) ctx.read("$['status']")) {
@@ -126,12 +141,49 @@ public class DeleteDocumentsByPreRegID extends Step implements StepInterface {
 //                            break;
 //
                         default:
-                            logWarning("API HTTP status return as " + pr_assert.type);
+                            logInfo("API HTTP status return as " + pr_assert.type);
                             break;
                     }
                 }
             }
         }
+    }
+
+    private CallRecord getDocuments(){
+        Scenario.Step nstep = new Scenario.Step();
+        nstep.setName("getDocuments");
+        nstep.setVariant("DEFAULT");
+        nstep.setModule(Scenario.Step.modules.pr);
+        nstep.setIndex(new ArrayList<Integer>());
+        nstep.getIndex().add(this.index);
+        GetDocuments st = new GetDocuments();
+        st.setExtentInstance(extentInstance);
+        st.setState(this.store);
+        st.setStep(nstep);
+        st.run();
+        this.store = st.getState();
+
+        String identifier = "Sub Step: "+nstep.getName()+", module: "+nstep.getModule()+", variant: "+nstep.getVariant();
+        if(st.hasError()){
+            logSevere(identifier+" - failed");
+            return null;
+        }else{
+            return st.getCallRecord();
+        }
+    }
+
+    private Boolean responseMatch(Person person,Response response) {
+        ReadContext ctx = JsonPath.parse(response.getBody().asString());
+        HashMap<String, String> app_info = ctx.read("$['response']");
+        if (person != null && app_info != null) {
+            if (person.getDocuments().get(index).getDocId().equals(app_info.get("doc_id"))) {
+                logInfo("Response matcher: Document  not deleted");
+                return false;
+            }
+        }else{
+            logInfo("Document deleted successFully for Pre-reg-id : "+person.getPreRegistrationId());
+        }
+        return true;
     }
     
     private String createSQLQuery(Person person) {

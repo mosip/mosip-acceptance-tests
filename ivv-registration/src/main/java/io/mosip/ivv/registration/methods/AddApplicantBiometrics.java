@@ -2,113 +2,274 @@ package io.mosip.ivv.registration.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.exceptions.RigInternalError;
+import io.mosip.ivv.core.structures.BiometricsDTO;
+import io.mosip.ivv.core.structures.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.registration.config.Setup;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddApplicantBiometrics extends Step implements StepInterface {
 
-    /**
-     * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     * @param step
-     */
+    private enum includes {
+        face, leftEye, rightEye, leftThumb, rightThumb, leftIndex, leftMiddle, leftRing, leftLittle,
+        rightIndex, rightMiddle, rightRing, rightLittle
+    }
+
     @Override
-    public void run(Scenario.Step step) {
-        this.index = Utils.getPersonIndex(step);
+    public void validateStep() throws RigInternalError {
+        if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD) && store.getCurrentIntroducer() == null){
+            throw new RigInternalError("Introducer is required to process this step");
+        }
+
+        if(step.getParameters().size()>0){
+            for(String par: step.getParameters()){
+                try {
+                    includes.valueOf(par);
+                } catch (IllegalArgumentException ex) {
+                    throw new RigInternalError("DSL error: no exception with this name: "+par);
+                }
+            }
+        } else {
+            step.getParameters().add(includes.face.toString());
+            step.getParameters().add(includes.leftEye.toString());
+            step.getParameters().add(includes.rightEye.toString());
+            step.getParameters().add(includes.leftThumb.toString());
+            step.getParameters().add(includes.leftIndex.toString());
+            step.getParameters().add(includes.leftMiddle.toString());
+            step.getParameters().add(includes.leftRing.toString());
+            step.getParameters().add(includes.leftLittle.toString());
+            step.getParameters().add(includes.rightThumb.toString());
+            step.getParameters().add(includes.rightIndex.toString());
+            step.getParameters().add(includes.rightMiddle.toString());
+            step.getParameters().add(includes.rightRing.toString());
+            step.getParameters().add(includes.rightLittle.toString());
+        }
+    }
+
+    @Override
+    public void run() {
         RegistrationDTO registrationDTO = (RegistrationDTO) this.store.getRegistrationDto();
-        BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-        biometricInfoDTO.setFace(this.getFace());
-        biometricInfoDTO.setIrisDetailsDTO(this.getIris());
-        biometricInfoDTO.setFingerprintDetailsDTO(this.getFingetprint());
-        biometricInfoDTO.setExceptionFace(new FaceDetailsDTO());
-        //TODO add applicant's biometric data in biometricInfoDTO
+        BiometricInfoDTO biometricInfoDTO = registrationDTO.getBiometricDTO().getApplicantBiometricDTO();
+        for(String inc: step.getParameters()){
+            logInfo("Adding "+inc);
+            switch(includes.valueOf(inc)){
+
+                case face:
+                    biometricInfoDTO.setFace(this.getFace());
+                    biometricInfoDTO.setExceptionFace(new FaceDetailsDTO());
+                    break;
+
+                case leftEye:
+                    biometricInfoDTO.setIrisDetailsDTO(this.leftEye(biometricInfoDTO.getIrisDetailsDTO()));
+                    break;
+
+                case rightEye:
+                    biometricInfoDTO.setIrisDetailsDTO(this.rightEye(biometricInfoDTO.getIrisDetailsDTO()));
+                    break;
+
+                case leftThumb:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.leftThumb(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case leftIndex:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.leftIndex(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case leftMiddle:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.leftMiddle(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case leftRing:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.leftRing(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case leftLittle:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.leftLittle(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case rightThumb:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.rightThumb(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case rightIndex:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.rightIndex(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case rightMiddle:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.rightMiddle(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case rightRing:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.rightRing(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+
+                case rightLittle:
+                    biometricInfoDTO.setFingerprintDetailsDTO(this.rightLittle(biometricInfoDTO.getFingerprintDetailsDTO()));
+                    break;
+            }
+        }
 
         registrationDTO.getBiometricDTO().setApplicantBiometricDTO(biometricInfoDTO);
         this.store.setRegistrationDto(registrationDTO);
     }
 
     private FaceDetailsDTO getFace(){
-        FaceDetailsDTO dt = new FaceDetailsDTO();
-        dt.setQualityScore(80.0);
-        dt.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-
-        byte[] file = Utils.readFileAsByte(store.getScenarioData().getPersona().getPersons().get(this.index).getFace().getPath());
-//        dt.setCompressedFacePhoto(file);
-        dt.setFaceISO(file);
-//        dt.setFace(file);
-        return dt;
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getFace();
+        FaceDetailsDTO face = new FaceDetailsDTO();
+        face.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        face.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+        face.setFace(Utils.readFileAsByte(bdto.getPath()));
+        face.setFaceISO(Utils.readFileAsByte(bdto.getPath()));
+        return face;
     }
 
-    private List<IrisDetailsDTO> getIris(){
-        List<IrisDetailsDTO> ls = new ArrayList<>();
-
-        /* left iris */
-        IrisDetailsDTO lt = new IrisDetailsDTO();
-        lt.setIrisType("LEFT");
-        lt.setQualityScore(90);
-        lt.setIrisImageName("Left");
-        byte[] lfile = Utils.readFileAsByte(store.getScenarioData().getPersona().getPersons().get(this.index).getLeftIris().getPath());
-//        lt.setIris(lfile);
-        lt.setIrisIso(lfile);
-
-        /* right iris */
-        IrisDetailsDTO rt = new IrisDetailsDTO();
-        rt.setIrisType("RIGHT");
-        rt.setQualityScore(90);
-        rt.setIrisImageName("Right");
-        byte[] rfile = Utils.readFileAsByte(store.getScenarioData().getPersona().getPersons().get(this.index).getRightIris().getPath());
-//        rt.setIris(rfile);
-        rt.setIrisIso(rfile);
-
-        ls.add(lt);
-        ls.add(rt);
+    private List<IrisDetailsDTO> leftEye(List<IrisDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getLeftEye();
+        IrisDetailsDTO leftEye = new IrisDetailsDTO();
+        leftEye.setIrisType(bdto.getCapture().name());
+        leftEye.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        leftEye.setIrisImageName(bdto.getName());
+        leftEye.setIrisIso(Utils.readFileAsByte(bdto.getPath()));
+        ls.add(leftEye);
         return ls;
     }
 
-    private List<FingerprintDetailsDTO> getFingetprint(){
-        List<FingerprintDetailsDTO> ls = new ArrayList<>();
+    private List<IrisDetailsDTO> rightEye(List<IrisDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getRightEye();
+        IrisDetailsDTO rightEye = new IrisDetailsDTO();
+        rightEye.setIrisType(bdto.getCapture().name());
+        rightEye.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        rightEye.setIrisImageName(bdto.getName());
+        rightEye.setIrisIso(Utils.readFileAsByte(bdto.getPath()));
+        ls.add(rightEye);
+        return ls;
+    }
 
-//        /* left slap */
-//        FingerprintDetailsDTO lf = new FingerprintDetailsDTO();
-//        lf.setFingerType("Left");
-//        lf.setQualityScore(8);
-//        lf.setFingerprintImageName("left finger");
-//        lf.setFingerPrint(Utils.readFileAsByte(store.getScenarioData().getPersona().getPersons().get(0).getLeftSlap().getPath()));
-//
-//        /* right slap */
-//        FingerprintDetailsDTO rf = new FingerprintDetailsDTO();
-//        rf.setFingerType("Right");
-//        rf.setQualityScore(8);
-//        rf.setFingerprintImageName("right finger");
-//        rf.setFingerPrint(Utils.readFileAsByte(store.getScenarioData().getPersona().getPersons().get(0).getRightSlap().getPath()));
+    private List<FingerprintDetailsDTO> leftThumb(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getLeftThumb();
+        FingerprintDetailsDTO leftThumb = new FingerprintDetailsDTO();
+        leftThumb.setFingerType(bdto.getCapture().name());
+        leftThumb.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        leftThumb.setFingerprintImageName(bdto.getName());
+        leftThumb.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        leftThumb.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(leftThumb);
+        return ls;
+    }
 
-        /* thumb */
-        FingerprintDetailsDTO tb = new FingerprintDetailsDTO();
-        tb.setFingerType("leftThumb");
-        tb.setQualityScore(8);
-        tb.setFingerprintImageName("left thumb");
-        byte[] thfile = Utils.readFileAsByte(store.getScenarioData().getPersona().getPersons().get(this.index).getThumbs().getPath());
-//        tb.setFingerPrint(thfile);
-        tb.setFingerPrintISOImage(thfile);
-        tb.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
-//        ls.add(lf);
-//        ls.add(rf);
-        ls.add(tb);
+    private List<FingerprintDetailsDTO> rightThumb(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getRightThumb();
+        FingerprintDetailsDTO rightThumb = new FingerprintDetailsDTO();
+        rightThumb.setFingerType(bdto.getCapture().name());
+        rightThumb.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        rightThumb.setFingerprintImageName(bdto.getName());
+        rightThumb.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        rightThumb.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(rightThumb);
+        return ls;
+    }
 
+    private List<FingerprintDetailsDTO> leftIndex(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getLeftIndex();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> leftMiddle(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getLeftMiddle();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> leftRing(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getLeftRing();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> leftLittle(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getLeftLittle();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> rightIndex(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getRightIndex();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> rightMiddle(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getRightMiddle();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(store.getCurrentPerson().getBiometrics().getRightMiddle().getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> rightRing(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getRightRing();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(store.getCurrentPerson().getBiometrics().getRightRing().getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
+        return ls;
+    }
+
+    private List<FingerprintDetailsDTO> rightLittle(List<FingerprintDetailsDTO> ls){
+        BiometricsDTO bdto = store.getCurrentPerson().getBiometrics().getRightLittle();
+        FingerprintDetailsDTO fd = new FingerprintDetailsDTO();
+        fd.setFingerType(bdto.getCapture().name());
+        fd.setQualityScore(Double.parseDouble(bdto.getThreshold()));
+        fd.setFingerprintImageName(bdto.getName());
+        fd.setFingerPrintISOImage(Utils.readFileAsByte(bdto.getPath()));
+        fd.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+        ls.add(fd);
         return ls;
     }
 

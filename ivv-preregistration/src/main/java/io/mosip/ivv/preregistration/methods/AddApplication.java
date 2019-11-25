@@ -9,47 +9,29 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
-import io.mosip.ivv.core.base.Step;
 
+import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.*;
-import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.preregistration.base.PRStepInterface;
+import io.mosip.ivv.core.structures.CallRecord;
+import io.mosip.ivv.core.structures.Person;
+import io.mosip.ivv.core.structures.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
+import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
-import io.restassured.filter.Filter;
-import io.restassured.filter.FilterContext;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.FilterableRequestSpecification;
-import io.restassured.specification.FilterableResponseSpecification;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static io.restassured.RestAssured.given;
 
 public class AddApplication extends Step implements StepInterface {
 
     private Person person;
 
-    /**
-     * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     *
-     * @param step
-     */
-    @Override
-    public void run(Scenario.Step step) {
+    @SuppressWarnings({ "unchecked", "serial" })
+	@Override
+    public void run() {
         this.index = Utils.getPersonIndex(step);
 
         this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
@@ -60,7 +42,7 @@ public class AddApplication extends Step implements StepInterface {
         identity_json.put("phone", person.getPhone());
         identity_json.put("referenceIdentityNumber", person.getReferenceIdentityNumber());
         identity_json.put("IDSchemaVersion", 1);
-        identity_json.put("zone", "NTH");
+        identity_json.put("zone", person.getZone());
         identity_json.put("postalCode", person.getPostalCode());
 
         HashMap<String, String> demographic = new HashMap<>();
@@ -82,7 +64,7 @@ public class AddApplication extends Step implements StepInterface {
         api_input.put("id", "mosip.pre-registration.demographic.create");
         api_input.put("version", "1.0");
         api_input.put("requesttime", Utils.getCurrentDateAndTimeForAPI());
-
+       // api_input.put("requesttime","2019-11-22T01:29:23.758Z");
         switch (step.getVariant()) {
             case "invalidGender":
                 demographic.put("gender", this.store.getGlobals().get("INVALID_GENDER"));
@@ -203,6 +185,16 @@ public class AddApplication extends Step implements StepInterface {
         Helpers.logCallRecord(this.callRecord);
         ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
 
+        try {
+            // this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
+            if(ctx.read("$['response']")!=null) {
+                this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
+                this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationStatusCode("$['response']['statusCode']");
+            }
+        } catch (PathNotFoundException e) {
+            e.printStackTrace();
+        }
+
         /* check for api status */
         if (api_response.getStatusCode() != 200) {
             logFail("API HTTP status return as " + api_response.getStatusCode());
@@ -224,6 +216,8 @@ public class AddApplication extends Step implements StepInterface {
                 for (Scenario.Step.Assert pr_assert : step.getAsserts()) {
                     switch (pr_assert.type) {
                         case DONT:
+                        case STATUS:
+                            logInfo("Assert not yet implemented: " + pr_assert.type);
                             break;
 
                         case API_CALL:
@@ -232,7 +226,7 @@ public class AddApplication extends Step implements StepInterface {
                                 this.hasError = true;
                                 return;
                             }else{
-                                Boolean responseMatched = responseMatch(person);
+                                Boolean responseMatched = responseMatch(person,getAppRecord.getResponse());
                                 if(!responseMatched){
                                     logInfo("Assert API_CALL failed");
                                     this.hasError = true;
@@ -276,18 +270,11 @@ public class AddApplication extends Step implements StepInterface {
                             break;
 
                         default:
-                            logWarning("Assert not found or implemented: " + pr_assert.type);
+                            logInfo("Assert not found or implemented: " + pr_assert.type);
                             break;
                     }
                 }
             }
-        }
-
-        try {
-            this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
-            this.store.getScenarioData().getPersona().getPersons().get(index).setPreRegistrationStatusCode("$['response']['statusCode']");
-        } catch (PathNotFoundException e) {
-            e.printStackTrace();
         }
 
     }
@@ -310,7 +297,8 @@ public class AddApplication extends Step implements StepInterface {
         GetApplication st = new GetApplication();
         st.setExtentInstance(extentInstance);
         st.setState(this.store);
-        st.run(nstep);
+        st.setStep(nstep);
+        st.run();
         this.store = st.getState();
 
         String identifier = "Sub Step: "+nstep.getName()+", module: "+nstep.getModule()+", variant: "+nstep.getVariant();
@@ -322,8 +310,8 @@ public class AddApplication extends Step implements StepInterface {
         }
     }
 
-    private Boolean responseMatch(Person person){
-        ReadContext ctx = JsonPath.parse(this.callRecord.getResponse().getBody().asString());
+    private Boolean responseMatch(Person person,Response response){
+        ReadContext ctx = JsonPath.parse(response.getBody().asString());
         HashMap<String, String> app_info = ctx.read("$['response']['demographicDetails']['identity']");
 
         if (!person.getPhone().equals(app_info.get("phone"))) {
