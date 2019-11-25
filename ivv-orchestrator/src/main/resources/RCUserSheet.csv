@@ -1,0 +1,3 @@
+us_no,user_type,name,user_id,password,center_id,gender
+1,OPERATOR,Junaid Khan,110003,mosip,10003,MALE
+2,SUPERVISOR,Ambrin Taj,110004,dontknow,10003,MALE

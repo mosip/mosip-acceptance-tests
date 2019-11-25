@@ -1,0 +1,7 @@
+type,capture,name
+IRIS,LEFT_EYE,left_eye.pdf
+IRIS,RIGHT_EYE,right_eye.pdf
+FINGER,LEFT_SLAP,left_slap.pdf
+FINGER,RIGHT_SLAP,right_slap.pdf
+FACE,STILL_PHOTO,still_face.pdf
+FINGER,TWO_THUMBS,two_thumbs.pdf

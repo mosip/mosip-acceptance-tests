@@ -1,0 +1,38 @@
+# Folder structure
+resourcesFolder = \\src\\main\\resources\\
+resourcesDataDocumentsFolder = \\src\\main\\resources\\data\\documents\\
+logsFolder = \\testRun\\logs\\
+reportsFolder = \\testRun\\reports\\
+resultsFolder = \\testRun\\results\\
+archiveFolder = \\testRun\\archive\\
+
+# Base URL
+baseUrl = http://services.groupkt.com/countryNew
+demographicCreateID = mosip.pre-registration.demographic.create
+demographicUpdateID = mosip.pre-registration.demographic.update
+documentUploadID = mosip.pre-registration.document.upload
+apiver = 1.0
+log = DEBUG
+
+# API input and test data files
+testAPIs = MOSIP_APIs.xlsx
+testAPIsSheetName = PreRegistration
+preRegInputFile = PreRegistrationScenarios.xlsx
+preRegInputSheet = Scenarios
+personasMOSIP = MasterPersonas.xlsx
+personasPreRegMOSIP = DemographicDetails
+
+# Audit log files
+mosipAPITestLogFileName = MosipAPITestLogs.txt
+
+# New confirguration #
+# New confirguration #
+PERSONA_SHEET=/src/main/resources/PersonaSheet.csv
+RCUSER_SHEET=/src/main/resources/RCUserSheet.csv
+SCENARIO_SHEET=/src/main/resources/ScenarioSheet.csv
+GLOBALS_SHEET=/src/main/resources/GlobalsSheet.csv
+CONFIGS_SHEET=/src/main/resources/ConfigsSheet.csv
+DOCUMENTS_SHEET=/src/main/resources/DocumentsSheet.csv
+BIOMETRICS_SHEET=/src/main/resources/BiometricsSheet.csv
+DOCUMENT_DATA_PATH=/src/main/resources/data/documents/
+BIOMETRICS_DATA_PATH=/src/main/resources/data/biometrics/
