@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ivv-parent</artifactId>
+        <groupId>io.mosip.ivv</groupId>
+        <version>0.1.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.mosip.ivv.orchestrator</groupId>
+    <artifactId>ivv-orchestrator</artifactId>
+
+    <dependencies>
+        <!--   core dependencies     -->
+        <dependency>
+            <groupId>io.mosip.ivv.core</groupId>
+            <artifactId>ivv-core</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.dg</groupId>
+            <artifactId>ivv-dg</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.preregistration</groupId>
+            <artifactId>ivv-preregistration</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.registration</groupId>
+            <artifactId>ivv-registration</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.regprocessor</groupId>
+            <artifactId>ivv-regprocessor</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.kernel</groupId>
+            <artifactId>ivv-kernel</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.ida</groupId>
+            <artifactId>ivv-ida</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.ivv.mutators</groupId>
+            <artifactId>ivv-mutators</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>3.0.7</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>

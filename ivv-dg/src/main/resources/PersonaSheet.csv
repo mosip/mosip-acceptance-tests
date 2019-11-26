@@ -1,0 +1,17 @@
+ps_no,persona_class,tag,group_name,name,preferred_lang,default_lang,dob,gender,residence_status,address_line1,address_line2,address_line3,region,province,city,postal_code,email,mobile,cnie,version_number,registration_center_id
+1,MorocconMaleAdult,,,Junaid Khan,FRA,EN,01-01-1990,MALE,CITIZEN,Lot1 Zone,Hareness Road,Casablanca,Grand Casablanca,Casablanca,Casablanca,20000,junaid@gail.com,8277417831,9989545608023,,10002
+2,MorocconFemaleAdult,,,Ambrin Taj,ARA,EN,01-01-1995,FEMALE,CITIZEN,Lot1 Zone,Hareness Road,Casablanca,Grand Casablanca,Casablanca,Casablanca,20000,ambrin@gail.com,9870909878,9989545608024,,10002
+3,NonMorocconMaleAdult,,,Tom Miller,ENG,EN,01-01-1975,MALE,FOREIGNER,Hay Nahda,Essaouira ,Marrakech,Marrakech-Tensift-El Haouz,Marrakech,Marrakech,40000,amir@gail.com,9870909811,9989545608025,,10002
+4,NonMorocconFemaleAdult,,,Misla Miller,ENG,EN,12-12-1980,FEMALE,FOREIGNER,Commercial Street,MGRoad,Bangalore,Bangalore,Bangalore,Bangalore,10000,amisr@gail.com,9870909208,9989545608025,,10002
+5,HOF,,FAMILY1,Nasir Ali,ARA,EN,11-11-1970,MALE,CITIZEN,Lot10 Zone,Fez-Medina,Rabat,Rabat-Sale-Zemmour-Zaer,Rabat,Rabat,10000,amirada@gail.com,8277310020,9989545608025,,10002
+6,HOF,,FAMILY1,Hafsa Taj,ARA,EN,10-10-1975,FEMALE,CITIZEN,Lot10 Zone,Fez-Medina,Rabat,Rabat-Sale-Zemmour-Zaer,Rabat,Rabat,10000,am31ir@gail.com1,8277310020,9989545608025,,10002
+7,HOF,,FAMILY1,Rezma Taj,ARA,EN,10-10-2009,FEMALE,CITIZEN,Lot10 Zone,Fez-Medina,Rabat,Rabat-Sale-Zemmour-Zaer,Rabat,Rabat,10000,am313@gmail.comir@gail.com1,8077310020,9989545608025,,10002
+8,HOF,,FAMILY1,Imran Ali,ARA,EN,08-08-2008,MALE,CITIZEN,Lot10 Zone,Fez-Medina,Rabat,Rabat-Sale-Zemmour-Zaer,Rabat,Rabat,10000,am78777ir@gail.com,8200310020,9989545608025,,10002
+9,VillageHead,,VILLAGE1,Riyad Mahrez,FRA,EN,11-11-1970,MALE,CITIZEN,Abha Road,Derb Bennani,Oujda,Oriental,Oujda Angad,Oujda,60000,a5m787ir@gail.com,8799120934,9989545608025,,10002
+10,VillageHead,,VILLAGE1,Karim Azer,FRA,EN,11-11-1965,MALE,CITIZEN,Hassan Avenue,Fez-Medina,Agadir,Souss-Massa-Draa,Agadir Ida ou tanane,Agadir,80000,a6m787ir@gail.com,6799120934,9989545608025,,10002
+11,VillageHead,,VILLAGE1,Sara Ansari,ARA,EN,05-05-2005,FEMALE,CITIZEN,Hassan Avenue,Fez-Medina,Agadir,Souss-Massa-Draa,Agadir Ida ou tanane,Agadir,80000,am787ifer@gail.com,5698093457,9989545608025,,10002
+12,VillageHead,,VILLAGE1,Amal Asad,ARA,EN,12-09-1989,MALE,CITIZEN,Appartement No.11,23 RUE DU SEBOU,Martil,Tanger-Tetouan-Al Hoceima,Tanger Assila,Martil,93150,am787efir@gail.com,6709334211,9989545608025,,10002
+13,VillageHead,,VILLAGE1,Riyad Mahrez,FRA,EN,02-12-1993,MALE,CITIZEN,Appartement No.11,23 RUE DU SEBOU,Martil,Tanger-Tetouan-Al Hoceima,Tanger Assila,Martil,93150,am7ef87ir@gail.com,9870564344,9989545608025,,10002
+14,HOF,,FAMILY2,Abdul Latifa,FRA,EN,27-12-1987,MALE,CITIZEN,Hassan Avenue,Fez-Medina,Agadir,Souss-Massa-Draa,Agadir Ida ou tanane,Agadir,80000,amethh7f87ir@gail.come,5698093454,9989545608025,,10002
+15,HOF,,FAMILY2,Zasmine Latifa,FRA,EN,26-12-1986,FEMALE,CITIZEN,Hassan Avenue,Fez-Medina,Agadir,Souss-Massa-Draa,Agadir Ida ou tanane,Agadir,80000,amefe787ir@gail.com,5698093454,9989545608025,,10002
+16,HOF,,FAMILY2,Yasmine Latifa,FRA,EN,27-10-2011,FEMALE,CITIZEN,Hassan Avenue,Fez-Medina,Agadir,Souss-Massa-Draa,Agadir Ida ou tanane,Agadir,80000,am787irrt@gail.com,5698093454,9989545608025,,10002
