@@ -124,7 +124,8 @@ public class Orchestrator {
                 if(st.hasError()){
                     extentTest.fail(identifier+" - failed");
                     if(System.getProperty("ivv.scenario.continueOnFailure") == null || System.getProperty("ivv.scenario.continueOnFailure").equals("N")){
-                        Assert.assertEquals(java.util.Optional.of(true), st.hasError());
+                        Boolean assertError = true;
+                        Assert.assertEquals(assertError, st.hasError());
                         return;
                     }
                 }else{

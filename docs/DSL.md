@@ -98,6 +98,12 @@ Fetches the global parameters (required to control application's behavior) from 
 **Asserts**:
 * Boolean (success/ failure)
 
+#### rc_syncMaster()
+Fetches the master data (based on center) from the server and saves it in local db. It is required for running the application with support data like holidays, meta data related to gender, location, doc. category, etc
+
+**Asserts**:
+* Boolean (success/ failure)
+
 #### rc_syncUserDetail()
 Fetches the users data (based on center) from the server and saves it in local db
 
@@ -106,12 +112,6 @@ Fetches the users data (based on center) from the server and saves it in local d
 
 #### rc_syncUserSalt()
 Fetches the users salt (based on center) from the server and saves it in local db
-
-**Asserts**:
-* Boolean (success/ failure)
-
-#### rc_syncMaster()
-Fetches the master data (based on center) from the server and saves it in local db. It is required for running the application with support data like holidays, meta data related to gender, location, doc. category, etc
 
 **Asserts**:
 * Boolean (success/ failure)
