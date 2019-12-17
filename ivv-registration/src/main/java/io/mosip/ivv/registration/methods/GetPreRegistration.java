@@ -26,7 +26,7 @@ public class GetPreRegistration extends Step implements StepInterface {
     private Person person;
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         this.index = Utils.getPersonIndex(step);
         this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
         SessionContext.map().put("registrationDTOContent", Setup.getRegistrationDTO());

@@ -1,38 +1,35 @@
 # Folder structure
-resourcesFolder = \\src\\main\\resources\\
-resourcesDataDocumentsFolder = \\src\\main\\resources\\data\\documents\\
 logsFolder = \\testRun\\logs\\
 reportsFolder = \\testRun\\reports\\
 resultsFolder = \\testRun\\results\\
 archiveFolder = \\testRun\\archive\\
 
-# Base URL
-baseUrl = http://services.groupkt.com/countryNew
-demographicCreateID = mosip.pre-registration.demographic.create
-demographicUpdateID = mosip.pre-registration.demographic.update
-documentUploadID = mosip.pre-registration.document.upload
-apiver = 1.0
-log = DEBUG
+ivv.mosip.host=https://${environment}
+ivv.prereg.version=v1
+ivv.prereg.apiversion=1.0
+ivv.global.version=v1
+ivv.global.apiversion=1.0
 
-# API input and test data files
-testAPIs = MOSIP_APIs.xlsx
-testAPIsSheetName = PreRegistration
-preRegInputFile = PreRegistrationScenarios.xlsx
-preRegInputSheet = Scenarios
-personasMOSIP = MasterPersonas.xlsx
-personasPreRegMOSIP = DemographicDetails
+# Dependency server info #
+ivv.swagger.host=http://localhost:8081
 
-# Audit log files
-mosipAPITestLogFileName = MosipAPITestLogs.txt
+# email account #
+ivv.email.server.host=${emailServerHost}
+ivv.email.server.user=${emailServerUsername}
+ivv.email.server.pass=${emailServerPassword}
 
-# New confirguration #
-# New confirguration #
-PERSONA_SHEET=/src/main/resources/PersonaSheet.csv
-RCUSER_SHEET=/src/main/resources/RCUserSheet.csv
-SCENARIO_SHEET=/src/main/resources/ScenarioSheet.csv
-GLOBALS_SHEET=/src/main/resources/GlobalsSheet.csv
-CONFIGS_SHEET=/src/main/resources/ConfigsSheet.csv
-DOCUMENTS_SHEET=/src/main/resources/DocumentsSheet.csv
-BIOMETRICS_SHEET=/src/main/resources/BiometricsSheet.csv
-DOCUMENT_DATA_PATH=/src/main/resources/data/documents/
-BIOMETRICS_DATA_PATH=/src/main/resources/data/biometrics/
+# Input data & files ** path is relative to ivv-orchestrator module #
+ivv.sheet.persona=/local/PersonaSheet.csv
+ivv.sheet.partner=/local/PartnerSheet.csv
+ivv.sheet.rcpersona=/local/RCUserSheet.csv
+ivv.sheet.scenario=/local/ScenarioSheetFull.csv
+ivv.sheet.globals=/local/GlobalsSheet.csv
+ivv.sheet.configs=/local/ConfigsSheet.csv
+ivv.sheet.documents=/local/DocumentsSheet.csv
+ivv.sheet.biometrics=/local/BiometricsSheet.csv
+ivv.path.documents=/local/documents/
+ivv.path.biometrics=/local/biometrics/
+ivv.path.generated.documents=/local/documents/
+ivv.path.generated.biometrics=/local/data/resources/generated_data/biometrics/
+ivv.path.auditlog=/testRun/reports/mosip_auditLogs.log
+ivv.path.reports=/testRun/reports/mosip_reports.html
