@@ -21,6 +21,7 @@
 *logs/*
 *reg
 */db
-*local/*
+*local*
 *services_jar/*
 *.jar
+*.log
