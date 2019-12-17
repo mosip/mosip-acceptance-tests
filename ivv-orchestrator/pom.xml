@@ -11,7 +11,24 @@
 
     <groupId>io.mosip.ivv.orchestrator</groupId>
     <artifactId>ivv-orchestrator</artifactId>
-
+    <properties>
+        <suiteXmlFile>testng.xml</suiteXmlFile>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <reportsDirectory>testRun/surefire</reportsDirectory>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <!--   core dependencies     -->
         <dependency>
@@ -53,12 +70,6 @@
             <groupId>io.mosip.ivv.mutators</groupId>
             <artifactId>ivv-mutators</artifactId>
             <version>0.1.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.14.3</version>
         </dependency>
         <dependency>
             <groupId>com.aventstack</groupId>

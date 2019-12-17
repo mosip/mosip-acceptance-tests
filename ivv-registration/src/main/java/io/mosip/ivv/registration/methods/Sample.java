@@ -15,7 +15,7 @@ import java.util.List;
 public class Sample extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         RegistrationDTO registrationDTO = (RegistrationDTO) store.getRegistrationDto();
 //        ApplicationContext applicationContext = store.regApplicationContext.getBean(ApplicationContext.class);
 

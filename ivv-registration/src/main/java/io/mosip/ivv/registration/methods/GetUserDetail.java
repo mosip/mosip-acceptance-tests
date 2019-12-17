@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class GetUserDetail extends Step implements StepInterface {
 
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         String jsonInString = "";
         LoginService ls = store.getRegApplicationContext().getBean(LoginService.class);
         UserDTO user =  ls.getUserDetail("13131313");

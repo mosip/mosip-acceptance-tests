@@ -27,13 +27,8 @@ public class CheckStatus extends Step implements StepInterface {
 
     private String finalStatus;
 
-    /**
-     * Method to create RegistrationDTO if not created and adding only demographic details to it.
-     *
-     * @param step
-     */
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         int counter = 0;
         int repeats = 10;
         String expectedStatus = "";

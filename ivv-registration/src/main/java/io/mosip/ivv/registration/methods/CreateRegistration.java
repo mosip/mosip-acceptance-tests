@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class CreateRegistration extends Step implements StepInterface {
     @Override
-    public void run(Scenario.Step step) {
+    public void run() {
         RegistrationDTO registrationDTO = Setup.getRegistrationDTO();
         this.store.setRegistrationDto(registrationDTO);
     }
