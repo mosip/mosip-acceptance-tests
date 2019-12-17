@@ -6,6 +6,7 @@
 .DS_Store
 .idea/
 *.iml
+*.eml
 
 # output files #
 *testRun/logs/*
