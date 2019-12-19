@@ -16,6 +16,7 @@
 *TestRun_Reports
 *TestRun_Results
 *PacketStore
+*PreRegPacketStore
 
 # properties file #
 */config.properties
