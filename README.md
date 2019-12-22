@@ -1,21 +1,12 @@
 # MOSIP IVV-RIG
 It you want to contribute to opensouce, you have come to the right way.
-* Testing platform for MOSIP
-* Capable of generating unique Persona data to run tests
+
+# Installation
+Go to [Installation](scripts/README.md)
 
 # Dependencies
-* ScenarioSheet
-* PersonaSheet
-* RCUserSheet
-* PartnerSheet
-* DocumentsSheet
-* BiometricsSheet
-* GlobalsSheet
-* ConfigsSheet
-* Document files (default path: resources/data/documents)
-* Biometric files (default path: resources/data/biometrics)
-* Partner demo service jar
-* regclient services jar
+* Partner demo service jar (installation script will auto-download it)
+* regclient services jar (installation script will auto-download it)
 
 # Support
 * [DSL](docs/DSL.md)

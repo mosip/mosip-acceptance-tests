@@ -11,6 +11,7 @@
 # output files #
 *testRun/logs/*
 *testRun/reports/*
+*testRun/surefire
 *test-output
 *TestRun_Logs
 *TestRun_Reports
@@ -27,3 +28,4 @@
 *services_jar/*
 *.jar
 *.log
+
