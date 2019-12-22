@@ -21,7 +21,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M4</version>
                 <configuration>
-                    <reportsDirectory>testRun/surefire</reportsDirectory>
+                    <reportsDirectory>target/surefire</reportsDirectory>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
