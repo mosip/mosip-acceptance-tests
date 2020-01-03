@@ -1,0 +1,1481 @@
+﻿{
+    "End to End Scenario": [
+        {
+            "Serial. No": "Adult Mr Aamir Abad Persona Details :",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult"
+        },
+        {
+            "Serial. No": "CR_1",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "Smoke": "Y",
+            "FRS": "PRE_FR_1,PRE_FR_2, PRE_FR_3, PRE_FR_4, PRE_FR_5\r\n\r\n\r\n\r\n\r\n",
+            " Goal": "Mr Aamir Abad, a busy person doesn't want to wait in queue at the registration centre.  He opts to pre-register himself, then books an appointment for a specific date and time using the Pre-registration website for the nearby centre.",
+            "Expected Result": "The appointment will be booked with specified centre and notification should be received by Mr Abad. ",
+            "Main Feature Tested": "Booking an appointment \r\nRegistration in the Registration Center\r\nNotification to Resident on successful UIN generation",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_2",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "PRE_FR_6,REG_FR_1, REG_FR_2, REG_FR_3, REG_FR_4.1, REG_FR_4.4, REG_FR_4.5,REG_FR_4.7, REG_FR_4.8",
+            " Goal": "Mr Aamir Abad, by mistake has uploaded wrong documents while pre- registering and booked slot. He walks in to the center for registration and the operator Mr. Ziyaad updates his documents and continues registration.",
+            "Expected Result": "Operator Mr. Ziyaad is able to update the correct document for Mr Aamir Abad and send the packet for processing. Mr.Aamir should get his UIN generated successfully also be able to authenticate himself using the same.",
+            "Main Feature Tested": "Booking an appointment \r\nRegistration in the Registration Center\r\nNotification to Resident on successful UIN generation",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_3",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "PRE_FR_4.5, ",
+            " Goal": "Mr Aamir Abad, has some work on the day of the appointment and wants to reschedule his appointment date and time with the same centre using the pre-registration website.",
+            "Expected Result": "The appointment will be rescheduled with specified centre and notification should be received by Mr Abad. Also, the changes should reflect in the Pre-reg website.",
+            "Main Feature Tested": "Rescheduling an appointment",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_4",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "REG_FR_4.1, REG_FR_7.1, PRE_FR_2.7, RPR_FR_3.18,RPR_FR_3.21",
+            " Goal": "Mr Aamir pre-registered himself now changed his mind and cancelled by discarding the application and wants to directly go to the CSC and registers himself to get his UIN.",
+            "Expected Result": "The UIN should be generated successfully for Aamir",
+            "Main Feature Tested": "Registration in the Registration Center\r\nNotification to Resident on successful UIN generation",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_5",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.2",
+            " Goal": "Mr Aamir Abad's dob is printed wrongly in the UIN card, he wants to update the same using resident portal/ going to the near by center.",
+            "Expected Result": "Mr Abad should be able to correct the DOB under UIN.",
+            "Main Feature Tested": "Update UIN details from nearest Registration Center\r\nNotification to Resident on successful UIN Updation ",
+            "Actual Result[Pass\r\n/Fail]": "Fail",
+            "Observation/Comments": "MOS-29649",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_6",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "IDA_FR_4.1",
+            " Goal": "Mr Aamir Abad goes to the bank to open his account and the bank wants his full eKYC done using his UIN.",
+            "Expected Result": "Mr Abad should be able to do ekyc successfully.",
+            "Main Feature Tested": "Ekyc for Resident",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_7",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.3",
+            " Goal": "Mr Aamir Abad, who is very forgetful, forgets his UIN and wants to retrieve it.",
+            "Expected Result": "Mr Abad, should be able to retrieve his UIN",
+            "Main Feature Tested": "LOST UIN registration from nearest Registration Center",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Requires db to be deleted",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_8",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "Smoke": "Y",
+            "FRS": "IDA_FR_1",
+            " Goal": "Mr Aamir Abad goes to a mobile service provider for authentication using his VID",
+            "Expected Result": "Mr Aamir Abad, must be able to authenticate himself by providing his VID",
+            "Main Feature Tested": "Auth and Ekyc",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_9",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "REG_FR_4.2",
+            " Goal": "Mr Aamir Abad has shifted to a new city and wants to update the address.",
+            "Expected Result": "Mr Aamir Abad, should be able to update the address in his UIN",
+            "Main Feature Tested": "Update UIN details from nearest Registration Center\r\nNotification to Resident on successful UIN Updation ",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_10",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "RPR_FR_3.12",
+            " Goal": "Mr Aamir Abad after his address change registers himself for UIN again in his new city.",
+            "Expected Result": "Mr Aamir Abad's UIN generation should fail.",
+            "Main Feature Tested": "Demo and bio dedupe",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "As it’s a proxy release, bio dedupe cannot be tested.",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "CR_11",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "RPR_FR_3.12",
+            " Goal": "Another person with name Aamir Abad, same gender and dob walks in for registration",
+            "Expected Result": "This Mr. Abad should be able to get his UIN and authenticate himself",
+            "Main Feature Tested": "demo dedupe",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "Family Head Mr Anas Abu a Persona Details :",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult"
+        },
+        {
+            "Serial. No": "FH_1",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "Smoke": "Y",
+            "FRS": "PRE_FR_2.3, RPR_FR_3.18,RPR_FR_3",
+            " Goal": "Mr Anas Abu as a head of family, want to register his entire family and get UIN for them.",
+            "Expected Result": "UIN should be generated successfully for Mr. Anas Abu family members. Notification should be received by Mr Anas Abu.",
+            "Main Feature Tested": "Registration in the Registration Center\r\nNotification to Resident on successful UIN generation",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "Karima Baig Persona Details:",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "BE_1",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "FRS": "REG_FR_4.2, REG_FR_4.6",
+            " Goal": "Ms Karima Baig has crossed 5 years of age holding UIN, and want to add her biometrics with excpetion by going to the CSC",
+            "Expected Result": "Ms Karima Baig should be able to add her biometrics with exception by going to the CSC.",
+            "Main Feature Tested": "Update Child UIN 's details from nearest Registration Center\r\nNotification to Resident on successful UIN Updation ",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "(Child > 5 with full biometrics) Amira Afzal Persona Details: ",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult"
+        },
+        {
+            "Serial. No": "CGF_1",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "REG_FR_4.2",
+            " Goal": "Ms Amira Afzal has crossed 5 years of age, and want to add her biometrics by going to the centre",
+            "Expected Result": "Ms Amira Afzal should be able to add her biometrics by going to the centre",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "Rita Ali Persona Details:",
+            "Category": "Residents",
+            "Persona": "Child < 5"
+        },
+        {
+            "Serial. No": "MIN_01",
+            "Category": "Residents",
+            "Persona": "Child < 5",
+            "FRS": "RPR_FR_3.11,REG_FR_4.1",
+            " Goal": "Rita Ali goes along with her parent for registration to a CSC. Due to incorrect documents her parents UIN is not generated.",
+            "Expected Result": "Rita Ali's UIN generation must be put on Hold, till her parent's UIN is processed. Also, a notification must be sent that UIN generation is ON HOLD.",
+            "Actual Result[Pass\r\n/Fail]": "Fail",
+            "Observation/Comments": "Notification not sent - MOS-29789",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "MIN_02",
+            "Category": "Residents",
+            "Persona": "Child < 5",
+            "FRS": "RPR_FR_1.3",
+            " Goal": "Rita Ali (3 years) goes to the registration center to register herself by providing her father's deactivated UIN.",
+            "Expected Result": "Packet should fail at reg processor and the child's UIN should not be generated",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "MIN_03",
+            "Category": "Residents",
+            "Persona": "Child < 5",
+            "Smoke": "Y",
+            "FRS": "RPR_FR_1.1, REG_FR_4.1",
+            " Goal": " Rita Ali goes along with her parent for registration to a CSC. Her parents UIN is already generated.",
+            "Expected Result": "Rita Ali should be able to get her UIN.",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "Orphan Child",
+            "Category": "Residents",
+            "Persona": "Orphan Child"
+        },
+        {
+            "Serial. No": "OC_1",
+            "Category": "Residents",
+            "Persona": "Orphan Child",
+            "FRS": "RPR_FR_1.1, REG_FR_4.1",
+            " Goal": "Ms. Fadwa_Akbar born as an Orphan went with the Guardian (Orphanage head/Relative/ Or adopted parents ) to CSC to register for her UIN",
+            "Expected Result": "Adem should be able to get UIN with his Guardian details",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "OC_2",
+            "Category": "Residents",
+            "Persona": "Orphan Child",
+            "FRS": " REG_FR_4.2",
+            " Goal": "Ms. Fadwa_Akbar has UIN with her Parents details and has unfortunately lost her parents and now adopted by Mr.Adil and now wants to update her Guardian details",
+            "Expected Result": "Master Adim Guardian detail should get updated successfully.",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "Adult > 90 Mr. Adil Ahmed Persona Detail",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult"
+        },
+        {
+            "Serial. No": "SC_1",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "REG_FR_4.1, REG_FR_7.1, RPR_FR_3.18,RPR_FR_3.21, IDA_FR_1",
+            " Goal": "Mr. Adil Ahmed who is an old aged man crossed 90 years want to register himself, get UIN and authenticate himself.",
+            "Expected Result": "Mr. Adil Ahmed should be successfully able to generate the UIN and authenticate himself using his VID.",
+            "Main Feature Tested": "Registration in the Registration Center\r\nNotification to Resident on successful UIN generation\r\nEkyc for Resident",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "SC_2",
+            "Category": "Residents",
+            "Persona": "Biometrics Adult",
+            "FRS": "PRE_FR_2.3, RPR_FR_3.18,RPR_FR_3.2.4 ",
+            " Goal": "Mr. Adil Ahmed who is a senior person of a village wants to register the villager under MOSIP ",
+            "Expected Result": "Mr. Adil Ahmed should be successfully able to pre-reg the person so that they can go and get UIN.",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": " \r\nMr Omar Abbas Persona Details:\r\n",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception "
+        },
+        {
+            "Serial. No": "RBE_1",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.1, REG_FR_4.6, REG_FR_4.7,REG_FR_4.4, RPR_FR_1.1, RPR_FR_3, IDA_FR_2",
+            " Goal": "Mr Omar Abbas, who is blind by birth wants to get his UIN and authenticate using his other biometrics.",
+            "Expected Result": "Mr. Abbas should be able to get the UIN and authenticate himself using his other biometrics.",
+            "Main Feature Tested": "Registration in the Registration Center\r\nNotification to Resident on successful UIN generation\r\nEkyc for Resident",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "RBE_2",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.2, REG_FR_4.6",
+            " Goal": "Mr Omar Abbas, already holding UIN, accidently lost his biometric (e.g Lost his thumb for righthands) and wants to update the Biometric details",
+            "Expected Result": "Mr. Abbas should be able to update biometric exception and photograph with exception.",
+            "Main Feature Tested": "Update Biometrics from nearest Registration Center\r\nNotification to Resident on successful UIN Updation ",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "RBE_3",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "FRS": "REG_FR_4.3, REG_FR_4.4",
+            " Goal": "Mr. Joye already holding UIN, accidently lost his biometric (e.g Lost his one hand) and also does not remember UIN and went to centre to retrieve UIN .",
+            "Expected Result": "Mr. Abbas should be able to retrieve his UIN and update the Biometric successfully.",
+            "Main Feature Tested": "Not Tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Requires Config change",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "RBE_4",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "FRS": "IDA_FR_4.1",
+            " Goal": "Mr Omar Abbas, wants to get a new SIM for business purpose, the KYC partner gets his KYC done",
+            "Expected Result": "KYC partner should be able to perform KYC for Mr. Omar Abbas",
+            "Main Feature Tested": "Ekyc for Resident",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Serial. No": "RBE_5",
+            "Category": "Residents",
+            "Persona": "Resident with Biometric Exception ",
+            "FRS": "RPR_FR_1.1, REG_FR_4.1",
+            " Goal": "Mr. Omar Abbas, holding UIN with Biometric exception wants to register his child lesser than 5 years of age ",
+            "Expected Result": "Mr. Abbas should be able to get the UIN for his child.",
+            "Automated": "Y"
+        },
+        {
+            "Category": "Government",
+            "Persona": "Decision Maker "
+        },
+        {
+            "Serial. No": "Gov_1",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "ADM_FR_1.2, PRE_FR_4.4.1, ASR_FR_14",
+            " Goal": "Government declares a holiday due to heavy rains, so the appointments booked for that centre HSR-CSC1 on the day will stand cancelled.",
+            "Expected Result": "The Holiday should be added to the MOSIP sucessfully and the booked appoint should get cancelled and notification should be sent to residents.",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "MOS-28249 - Feature not yet implemented.However adding a new holiday is getting reflected in the pre reg environment.",
+            "Config(Y/N)": "Y",
+            "Config Verified": "Master DB Change"
+        },
+        {
+            "Serial. No": "Gov_2",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "ASR_FR_14,ADM_FR_1.7",
+            " Goal": "Ration card has been declared invalid in the country and government decides to remove Ration card as a supporting document.",
+            "Expected Result": "The SI should be able to remove the Ration card from the list of supporting document successfully.",
+            "Linked Test Scenario ": "CR_4",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "Master DB Change"
+        },
+        {
+            "Serial. No": "Gov_3",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "ADM_FR_1.7",
+            " Goal": "Government decides to accept rental agreement as a proof for UIN generation and wants to add it in MOSIP as a supporting document for POA",
+            "Expected Result": "The SI should be able to add the rental agreement in the list of supporting document for POA successfully.",
+            "Linked Test Scenario ": "CR_4"
+        },
+        {
+            "Serial. No": "Gov_3",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "ADM_FR_1.6, ASR_FR_14",
+            " Goal": "Government decides to add a new category called Proof of exception[POE] so that residents with biometric exceptions can upload their disability certificate",
+            "Expected Result": "The SI should be able to add POE as a mandatory document category for biometric exception residents. The same should reflect in UI after making changes. ",
+            "Linked Test Scenario ": "RBE_1",
+            "Main Feature Tested": "Note: To MAP the Serial No. with related Persona",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Requires code change - MOS-29739",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "Gov_4",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "NA",
+            " Goal": "Government decides to implement a new feature of having an additional acknowledgement where the user can sign and uploaded back to the system for further audits.",
+            "Expected Result": "The SI should be able to implement the feature and same must be reflected in application",
+            "Linked Test Scenario ": "CR_4",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Feature change/code change required hence cannot be tested",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "Gov_5",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "NA",
+            " Goal": "Government decides to add their country flag on MOSIP UI.",
+            "Expected Result": "MOSIP UI should have country's flag.",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Feature change/code change required hence cannot be tested",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "Gov_6",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "REG_FR_4.8",
+            " Goal": "As the number of registrations has reduced substantially after few months, government decides to manage the registrations with few operators only and decides not to have the supervisor EOD process.",
+            "Expected Result": "The SI should be able to make the change and the same change should be reflected in all the centres.",
+            "Linked Test Scenario ": "SP_2",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.registration.eod_process_config_flag=n in registration-env.properties"
+        },
+        {
+            "Serial. No": "Gov_7",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "FRS": "NA",
+            " Goal": "Government decided to add a new feature to MOSIP like adding introducer details for old people and this has been rolled out as an update to the reg client in the upcoming version.",
+            "Expected Result": "The operator should be able to update the Reg client with the new updates.",
+            "Linked Test Scenario ": "CR_4",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Not yet implemented",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "Gov_8",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "The government of country already has a CNIE database where the residents finger prints are captured. They want to capture only iris and face images while registering a resident.",
+            "Expected Result": "SI must be able to remove finger print capture and implement feature to capture only iris and face for registration and also for authentication use the finger print available in CNIE DB.",
+            "Linked Test Scenario ": "CR_4 + CR_6",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Feature change/code change required hence cannot be tested",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "Gov_9",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "Senior citizens of few cities complain that the iris scan is affecting their eyehealth, hence the government decides to remove iris scan for further registrations",
+            "Expected Result": "Iris scan should be disabled in reg client and user should be able to get his UIN.",
+            "Linked Test Scenario ": "CR_4",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.registration.iris_enable_flag=n in registration-env.properties"
+        },
+        {
+            "Serial. No": "Gov_10",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_1",
+            " Goal": "Operator Mr. Araf should be able to onboard himself by providing only his fingerprints and photo as iris is disabled",
+            "Expected Result": "Mr. Araf should be able to onboard himself",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "Gov_11",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "Mobile networks are down for few days and the country decides to stop the sms notifications temporarily",
+            "Expected Result": "SI should be able to make the changes so that only email notifications will be sent to the residents.",
+            "Linked Test Scenario ": "CR_4",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.registration.modeofcommunication=email in registration-env.properties"
+        },
+        {
+            "Serial. No": "Gov_12",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "Govt places a limit on the max number of packets pending upload beyond which client is frozen for registration to prevent any kind of fraudulent activities (set to 5)",
+            "Expected Result": "Si should be able to change the max number of packets pending upload ",
+            "Linked Test Scenario ": "RF_5",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.registration.packet.maximum.count.offline.frequency=5 in registration-env.properties"
+        },
+        {
+            "Serial. No": "Gov_13",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "SI decides on the disk space that should be available before registering a resident and configures it for the country.",
+            "Expected Result": "SI should be to change the disk space settings as required.",
+            "Linked Test Scenario ": "RF_5",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.registration.disk_space_size=5 GB in \r\n registration-env.properties"
+        },
+        {
+            "Serial. No": "Gov_14",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "Government decides to stop gender updates of UIN for a few months to avoid malpractices.",
+            "Expected Result": "SI should be able to disable the gender updates.",
+            "Linked Test Scenario ": "RF_5",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.registration.uin.update.configured.fields=name,age,address,phone,email,parentOrGuardianDetails,foreigner,biometrics,cnieNumber in  registration-env.properties\r\n\r\n\r\n\r\n\r\n"
+        },
+        {
+            "Serial. No": "Gov_16",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            " Goal": "Government decides that children below 6 need to provide their parents biometrics while registering and not theirs. The age limit is raised from 5 to 6.",
+            "Expected Result": "SI should be able to update the age limit from 5 yrs to 6yrs for a child",
+            "Linked Test Scenario ": "MIN_03",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "Y",
+            "Config Verified": "mosip.kernel.applicant.type.age.limit = 6 in application-env.properties"
+        },
+        {
+            "Serial. No": "Gov_17",
+            "Category": "Government",
+            "Persona": "Decision Maker ",
+            "Smoke": "Y",
+            "FRS": "REG_FR_7, RPR_FR_3",
+            " Goal": "As a pilot, country starts only with registration client and registers all the users. Later after a month, reg processor is implemented and the packets are processed.",
+            "Expected Result": "Operator should be able to upload packets created in the previous version of reg client in the current version too."
+        },
+        {
+            "Serial. No": "Adminstrator ",
+            "Category": "Government",
+            "Persona": "Admin"
+        },
+        {
+            "Serial. No": "AD_1",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5",
+            " Goal": "HSR-CSC1 (customer service centre) from location A has to be renovated , so the government decides to close the CSC temporarily and add a new HSR-CSC2 in location B",
+            "Expected Result": "Mr Adil, as an Administrator should be able to unmap HSR-CSC1 and map HSR-CSC2 using admin portal",
+            "Linked Test Scenario ": "RF_1,RF_5",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Admin Portal Implementation is In Progress",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "AD_2",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5.14",
+            " Goal": "HSR-CSC1 (customer service centre) devices to be mapped from location A to new HSR-CSC2 in location B due to change of location of CSC .",
+            "Expected Result": "Mr Adil, as an Administrator should be able to unmap the devices from HSR-CSC1 and map the device to HSR-CSC2 using admin portal",
+            "Linked Test Scenario ": "RF_5",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "This is a proxy biometric release, devices are not available.",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "AD_3",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5.19",
+            " Goal": "HSR-CSC1 (customer service centre) operators/ supervisor to be mapped from location A to new HSR-CSC2 in location B due to transfer or location change for centre",
+            "Expected Result": "Mr Adil, as an Administrator should be able to map the operators/ supervisor from HSR-CSC1 and map them to HSR-CSC2 using admin portal",
+            "Linked Test Scenario ": "RF_1,RF_5",
+            "Main Feature Tested": "User/center remapping",
+            "Actual Result[Pass\r\n/Fail]": "Fail",
+            "Observation/Comments": "MOS-29655",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "AD_4",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5.13, ASR_FR_5.14",
+            " Goal": "Old device ( Finger print Scanner) mapped to HSR-CSC 1 is not working and supervisor of CSC Mr. Arham replaces it with a new device (Finger print scanner )",
+            "Expected Result": "Mr. Arham should be able to replace the old device successfully and also be able to map the new device ( Finger print Scanner) to the HSR-CSC1 in the master data ,[Old device is being removed from DB]",
+            "Linked Test Scenario ": "RF_5",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "This is a proxy biometric release, devices are not available.",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "AD_5",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5.13, ASR_FR_5.14",
+            " Goal": "Old device ( Finger print Scanner) mapped to HSR-CSC 1 is not working and supervisor of CSC Mr. Arham replaces it with a new device (Finger print scanner ) for few days till the old is getting repaired",
+            "Expected Result": "Mr. Arham should be able to replace the old device successfully and also be able to map the new device ( Finger print Scanner) to the HSR-CSC1, and once the old device is fixed, he will be able to remap the same [To deactivate the device in Database and again activate ]",
+            "Linked Test Scenario ": "RF_5"
+        },
+        {
+            "Serial. No": "AD_6",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5.19,ASR_FR_5.18",
+            " Goal": "Operator Mr. Ziyaad goes on a vacation for 2 weeks, Mr Rahmed is posted in his place on temporary basis.",
+            "Expected Result": "Mr Arham, as admin should be able to suspend Mr. Ziyaad for 2 weeks and onboard Mr Rahmed. Mr. Ziyaad should not be able to login to reg-client for 2 weeks [To deactivate the operator in Database]",
+            "Linked Test Scenario ": "RF_5, RF_1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Operator/Supervisor deactivation is not yet implemented. Cannot be tested. However, adding an operator to a center works. - MOS-29728",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "AD_7",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "ASR_FR_5.19,ASR_FR_5.18",
+            " Goal": "Operator Mr. Ziyaad is back from vacation after 2 weeks, Mr Arham as admin activate Mr. Ziyaad and suspend Mr Rahmed from the CSC",
+            "Expected Result": "Mr Arham, as admin should be able to suspend Mr Rahmed. and again onboard Mr. Ziyaad.[To deactivate /remove the operator Mr Rahmed in Database and again activate Mr Ziyaad as required]",
+            "Linked Test Scenario ": "RF_5, RF_1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Operator/Supervisor deactivation is not yet implemented. Cannot be tested. However, adding an operator to a center works. - MOS-29728",
+            "Config(Y/N)": "Y"
+        },
+        {
+            "Serial. No": "AD_8",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "RPR_FR_3.16, RPR_FR_3.12",
+            " Goal": " Mr Mandee Dhiman , registration packet failed due to bio-dedupe and went for manual adjudication , so Mr Arham as admin will approve the packet if the details are fine",
+            "Expected Result": "Mr. Arham should be able to approve the packet and UIN should be generated for Mr. Mandeep"
+        },
+        {
+            "Serial. No": "AD_9",
+            "Category": "Government",
+            "Persona": "Admin",
+            "FRS": "RPR_FR_3.16, RPR_FR_3.12",
+            " Goal": " Mr Joe , registration packet failed due to bio-dedupe and went for manual adjudication , so Mr Arham as admin will reject the packet if the details are not proper",
+            "Expected Result": "Mr. Arham should be able to reject the packet and Joe notification will be sent that packet is rejected"
+        },
+        {
+            "Serial. No": "Auth Partner",
+            "Persona": "Auth Partner"
+        },
+        {
+            "Serial. No": "AP_1",
+            "Persona": "Auth Partner",
+            " Goal": "ID auth partner airtel wants to register with MOSIP with the policy of its choice.",
+            "Expected Result": "Airtel should be able to register with the MOSIP with choosen policy",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Partner mgmt module implementation in progress",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "AP_2",
+            "Persona": "Auth Partner",
+            " Goal": "ID auth partner airtel changes the policies due to change in regulations",
+            "Expected Result": "The Auth partner should be able to authenticate citizen based on new policy.",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Partner mgmt module implementation in progress",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "AP_3",
+            "Persona": "Auth Partner",
+            " Goal": "ID auth partner airtel has unregistered with MOSIP ",
+            "Expected Result": "Airtel should not be able to authenticate anymore as not associated with MOSIP",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Partner mgmt module implementation in progress",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "Ekyc Partner",
+            "Category": "ekyc Partners",
+            "Persona": "Ekyc Partner"
+        },
+        {
+            "Serial. No": "EP_1",
+            "Category": "ekyc Partners",
+            "Persona": "Ekyc Partner",
+            "FRS": "IDA_FR_5, IDA_FR_6.1",
+            " Goal": "eKYC partner HGFC bank wants to register with MOSIP with the policy of its choice.",
+            "Expected Result": "Bank should be able to register with the MOSIP with choosen policy",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Partner mgmt module implementation in progress",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "EP_2",
+            "Category": "ekyc Partners",
+            "Persona": "Ekyc Partner",
+            "FRS": "IDA_FR_5",
+            " Goal": "eKYC partner HGFC changes the policies due to change in regulations",
+            "Expected Result": "The eKYC partner should be able to authenticate citizen based on new policy.",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Partner mgmt module implementation in progress",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "EP_3",
+            "Category": "ekyc Partners",
+            "Persona": "Ekyc Partner",
+            "FRS": "IDA_FR_5",
+            " Goal": "eKYC partner HGFC bank has unregistered with MOSIP ",
+            "Expected Result": "HGFC should not be able to authenticate anymore as not associated with MOSIP",
+            "Main Feature Tested": "Cannot be tested in 0.9.1",
+            "Actual Result[Pass\r\n/Fail]": "Not Tested",
+            "Observation/Comments": "Partner mgmt module implementation in progress",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "Ms, Sofia Aziz Persona Details: Foreigner",
+            "Category": "Residents",
+            "Persona": "Foreigner"
+        },
+        {
+            "Serial. No": "FA_1",
+            "Category": "Residents",
+            "Persona": "Foreigner",
+            "FRS": "REG_FR_4.2, REG_FR_4.4",
+            " Goal": "Ms. Sofia Aziz has shifted to London holding UIN, wants to update her proof of residence.",
+            "Expected Result": "Sofia as a foreigner should be able to update address successfully",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N",
+            "Automated": "Y"
+        },
+        {
+            "Category": "Government",
+            "Persona": "Supervisor"
+        },
+        {
+            "Serial. No": "SP_1",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "Smoke": "Y",
+            "FRS": "REG_FR_1",
+            " Goal": "Mr. Basheer Ahmed has joined MOSIP as a supervisor and assigned to CSC- HSR , he is now willing to Onboard himself on first day of his duty to Register /Review/Approve packets",
+            "Expected Result": "Mr. Basheer Ahmed should be able to onboard himself to MOSIP reg-client successfully.",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "SP_2",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.8, REG_FR_4.7",
+            " Goal": "Mr. Basheer Ahmed supervisor of CSC- HSR wants to review and authenticate all the packets at the end of the day created by the Operators of his center",
+            "Expected Result": "Mr. Basheer Ahmed should be able to review and authenticate all the packets at the end of the day.",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "SP_3",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "FRS": "REG_FR_4.8",
+            " Goal": "Mr.Aadil's packet has been rejected by the reg- due to incorrect document. Hence Mr. Basheer Ahmed wants to inform Mr.Aadil about the registration failure",
+            "Expected Result": "Mr. Basheer Ahmed should be able to mark as informed to the resident",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "SP_4",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "FRS": "REG_FR_4.8, REG_FR_4.7",
+            " Goal": "Mr. Basheer Ahmed reviews a packet and found a glitch in photo captured with the demographic details and wants to reject the packet",
+            "Expected Result": "Mr. Basheer Ahmed should be able to reject the packet successfully.",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "SP_5",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "FRS": "REG_FR_4.8",
+            " Goal": "Mr.Aadil's packet has been rejected by the reg-processor due to incorrect document. Somehow,  Mr. Basheer Ahmed is not able   to inform Mr.Aadil about the registration failure",
+            "Expected Result": "Mr. Basheer Ahmed should be able to mark as not informed to the resident"
+        },
+        {
+            "Serial. No": "SP_6",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "FRS": "Awaited",
+            " Goal": "Mr. Basheer Ahmed want to view the report of his center to see the number of registeration done for a week",
+            "Expected Result": "Mr. Basheer Ahmed should be able to view the report",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Feature not available"
+        },
+        {
+            "Serial. No": "SP_7",
+            "Category": "Government",
+            "Persona": "Supervisor",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.2, REG_FR_1.1",
+            " Goal": "Mr. Basheer Ahmed met with an accident and lost his biometrics (e.g Lost his thumb for right hand ) and want to update his Biometric details",
+            "Expected Result": "Mr. Basheer Ahmedshould be able to update his biometric exception and photograph with exception.",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "Registration Officer",
+            "Category": "Government",
+            "Persona": "Registration Officer"
+        },
+        {
+            "Serial. No": "RF_1",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_1",
+            " Goal": "Amina Shah has joined MOSIP and assigned to CSC- HSR , she is now willing to Onboard herself on first day of his duty to Register the residents",
+            "Expected Result": "Amina Shah should be able to onboard himself to MOSIP",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "RF_2",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_4.2, REG_FR_1",
+            " Goal": "Operator Amina Shah accidently lost her biometrics (e.g Lost her finger ) and want to update her Biometric details",
+            "Expected Result": "Amina Shah should be able to update her biometric exception and photograph with exception.",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "RF_3",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "Smoke": "Y",
+            "FRS": "REG_FR_4.8, REG_FR_4.7,REG_FR_7",
+            " Goal": "Operator Amina Shah has to do registration in a small village without internet connectivity. and syncs her laptop and takes it to the village for registering the people there for 2 days in an offline mode.",
+            "Expected Result": "Amina Shah should be able upload  the packets after sync and supervisor approval"
+        },
+        {
+            "Serial. No": "RF_4",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_7",
+            " Goal": "Amina Shah moves the packet to (locally) harddrive as her disk space is less now , after sync, she can continue registering the residence and upload the packets later.",
+            "Expected Result": "Amina Shah should be able to do upload the packets successfully."
+        },
+        {
+            "Serial. No": "RF_5",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_4.1",
+            " Goal": "Amina Shah register Mr Aamir Abad, who directly walkin to the CSC to register under MOSIP",
+            "Expected Result": "Amina Shah should be able to register Mr. Aamir",
+            "Main Feature Tested": "Registration in the Registration Center\r\nNotification to Resident on successful UIN generation",
+            "Actual Result[Pass\r\n/Fail]": "Pass",
+            "Config(Y/N)": "N"
+        },
+        {
+            "Serial. No": "RF_6",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_4.2",
+            " Goal": "Mr Aamir moves to foreign country and want to change the residence status , he walks in with appointment to CSC and opeartor and ask Amina Shah to change the same.",
+            "Expected Result": "Amina Shah should be able to change the status for Mr. Aamir",
+            "Actual Result[Pass\r\n/Fail]": "Pass"
+        },
+        {
+            "Serial. No": "RF_7",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "REG_FR_4.3",
+            " Goal": "Mr Aamir walks in with appointment to CSC and  ask Amina Shah to get his Lost UIN",
+            "Expected Result": "Amina Shah should be able to get the UIN for MR. Aamir",
+            "Actual Result[Pass\r\n/Fail]": "Not tested",
+            "Observation/Comments": "Required cleanup of data"
+        },
+        {
+            "Serial. No": "RF_8",
+            "Category": "Government",
+            "Persona": "Registration Officer",
+            "FRS": "ASR_FR_5",
+            " Goal": "Mr. Basheer Ahmed is now downgraded to Operator post and hence now wants to perform action as operator ",
+            "Expected Result": "Mr. Basheer Ahmed should be able to able to work as operator and no more superior rights should be available for him"
+        },
+        {
+            "Serial. No": "Bribed Reg. Officer",
+            "Category": "Government",
+            "Persona": "Bribed Reg. Officer"
+        },
+        {
+            "Serial. No": "BO_1",
+            "Category": "Government",
+            "Persona": "Bribed Reg. Officer",
+            "FRS": "REG_FR_4.1, RPR_FR_3",
+            " Goal": "Mr. Tahir who holds an UIN with biometric exception in intention of a fraud, bribed Operator Mr. Zakir and now wants to update his biometric without biometric exception.",
+            "Expected Result": "Mr Zakir, should be able to create packet but the packet should get failed at the reg-processor and so Mr. Tahir should not be able to update his biometric details for the finger/thumb for which biometric has been added already with UIN.",
+            "Actual Result[Pass\r\n/Fail]": "Fail",
+            "Observation/Comments": "https://mosipid.atlassian.net/browse/MOS-27727"
+        },
+        {
+            "Serial. No": "Careless User",
+            "Category": "Government",
+            "Persona": "Careless User"
+        },
+        {
+            "Serial. No": "CU_1",
+            "Category": "Government",
+            "Persona": "Careless User",
+            "FRS": "REG_FR_1.2",
+            " Goal": "Mr. Aslam who is suffering from short term memory loss ,tried to login carelessly in system with incorrect password thrice ",
+            "Expected Result": "Mr. Aslam should be blocked for sometime .[Time that has been mentioned in configuration]"
+        },
+        {
+            "Serial. No": "Stolen Identity User",
+            "Category": "Residents",
+            "Persona": "Stolen Identity User"
+        },
+        {
+            "Serial. No": "SIU_1",
+            "Category": "Residents",
+            "Persona": "Stolen Identity User",
+            "FRS": "IDA_FR_1",
+            " Goal": "Mr. Hakim went to get a new SIM Card and provided UIN that he has stolen . ",
+            "Expected Result": "Mr. Hakim should not be able to authenticate himself with stolen UIN as the bio-auth will fail",
+            "Automated": "N"
+        },
+        {
+            "Serial. No": "User that Died",
+            "Category": "Residents"
+        },
+        {
+            "Serial. No": "UD_1",
+            "Category": "Residents",
+            "Persona": "User That Dies",
+            "FRS": "RPR_FR_1.3",
+            " Goal": "Mr. Rachid Attar a cancer patient died and now his son visited to CSC to deactivate his UIN.",
+            "Expected Result": "Mr.Rachid Attar family should be able to deactivate his UIN",
+            "Automated": "N"
+        }
+    ],
+    "FRS Not Covered": [
+        {
+            "undefined": "e.g. value",
+            "FRS  Not yet Covered": "PRE_FR_8",
+            "FRS Covered internally": "PRE_FR_7"
+        },
+        {
+            "FRS  Not yet Covered": "REG_FR_10",
+            "FRS Covered internally": "REG_FR_3"
+        },
+        {
+            "FRS  Not yet Covered": "RPR_FR_2.7",
+            "FRS Covered internally": "REG_FR_4.5"
+        },
+        {
+            "FRS  Not yet Covered": "RPR_FR_3.13",
+            "FRS Covered internally": "REG_FR_5"
+        },
+        {
+            "FRS  Not yet Covered": "RPR_FR_3.14",
+            "FRS Covered internally": "REG_FR_6"
+        },
+        {
+            "FRS  Not yet Covered": "RPR_FR_3.15",
+            "FRS Covered internally": "REG_FR_8"
+        },
+        {
+            "FRS  Not yet Covered": "RPR_FR_3.16",
+            "FRS Covered internally": "REG_FR_11"
+        },
+        {
+            "FRS  Not yet Covered": "RPR_FR_3.20",
+            "FRS Covered internally": "RPR_FR_2"
+        },
+        {
+            "FRS  Not yet Covered": "DAT_FR_4.4",
+            "FRS Covered internally": "RPR_FR_3"
+        },
+        {
+            "FRS  Not yet Covered": "DAT_FR_4.9",
+            "FRS Covered internally": "RPR_FR_3.17"
+        },
+        {
+            "FRS  Not yet Covered": "DAT_FR_4.8",
+            "FRS Covered internally": "RPR_FR_3.23"
+        },
+        {
+            "FRS  Not yet Covered": "DAT_FR_4.14",
+            "FRS Covered internally": "DAT_FR_4"
+        },
+        {
+            "FRS  Not yet Covered": "DAT_FR_4.15",
+            "FRS Covered internally": "CMN_FR_3"
+        },
+        {
+            "FRS  Not yet Covered": "FRS-Admin-Services",
+            "FRS Covered internally": "CMN_FR_4"
+        },
+        {
+            "FRS  Not yet Covered": "ASR_FR_1",
+            "FRS Covered internally": "CMN_FR_5"
+        },
+        {
+            "FRS  Not yet Covered": "ASR_FR_2",
+            "FRS Covered internally": "CMN_FR_6"
+        },
+        {
+            "FRS  Not yet Covered": "ASR_FR_5.20",
+            "FRS Covered internally": "CMN_FR_7"
+        },
+        {
+            "FRS Covered internally": "CMN_FR_1"
+        },
+        {
+            "FRS Covered internally": "CMN_FR_2"
+        },
+        {
+            "FRS Covered internally": "AUT_FR_1"
+        },
+        {
+            "FRS Covered internally": "ASR_FR_6"
+        },
+        {
+            "FRS Covered internally": "ASR_FR_7"
+        },
+        {
+            "FRS Covered internally": "ASR_FR_8"
+        },
+        {
+            "FRS Covered internally": "ASR_FR_11"
+        }
+    ],
+    "Traceability matrix ": [
+        {
+            "Testcase No.": "CR_1",
+            "FRS": "PRE_FR_1,PRE_FR_2, PRE_FR_3, PRE_FR_4, PRE_FR_5\r\n\r\n\r\n\r\n\r\n",
+            "Automated": "DSL_ CR_1",
+            "Module covered": "Login/Logout\r\nCreating an application\r\nAttaching Documents to the Application \r\nBooking an Appointment \r\nAppointment Acknowledgement (PRID)"
+        },
+        {
+            "Testcase No.": "CR_2",
+            "FRS": "PRE_FR_6,REG_FR_1, REG_FR_2, REG_FR_3, REG_FR_4.1, REG_FR_4.4, REG_FR_4.5,REG_FR_4.7, REG_FR_4.8",
+            "Automated": "DSL_ CR_2",
+            "Module covered": "Registration Client Services\r\nOperator Services\r\nData Sync\r\nHealth Check\r\nNew Registration\r\nAcknowledgement and Notifications \r\nBiometric Capture \r\nRegistration Officer and Supervisor Approval\r\nEnd of Day Approval Process & Re-registration \r\n\r\n"
+        },
+        {
+            "Testcase No.": "CR_3",
+            "FRS": "PRE_FR_4.5",
+            "Automated": "DSL_CR_3",
+            "Module covered": "Re-book Appointment (PRE_FR_4.5)"
+        },
+        {
+            "Testcase No.": "CR_4",
+            "FRS": "REG_FR_4.1, REG_FR_7.1, PRE_FR_2.7, RPR_FR_3.18,RPR_FR_3.21",
+            "Automated": "DSl_CR_4",
+            "Module covered": "New Registration\r\nRegistration Packet Upload\r\nDiscard Application \r\nNotification\r\nIdentity Generation \r\n"
+        },
+        {
+            "Testcase No.": "CR_5",
+            "FRS": "REG_FR_4.2",
+            "Automated": "DSL_CR_5",
+            "Module covered": "UIN Update"
+        },
+        {
+            "Testcase No.": "CR_6",
+            "FRS": "IDA_FR_4.1",
+            "Automated": "DSL_CR_6",
+            "Module covered": "Profile Sharing based on Policy"
+        },
+        {
+            "Testcase No.": "CR_7",
+            "FRS": "REG_FR_4.3",
+            "Automated": "DSL_CR_7",
+            "Module covered": "Lost UIN "
+        },
+        {
+            "Testcase No.": "CR_8",
+            "FRS": "IDA_FR_1",
+            "Automated": "DSL_CR_8",
+            "Module covered": "Single factor Authentication"
+        },
+        {
+            "Testcase No.": "CR_9",
+            "FRS": "REG_FR_4.2",
+            "Automated": "DSL_CR_9",
+            "Module covered": "UIN Update"
+        },
+        {
+            "Testcase No.": "CR_10",
+            "FRS": "RPR_FR_3.12",
+            "Automated": "DSL_CR_10",
+            "Module covered": " Deduplication – Demographic, Biometrics"
+        },
+        {
+            "Testcase No.": "CR_11",
+            "FRS": "RPR_FR_3.12",
+            "Automated": "DSL_CR_11",
+            "Module covered": " Deduplication – Demographic, Biometrics"
+        },
+        {
+            "Testcase No.": "FH_1",
+            "FRS": "PRE_FR_2.3, RPR_FR_3.18,RPR_FR_3",
+            "Automated": "DSL_FH_1",
+            "Module covered": "Create Multiple Applications\r\nIdentity Generation \r\nPre-processing Validations\r\nProcessing\r\nPost-Processing\r\n"
+        },
+        {
+            "Testcase No.": "Karima Baig Persona Details:"
+        },
+        {
+            "Testcase No.": "BE_1",
+            "FRS": "REG_FR_4.2, REG_FR_4.6",
+            "Automated": "DSL_BE_1",
+            "Module covered": "UIN Update\r\nBiometric Exceptions"
+        },
+        {
+            "Testcase No.": "CGF_1",
+            "FRS": "REG_FR_4.2",
+            "Automated": "DSL_CGF_1",
+            "Module covered": "UIN Update"
+        },
+        {
+            "Testcase No.": "MIN_01",
+            "FRS": "RPR_FR_3.11,REG_FR_4.1",
+            "Automated": "DSL_MIN_01",
+            "Module covered": "New Registration\r\nIntroducer Validation "
+        },
+        {
+            "Testcase No.": "MIN_02",
+            "FRS": "RPR_FR_1.3",
+            "Automated": "DSL_MIN_02",
+            "Module covered": "De-activate Individual’s ID"
+        },
+        {
+            "Testcase No.": "MIN_03",
+            "FRS": "RPR_FR_1.1, REG_FR_4.1",
+            "Automated": "DSL_MIN_03",
+            "Module covered": "New ID Issuance\r\nNew Registration"
+        },
+        {
+            "Testcase No.": "OC_1",
+            "FRS": "RPR_FR_1.1, REG_FR_4.1",
+            "Automated": "DSL_OC_1",
+            "Module covered": "New ID Issuance\r\nNew Registration"
+        },
+        {
+            "Testcase No.": "OC_2",
+            "FRS": " REG_FR_4.2",
+            "Automated": "DSL_OC_2",
+            "Module covered": "UIN Update"
+        },
+        {
+            "Testcase No.": "SC_1",
+            "FRS": "REG_FR_4.1, REG_FR_7.1, RPR_FR_3.18,RPR_FR_3.21, IDA_FR_1",
+            "Automated": "DSL_OC_1",
+            "Module covered": "New Registration \r\nRegistration Packet Upload\r\nIdentity Generation \r\nNotification\r\nSingle factor Authentication"
+        },
+        {
+            "Testcase No.": "SC_2",
+            "FRS": "PRE_FR_2.3, RPR_FR_3.18",
+            "Automated": "DSL_OC_2",
+            "Module covered": "Create Multiple Applications\r\nIdentity Generation\r\n"
+        },
+        {
+            "Testcase No.": "RBE_1",
+            "FRS": "REG_FR_4.1, REG_FR_4.6, REG_FR_4.7,REG_FR_4.4, RPR_FR_1.1, RPR_FR_3, IDA_FR_2",
+            "Automated": "DSL_RBE_1",
+            "Module covered": "New Registration \r\nBiometric Exceptions \r\nRegistration Officer and Supervisor Approval\r\nAcknowledgement and Notifications \r\nNew ID Issuance\r\nPre-processing Validations\r\nProcessing\r\nPost-Processing\r\nMulti-factor Authentication\r\n"
+        },
+        {
+            "Testcase No.": "RBE_2",
+            "FRS": "REG_FR_4.2, REG_FR_4.6",
+            "Automated": "Y",
+            "Module covered": "UIN Update \r\nBiometric Exceptions"
+        },
+        {
+            "Testcase No.": "RBE_3",
+            "FRS": "REG_FR_4.3, REG_FR_4.4",
+            "Automated": "Y",
+            "Module covered": "Lost UIN \r\nAcknowledgement and Notifications "
+        },
+        {
+            "Testcase No.": "RBE_4",
+            "FRS": "IDA_FR_4.1",
+            "Automated": "Y",
+            "Module covered": "KYC Service"
+        },
+        {
+            "Testcase No.": "RBE_5",
+            "FRS": "RPR_FR_1.1, REG_FR_4.1",
+            "Automated": "Y",
+            "Module covered": "New ID Issuance\r\nNew Registration"
+        },
+        {
+            "Testcase No.": "Gov_1",
+            "FRS": "ADM_FR_1.2, PRE_FR_4.4.1, ASR_FR_14",
+            "Module covered": " Recommended Centers based on Postal Code\r\nConfiguration Setup \r\nList of Holidays - Create/Read/Update/Delete "
+        },
+        {
+            "Testcase No.": "Gov_2",
+            "FRS": "ASR_FR_14,ADM_FR_1.7",
+            "Module covered": "Document Type - Create/Update/Delete\r\nConfiguration Setup\r\n\r\n"
+        },
+        {
+            "Testcase No.": "Gov_3",
+            "FRS": "ADM_FR_1.7",
+            "Module covered": "Document Type - Create/Update/Delete"
+        },
+        {
+            "Testcase No.": "Gov_3",
+            "FRS": "ADM_FR_1.6, ASR_FR_14",
+            "Module covered": " Document Category - Create/Read/Update/Delete \r\nConfiguration Setup"
+        },
+        {
+            "Testcase No.": "Gov_4",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_5",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_6",
+            "FRS": "REG_FR_4.8",
+            "Module covered": "End of Day Approval Process & Re-registration"
+        },
+        {
+            "Testcase No.": "Gov_7",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_8",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_9",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_10",
+            "FRS": "REG_FR_1",
+            "Module covered": "Operator Services"
+        },
+        {
+            "Testcase No.": "Gov_11",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_12",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_13",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_14",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_16",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Gov_17",
+            "FRS": "REG_FR_7, RPR_FR_3",
+            "Module covered": "Packet Upload\r\nPre-processing Validations\r\nProcessing\r\nPost-Processing\r\n"
+        },
+        {
+            "Testcase No.": "Adminstrator "
+        },
+        {
+            "Testcase No.": "AD_1",
+            "FRS": "ASR_FR_5",
+            "Module covered": "Resource Management "
+        },
+        {
+            "Testcase No.": "AD_2",
+            "FRS": "ASR_FR_5.14",
+            "Module covered": "Map/Un-map/Re-map Device to a Center"
+        },
+        {
+            "Testcase No.": "AD_3",
+            "FRS": "ASR_FR_5.19",
+            "Module covered": "Map/Un-map/Re-map User to a Center"
+        },
+        {
+            "Testcase No.": "AD_4",
+            "FRS": "ASR_FR_5.13, ASR_FR_5.14",
+            "Module covered": "Activate/Deactivate/Decommission Device\r\nMap/Un-map/Re-map Device to a Center \r\n"
+        },
+        {
+            "Testcase No.": "AD_5",
+            "FRS": "ASR_FR_5.13, ASR_FR_5.14",
+            "Module covered": "Activate/Deactivate/Decommission Device\r\nMap/Un-map/Re-map Device to a Center \r\n"
+        },
+        {
+            "Testcase No.": "AD_6",
+            "FRS": "ASR_FR_5.19,ASR_FR_5.18",
+            "Module covered": "Activate/Deactivate/Blacklist/Whitelist User\r\nMap/Un-map/Re-map User to a Center"
+        },
+        {
+            "Testcase No.": "AD_7",
+            "FRS": "ASR_FR_5.19,ASR_FR_5.18",
+            "Module covered": "Activate/Deactivate/Blacklist/Whitelist User\r\nMap/Un-map/Re-map User to a Center"
+        },
+        {
+            "Testcase No.": "AD_8",
+            "FRS": "RPR_FR_3.16, RPR_FR_3.12",
+            "Module covered": "Deduplication – Demographic, Biometrics\r\nManual Adjudication"
+        },
+        {
+            "Testcase No.": "AD_9",
+            "FRS": "RPR_FR_3.16, RPR_FR_3.12",
+            "Module covered": "Deduplication – Demographic, Biometrics\r\nManual Adjudication"
+        },
+        {
+            "Testcase No.": "Auth Partner"
+        },
+        {
+            "Testcase No.": "AP_1",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "AP_2",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "AP_3",
+            "FRS": "NA"
+        },
+        {
+            "Testcase No.": "Ekyc Partner"
+        },
+        {
+            "Testcase No.": "EP_1",
+            "FRS": "IDA_FR_5, IDA_FR_6.1",
+            "Module covered": "Partners Authentication and Authorisation\r\nAuthentication Device Support"
+        },
+        {
+            "Testcase No.": "EP_2",
+            "FRS": "IDA_FR_5",
+            "Module covered": "Partners Authentication and Authorisation"
+        },
+        {
+            "Testcase No.": "EP_3",
+            "FRS": "IDA_FR_5",
+            "Module covered": "Partners Authentication and Authorisation"
+        },
+        {
+            "Testcase No.": "Ms, Sofia Aziz Persona Details: Foreigner"
+        },
+        {
+            "Testcase No.": "FA_1",
+            "FRS": "REG_FR_4.2, REG_FR_4.4",
+            "Automated": "Y",
+            "Module covered": " UIN Update \r\nAcknowledgement and Notifications"
+        },
+        {
+            "Testcase No.": "SP_1",
+            "FRS": "REG_FR_1",
+            "Module covered": "Operator Services"
+        },
+        {
+            "Testcase No.": "SP_2",
+            "FRS": "REG_FR_4.8, REG_FR_4.7",
+            "Module covered": "End of Day Approval Process & Re-registration\r\nRegistration Officer and Supervisor Approval"
+        },
+        {
+            "Testcase No.": "SP_3",
+            "FRS": "REG_FR_4.8",
+            "Module covered": "End of Day Approval Process & Re-registration "
+        },
+        {
+            "Testcase No.": "SP_4",
+            "FRS": "REG_FR_4.8, REG_FR_4.7",
+            "Module covered": "End of Day Approval Process & Re-registration\r\nRegistration Officer and Supervisor Approval"
+        },
+        {
+            "Testcase No.": "SP_5",
+            "FRS": "REG_FR_4.8",
+            "Module covered": "End of Day Approval Process & Re-registration "
+        },
+        {
+            "Testcase No.": "SP_6",
+            "FRS": "Awaited"
+        },
+        {
+            "Testcase No.": "SP_7",
+            "FRS": "REG_FR_4.2, REG_FR_1.1",
+            "Module covered": "UIN Update\r\nOperator Services"
+        },
+        {
+            "Testcase No.": "Registration Officer"
+        },
+        {
+            "Testcase No.": "RF_1",
+            "FRS": "REG_FR_1",
+            "Module covered": "Operator Services"
+        },
+        {
+            "Testcase No.": "RF_2",
+            "FRS": "REG_FR_4.2, REG_FR_1",
+            "Module covered": "UIN Update\r\nOperator Services"
+        },
+        {
+            "Testcase No.": "RF_3",
+            "FRS": "REG_FR_4.8, REG_FR_4.7,REG_FR_7",
+            "Module covered": "End of Day Approval Process & Re-registration\r\nRegistration Officer and Supervisor Approval\r\nPacket Upload"
+        },
+        {
+            "Testcase No.": "RF_4",
+            "FRS": "REG_FR_7",
+            "Module covered": "Packet Upload"
+        },
+        {
+            "Testcase No.": "RF_5",
+            "FRS": "REG_FR_4.1",
+            "Module covered": "New Registration "
+        },
+        {
+            "Testcase No.": "RF_6",
+            "FRS": "REG_FR_4.2",
+            "Module covered": "UIN Update"
+        },
+        {
+            "Testcase No.": "RF_7",
+            "FRS": "REG_FR_4.3",
+            "Module covered": "Lost UIN"
+        },
+        {
+            "Testcase No.": "RF_8",
+            "FRS": "ASR_FR_5",
+            "Module covered": "User Management"
+        },
+        {
+            "Testcase No.": "Bribed Reg. Officer"
+        },
+        {
+            "Testcase No.": "BO_1",
+            "FRS": "REG_FR_4.1, RPR_FR_3",
+            "Module covered": "New Registration\r\nPre-processing Validations\r\nProcessing\r\nPost-Processing\r\n"
+        },
+        {
+            "Testcase No.": "Careless User"
+        },
+        {
+            "Testcase No.": "CU_1",
+            "FRS": "REG_FR_1.2",
+            "Module covered": "Login/Authentication"
+        },
+        {
+            "Testcase No.": "Stolen Identity User"
+        },
+        {
+            "Testcase No.": "SIU_1",
+            "FRS": "IDA_FR_1",
+            "Automated": "N",
+            "Module covered": "Single factor Authentication"
+        },
+        {
+            "Testcase No.": "User that Died"
+        },
+        {
+            "Testcase No.": "UD_1",
+            "FRS": "RPR_FR_1.3",
+            "Automated": "N",
+            "Module covered": "De-activate Individual’s ID"
+        }
+    ]
+}
