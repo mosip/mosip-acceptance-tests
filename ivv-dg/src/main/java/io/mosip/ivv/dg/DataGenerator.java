@@ -1,8 +1,8 @@
 package io.mosip.ivv.dg;
 
-import io.mosip.ivv.core.structures.*;
-import io.mosip.ivv.core.structures.BiometricsDTO.BIOMETRIC_CAPTURE;
-import io.mosip.ivv.core.structures.ProofDocument.DOCUMENT_CATEGORY;
+import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.core.dtos.BiometricsDTO.BIOMETRIC_CAPTURE;
+import io.mosip.ivv.core.dtos.ProofDocument.DOCUMENT_CATEGORY;
 import io.mosip.ivv.dg.Utils.MutationEngine;
 import io.mosip.ivv.dg.exceptions.PersonaNotFoundException;
 import io.mosip.ivv.parser.Parser;

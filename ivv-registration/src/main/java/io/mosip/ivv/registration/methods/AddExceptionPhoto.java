@@ -2,7 +2,7 @@ package io.mosip.ivv.registration.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.BiometricsDTO;
+import io.mosip.ivv.core.dtos.BiometricsDTO;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;

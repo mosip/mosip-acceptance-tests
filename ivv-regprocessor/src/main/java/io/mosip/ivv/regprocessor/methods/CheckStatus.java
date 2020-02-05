@@ -1,13 +1,11 @@
 package io.mosip.ivv.regprocessor.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.*;
-import io.mosip.ivv.core.utils.ErrorMiddleware;
+import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.regprocessor.utils.Helpers;
 import io.restassured.RestAssured;
@@ -15,9 +13,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static io.restassured.RestAssured.given;
 

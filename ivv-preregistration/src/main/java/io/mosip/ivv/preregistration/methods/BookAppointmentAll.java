@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.ivv.core.structures.BookingSlot;
+import io.mosip.ivv.core.dtos.BookingSlot;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -18,10 +18,9 @@ import com.jayway.jsonpath.ReadContext;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.utils.CoreStructures;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.Person;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.utils.Helpers;

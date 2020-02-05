@@ -2,11 +2,6 @@ package io.mosip.ivv.registration.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;

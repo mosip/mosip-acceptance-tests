@@ -2,7 +2,7 @@ package io.mosip.ivv.mutators.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.Person;
+import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.utils.Utils;
 
 public class SetUIN extends Step implements StepInterface {

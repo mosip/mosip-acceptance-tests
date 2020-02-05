@@ -3,13 +3,12 @@ package io.mosip.ivv.parser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.parser.Utils.StepParser;
-import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.dtos.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import static io.mosip.ivv.core.utils.Utils.regex;
 
 public class Parser implements ParserInterface {
 
@@ -23,6 +22,9 @@ public class Parser implements ParserInterface {
     private String BIOMETRICS_SHEET = "";
     private static String  DOCUMENT_DATA_PATH = "";
     private String BIOMETRICS_DATA_PATH = "";
+    private enum fieldType {
+        idObject, translate, mutate
+    }
     Properties properties = null;
 
     public Parser(String USER_DIR, String CONFIG_FILE){
@@ -57,43 +59,97 @@ public class Parser implements ParserInterface {
             iam.setRole(PersonaDef.ROLE.valueOf("APPLICANT"));
 
             /* persona */
-            iam.setId(data_map.get("id"));
-            iam.setUserid(data_map.get("userid"));
-            iam.setName(data_map.get("name"));
-            iam.setPreferredLang(data_map.get("preffered_lang"));
-            iam.setDefaultLang(data_map.get("default_lang"));
-            iam.setAddressLine1(data_map.get("address_line1"));
-            iam.setAddressLine2(data_map.get("address_line2"));
-            iam.setAddressLine3(data_map.get("address_line3"));
-            iam.setRegion(data_map.get("region"));
-            iam.setProvince(data_map.get("province"));
-            iam.setCity(data_map.get("city"));
-            iam.setZone(data_map.get("zone"));
+            iam.setId(new Person.FieldValue(){{
+                setValue(data_map.get("id"));
+            }});
+            iam.setUserid(new Person.FieldValue(){{
+                setMutate(true);
+                setValue(data_map.get("userid"));
+            }});
+            iam.setPrimaryLang(new Person.FieldValue(){{
+                setValue(data_map.get("primaryLang"));
+            }});
+            iam.setSecondaryLang(new Person.FieldValue(){{
+                setValue(data_map.get("secondaryLang"));
+            }});
+            iam.setRegistrationCenterId(new Person.FieldValue(){{
+                setValue(data_map.get("registrationCenterId"));
+            }});
             iam.setAgeGroup(PersonaDef.AGE_GROUP.valueOf("ADULT"));
-            iam.setPostalCode(data_map.get("postal_code"));
-            iam.setEmail(data_map.get("email"));
-            iam.setPhone(data_map.get("mobile"));
-            iam.setDateOfBirth(data_map.get("dob"));
-            iam.setReferenceIdentityNumber(data_map.get("reference_identity_number"));
-            iam.setRegistrationCenterId(data_map.get("registration_center_id"));
             iam.setDocuments(getDocuments());
 
-            if(data_map.get("group_name") == null || data_map.get("group_name").isEmpty()){
-                main.setGroupName(data_map.get("group_name"));
-                main.setPersonaClass(data_map.get("persona_class"));
+            for (Map.Entry<String, String> entry : data_map.entrySet()) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                Boolean mutate = false;
+                String field = "";
+                Person.FieldValue f1 = new Person.FieldValue();
+                Person.FieldValue f2 = null;
+                ArrayList<Person.FieldValue> af = new ArrayList<>();
+                if(key.isEmpty()){
+                    continue;
+                }
+                field = regex("{\\S*}", key);
+                if(field.isEmpty()){
+                    continue;
+                }
+                if(!regex("[^]", key).isEmpty()){
+                    mutate = true;
+                }
+                if(!regex("[%%]", val).isEmpty()){
+                    f2 = new Person.FieldValue();
+                    String[] vals = val.split("%%");
+                    switch(vals.length){
+                        case 0:
+                            f1.setValue("");
+                            f2.setValue("");
+                            break;
+                        case 1:
+                            f1.setValue(vals[0].trim());
+                            f2.setValue(vals[0].trim());
+                            break;
+                        case 2:
+                            f1.setValue(vals[0].trim());
+                            f2.setValue(vals[1].trim());
+                            break;
+                        default:
+                            f1.setValue(vals[0].trim());
+                            f2.setValue(vals[1].trim());
+                            break;
+                    }
+                    f1.setLang(iam.getPrimaryLang().getValue());
+                    f2.setLang(iam.getSecondaryLang().getValue());
+                }
+
+                if(mutate){
+                    f1.setMutate(true);
+                    if(f2 != null){
+                        f2.setMutate(true);
+                    }
+                }
+                af.add(f1);
+                if(f2 != null){
+                    af.add(f2);
+                }
+                iam.getIdObject().put(field, af);
+            }
+
+            if(data_map.get("groupName") == null || data_map.get("groupName").isEmpty()){
+                main.setGroupName(data_map.get("groupName"));
+                main.setPersonaClass(data_map.get("personaClass"));
                 main.addPerson(iam);
                 persona_list.add(main);
             }else{
                 Boolean group_exist = false;
                 for(int i=0; i<persona_list.size();i++) {
-                    if(persona_list.get(i).getGroupName().equals(data_map.get("group_name"))){
+                    if(persona_list.get(i).getGroupName().equals(data_map.get("groupName"))){
                         group_exist = true;
                         persona_list.get(i).addPerson(iam);
                     }
                 }
                 if(!group_exist){
-                    main.setGroupName(data_map.get("group_name"));
-                    main.setPersonaClass(data_map.get("persona_class"));
+                    main.setGroupName(data_map.get("groupName"));
+                    main.setPersonaClass(data_map.get("personaClass"));
                     main.addPerson(iam);
                     persona_list.add(main);
                 }

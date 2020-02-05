@@ -1,20 +1,12 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
-
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class SyncMaster extends Step implements StepInterface {
 

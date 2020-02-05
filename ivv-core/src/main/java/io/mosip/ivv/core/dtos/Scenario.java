@@ -1,4 +1,4 @@
-package io.mosip.ivv.core.structures;
+package io.mosip.ivv.core.dtos;
 
 import io.mosip.ivv.core.policies.AssertionPolicy;
 import lombok.Getter;

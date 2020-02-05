@@ -1,4 +1,4 @@
-package io.mosip.ivv.core.structures;
+package io.mosip.ivv.core.dtos;
 
 import com.aventstack.extentreports.Status;
 import lombok.Getter;

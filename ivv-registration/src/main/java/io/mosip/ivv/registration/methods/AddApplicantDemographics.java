@@ -4,17 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
+import org.json.simple.JSONObject;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class AddApplicantDemographics extends Step implements StepInterface {
 
@@ -34,7 +37,11 @@ public class AddApplicantDemographics extends Step implements StepInterface {
         String platformLanguageCode = applicationContext.applicationLanguage();
         String localLanguageCode = applicationContext.localLanguage();
 
-        //TODO complete the identity refer the fields from individualIdentity.class
+        JSONObject identity_json = new JSONObject();
+        for (Map.Entry<String, ArrayList<Person.FieldValue>> entry : store.getCurrentPerson().getIdObject().entrySet()) {
+            String key = entry.getKey();
+            ArrayList<Person.FieldValue> vals = entry.getValue();
+        }
         individualIdentity.setEmail(store.getCurrentPerson().getEmail());
         individualIdentity.setAddressLine1(createValueDTO(platformLanguageCode, store.getCurrentPerson().getAddressLine1()));
         individualIdentity.setAddressLine2(createValueDTO(platformLanguageCode, store.getCurrentPerson().getAddressLine2()));

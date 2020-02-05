@@ -2,7 +2,7 @@ package io.mosip.ivv.regprocessor.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.MailHelper;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class CheckUINMail extends Step implements StepInterface {
         }
 
         while(counter < repeats){
-            logInfo("Checking the User email ("+store.getCurrentPerson().getEmail()+") for UIN mail");
+            logInfo("Checking the User email ("+store.getCurrentPerson().getUserid().getValue()+") for UIN mail");
             String emailBody = getStatus(step);
             if(emailBody != null && !emailBody.isEmpty()){
                 logInfo("UIN mail has been found");
@@ -63,7 +63,7 @@ public class CheckUINMail extends Step implements StepInterface {
             add("UIN Generated");
         }};
         String regex = "";
-        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getEmail(), 50);
+        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getUserid().getValue(), 50);
         if(mailHelperResponse != null){
             logInfo("Msg found: "+mailHelperResponse.getBody());
             mailReceived = mailHelperResponse.getBody();

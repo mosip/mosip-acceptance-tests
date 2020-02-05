@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.Scenario;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 

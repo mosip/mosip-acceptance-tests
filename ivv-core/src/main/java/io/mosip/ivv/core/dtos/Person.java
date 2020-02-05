@@ -1,24 +1,26 @@
-package io.mosip.ivv.core.structures;
+package io.mosip.ivv.core.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
 @Setter
 public class Person extends PersonaDef {
-    private String id = "";
-    private String name = "";
-    private String userid = "";
-    private String password = "";
-    private String center_id = "";
-    private String phone = "";
-    private String email = "";
-    private String otp = "";
-    private String registrationCenterId = "";
+    /* required */
+    private HashMap<String, ArrayList<FieldValue>> idObject = new HashMap<String, ArrayList<FieldValue>>();
+    private FieldValue id;
+    private FieldValue userid;
+    private FieldValue password;
+    private FieldValue phone;
+    private FieldValue otp;
+    private FieldValue registrationCenterId;
+    private FieldValue primaryLang;
+    private FieldValue secondaryLang;
 
     /* pre-reg store */
     private String preRegistrationId = "";
@@ -40,8 +42,6 @@ public class Person extends PersonaDef {
     private ArrayList<String> authParams = new ArrayList<String>();
 
     // required in create pre-registration api
-    private String preferredLang = "";
-    private String defaultLang = "";
     private String dateOfBirth = "";
     private String addressLine1 = "";
     private String addressLine2 = "";
@@ -71,4 +71,12 @@ public class Person extends PersonaDef {
 
     //@Deprecated
     public ArrayList<ProofDocument> documents;
+
+    @Getter
+    @Setter
+    public static class FieldValue {
+        private Boolean mutate = false;
+        private String value;
+        private String lang = "en";
+    }
 }

@@ -1,21 +1,9 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.*;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.sync.PacketSynchService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SyncPacket extends Step implements StepInterface {
 

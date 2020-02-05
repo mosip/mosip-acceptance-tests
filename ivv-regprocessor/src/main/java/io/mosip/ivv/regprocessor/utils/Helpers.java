@@ -1,8 +1,8 @@
 package io.mosip.ivv.regprocessor.utils;
 
 import io.mosip.ivv.core.policies.AssertionPolicy;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.Utils;
 
 import java.sql.SQLException;

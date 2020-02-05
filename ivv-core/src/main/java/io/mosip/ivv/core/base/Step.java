@@ -2,9 +2,9 @@ package io.mosip.ivv.core.base;
 
 import com.aventstack.extentreports.ExtentTest;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.Scenario;
+import io.mosip.ivv.core.dtos.Store;
 import io.mosip.ivv.core.utils.Utils;
 
 public class Step {

@@ -1,15 +1,12 @@
 package io.mosip.ivv.core.utils;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.policies.ErrorPolicy;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.core.dtos.ExtentLogger;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.restassured.response.Response;
 import lombok.Getter;
 import lombok.Setter;

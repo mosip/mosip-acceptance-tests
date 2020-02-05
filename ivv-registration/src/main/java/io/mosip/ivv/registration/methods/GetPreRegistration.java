@@ -1,14 +1,10 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.registration.config.Setup;
 import io.mosip.registration.context.SessionContext;
@@ -16,10 +12,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
-
-import java.util.ArrayList;
 
 public class GetPreRegistration extends Step implements StepInterface {
 

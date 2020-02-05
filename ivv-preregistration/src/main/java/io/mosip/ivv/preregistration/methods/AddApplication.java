@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,9 +16,9 @@ import com.jayway.jsonpath.ReadContext;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.Person;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.utils.Helpers;
@@ -37,115 +38,48 @@ public class AddApplication extends Step implements StepInterface {
         this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
 
         JSONObject identity_json = new JSONObject();
-        identity_json.put("dateOfBirth", person.getDateOfBirth());
-        identity_json.put("email", person.getEmail());
-        identity_json.put("phone", person.getPhone());
-        identity_json.put("referenceIdentityNumber", person.getReferenceIdentityNumber());
-        identity_json.put("IDSchemaVersion", 1);
-        identity_json.put("zone", person.getZone());
-        identity_json.put("postalCode", person.getPostalCode());
-
-        HashMap<String, String> demographic = new HashMap<>();
-        demographic.put("fullName", person.getName());
-        demographic.put("gender", person.getGender());
-        demographic.put("addressLine1", person.getAddressLine1());
-        demographic.put("addressLine2", person.getAddressLine2());
-        demographic.put("addressLine3", person.getAddressLine3());
-        demographic.put("region", person.getRegion());
-        demographic.put("province", person.getProvince());
-        demographic.put("city", person.getCity());
-        demographic.put("zone", person.getZone());
-        demographic.put("residenceStatus", person.getResidenceStatus());
+        for (Map.Entry<String, ArrayList<Person.FieldValue>> entry : person.getIdObject().entrySet()) {
+            String key = entry.getKey();
+            ArrayList<Person.FieldValue> vals = entry.getValue();
+            if(vals.size() == 2){
+                identity_json.put(key, new JSONArray() {{
+                    add(new JSONObject(
+                                    new HashMap<String, String>() {{
+                                        put("value", vals.get(0).getValue());
+                                        put("language", vals.get(0).getLang());
+                                    }}
+                            )
+                    );
+                    add(new JSONObject(
+                                    new HashMap<String, String>() {{
+                                        put("value", vals.get(1).getValue());
+                                        put("language", vals.get(1).getLang());
+                                    }}
+                            )
+                    );
+                }});
+            } else {
+                identity_json.put(key, new JSONArray() {{
+                    add(new JSONObject(
+                                    new HashMap<String, String>() {{
+                                        put("value", vals.get(0).getValue());
+                                        put("language", vals.get(0).getLang());
+                                    }}
+                            )
+                    );
+                }});
+            }
+        }
 
         JSONObject request_json = new JSONObject();
-        request_json.put("langCode", person.getDefaultLang());
+        request_json.put("langCode", person.getPrimaryLang().getValue());
 
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.demographic.create");
         api_input.put("version", "1.0");
         api_input.put("requesttime", Utils.getCurrentDateAndTimeForAPI());
-       // api_input.put("requesttime","2019-11-22T01:29:23.758Z");
+
         switch (step.getVariant()) {
-            case "invalidGender":
-                demographic.put("gender", this.store.getGlobals().get("INVALID_GENDER"));
-                break;
-
-            case "invalidEmail":
-                identity_json.put("email", this.store.getGlobals().get("INVALID_EMAIL"));
-                break;
-
-            case "invalidPhone":
-                identity_json.put("phone", this.store.getGlobals().get("INVALID_PHONE"));
-                break;
-
-            case "RequestVersionIsInvalid":
-                api_input.put("version", "");
-                break;
-
-            case "RequestTimestampIsInvalid":
-                api_input.put("requesttime", "");
-                break;
-
-            case "RequestDateShouldBeCurrentDate":
-                api_input.put("requesttime", "2019-01-01T05:59:15.241Z");
-                break;
-
-            case "LangCodeIsInvalid":
-                request_json.put("langCode", this.store.getGlobals().get("INVALID_LANG_CODE"));
-                break;
-
-            case "MissingInputParameterIdentityFullname":
-                demographic.remove("fullName");
-                break;
-
-            case "MissingInputParameterIdentityDateofbirthIdentityAge":
-                identity_json.remove("dateOfBirth");
-                break;
-
-            case "MissingInputParameterIdentityGender":
-                demographic.remove("gender");
-                break;
-
-            case "MissingInputParameterIdentityResidencestatus":
-                demographic.remove("residenceStatus");
-                break;
-
-            case "MissingInputParameterIdentityAddressline":
-                demographic.remove("addressLine1");
-                break;
-
-            case "MissingInputParameterIdentityRegion":
-                demographic.remove("region");
-                break;
-
-            case "MissingInputParameterIdentityProvince":
-                demographic.remove("province");
-                break;
-
-            case "MissingInputParameterIdentityCity":
-                demographic.remove("city");
-                break;
-
-            case "MissingInputParameterIdentityLocaladministrativeauthority":
-                demographic.remove("localAdministrativeAuthority");
-                break;
-
-            case "MissingInputParameterIdentityPostalcode":
-                identity_json.remove("postalCode");
-                break;
-
-            case "MissingInputParameterIdentityCnienumber":
-                identity_json.remove("CNIENumber");
-                break;
-
-            case "InvalidInputParameterIdentityPhone":
-                identity_json.put("phone", "");
-                break;
-
-            case "InvalidInputParameterIdentityEmail":
-                identity_json.put("email", "");
-                break;
-
             case "DEFAULT":
                 break;
 
@@ -153,19 +87,6 @@ public class AddApplication extends Step implements StepInterface {
                 logWarning("Skipping step " + step.getName() + " as variant " + step.getVariant() + " not found");
                 return;
         }
-
-        demographic.forEach((k, v) -> identity_json.put(k, new JSONArray() {{
-                add(new JSONObject(
-                        new HashMap<String, String>() {{
-                            put("value", v);
-                            put("language", person.getDefaultLang());
-
-                        }}
-                    )
-                );
-            }}
-            )
-        );
 
         JSONObject demographic_json = new JSONObject();
         demographic_json.put("identity", identity_json);
@@ -320,10 +241,6 @@ public class AddApplication extends Step implements StepInterface {
         }
         if (!person.getReferenceIdentityNumber().equals(app_info.get("referenceIdentityNumber"))) {
             logInfo("Response matcher: referenceIdentityNumber does not match expected["+person.getReferenceIdentityNumber()+"], found["+app_info.get("referenceIdentityNumber")+"]");
-            return false;
-        }
-        if (!person.getEmail().equals(app_info.get("email"))) {
-            logInfo("Response matcher: email does not match expected["+person.getEmail()+"], found["+app_info.get("email")+"]");
             return false;
         }
         if (!person.getPostalCode().equals(app_info.get("postalCode"))) {

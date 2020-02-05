@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.dtos.*;
 import org.json.simple.JSONObject;
 
 import com.google.gson.Gson;

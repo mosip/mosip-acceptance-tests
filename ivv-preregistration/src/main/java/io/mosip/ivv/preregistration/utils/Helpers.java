@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import com.aventstack.extentreports.Status;
 
 import io.mosip.ivv.core.policies.AssertionPolicy;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.ExtentLogger;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.Utils;
 
 public abstract class Helpers {

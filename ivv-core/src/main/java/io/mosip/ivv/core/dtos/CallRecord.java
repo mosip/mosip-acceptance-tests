@@ -1,4 +1,4 @@
-package io.mosip.ivv.core.structures;
+package io.mosip.ivv.core.dtos;
 
 import io.restassured.response.Response;
 import lombok.Getter;

@@ -1,9 +1,8 @@
 package io.mosip.ivv.preregistration.methods;
 
-import com.jayway.jsonpath.PathNotFoundException;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.MailHelper;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
@@ -12,7 +11,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -54,7 +52,7 @@ public class ValidateOTP extends Step implements StepInterface {
         }
 
         while (counter < repeats) {
-            logInfo("Checking the User email (" + person.getUserid() + ") for OTP");
+            logInfo("Checking the User email (" + person.getUserid().getValue() + ") for OTP");
             String otp = checkForOTP();
             if (otp != null && !otp.isEmpty()) {
                 logInfo("OTP retrieved: " + otp);
@@ -88,7 +86,7 @@ public class ValidateOTP extends Step implements StepInterface {
             add("Message Otp");
         }};
         String regex = "otp\\s([0-9]{6})";
-        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, person.getUserid(), 10);
+        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, person.getUserid().getValue(), 10);
         if (mailHelperResponse != null) {
             logInfo("Msg found: " + mailHelperResponse.getBody().trim());
             otp = mailHelperResponse.getRegexout();
@@ -103,7 +101,7 @@ public class ValidateOTP extends Step implements StepInterface {
 
         JSONObject request_json = new JSONObject();
         request_json.put("otp", otp.trim());
-        request_json.put("userId", person.getUserid());
+        request_json.put("userId", person.getUserid().getValue());
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.login.useridotp");
         api_input.put("version", "1.0");

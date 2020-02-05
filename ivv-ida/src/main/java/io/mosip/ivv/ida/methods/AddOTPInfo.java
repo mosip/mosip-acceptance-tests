@@ -2,7 +2,7 @@ package io.mosip.ivv.ida.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.Person;
+import io.mosip.ivv.core.dtos.Person;
 
 public class AddOTPInfo extends Step implements StepInterface {
     private Person person;

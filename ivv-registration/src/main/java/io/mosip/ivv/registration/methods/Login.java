@@ -26,7 +26,8 @@ public class Login extends Step implements StepInterface {
         ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID));
         ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID, centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
-        UserDTO userDTO = loginService.getUserDetail(store.getCurrentRegistrationUSer().getUserId());
+//        UserDTO userDTO = loginService.getUserDetail(store.getCurrentRegistrationUSer().getUserId());
+        UserDTO userDTO = new UserDTO();
         LoginUserDTO ldto = new LoginUserDTO();
         ldto.setUserId(store.getCurrentRegistrationUSer().getUserId());
         ldto.setPassword(store.getCurrentRegistrationUSer().getPassword());

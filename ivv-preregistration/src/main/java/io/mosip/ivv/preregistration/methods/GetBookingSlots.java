@@ -1,20 +1,16 @@
 package io.mosip.ivv.preregistration.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.preregistration.base.PRStepInterface;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-
-import java.util.ArrayList;
 
 import static io.restassured.RestAssured.given;
 

@@ -3,7 +3,7 @@ package io.mosip.ivv.registration.methods;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.registration.config.Setup;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;

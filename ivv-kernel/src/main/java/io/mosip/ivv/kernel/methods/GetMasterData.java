@@ -5,15 +5,14 @@ import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.RegistrationUser;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.RegistrationUser;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import net.minidev.json.JSONArray;
-import org.junit.Assert;
 
 import static io.restassured.RestAssured.given;
 

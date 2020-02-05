@@ -1,23 +1,18 @@
 package io.mosip.ivv.preregistration.methods;
 
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.*;
-import io.mosip.ivv.core.utils.MailHelper;
+import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.preregistration.base.PRStepInterface;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
-import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static io.restassured.RestAssured.given;
@@ -35,7 +30,7 @@ public class SendOTP extends Step implements StepInterface {
         this.person = store.getScenarioData().getPersona().getPersons().get(index);
         //MailHelper.deleteOTPEmails(System.getProperty("ivv.email.server.user"), System.getProperty("ivv.email.server.pass"));
         JSONObject request_json = new JSONObject();
-        request_json.put("userId", person.getUserid());
+        request_json.put("userId", person.getUserid().getValue());
 
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.login.sendotp");

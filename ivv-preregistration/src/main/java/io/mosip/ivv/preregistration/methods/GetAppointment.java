@@ -4,9 +4,8 @@ import static io.restassured.RestAssured.given;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.utils.Helpers;

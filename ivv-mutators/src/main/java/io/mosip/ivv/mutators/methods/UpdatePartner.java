@@ -3,7 +3,7 @@ package io.mosip.ivv.mutators.methods;
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.PersonaDef;
 
 public class UpdatePartner extends Step implements StepInterface {
 

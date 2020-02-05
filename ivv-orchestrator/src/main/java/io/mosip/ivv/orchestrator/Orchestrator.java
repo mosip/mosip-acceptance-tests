@@ -7,14 +7,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.dtos.Scenario;
+import io.mosip.ivv.core.dtos.Store;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.dg.DataGenerator;
 import io.mosip.ivv.registration.config.Setup;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
@@ -64,7 +63,7 @@ public class Orchestrator {
     }
 
     @DataProvider(name="ScenarioDataProvider", parallel = false)
-    public static Object[][] dataProvider(ITestContext context) {
+    public static Object[][] dataProvider() {
         DataGenerator dg = new DataGenerator(System.getProperty("user.dir"), "config.properties");
         ArrayList<Scenario> scenariosToRun = dg.getScenarios();
         HashMap<String, String> configs = dg.getConfigs();
