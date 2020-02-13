@@ -15,7 +15,7 @@ public class ScenarioDataTest {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String jsonInString = mapper.writeValueAsString(scenariosToRun);
+            String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(scenariosToRun);
             System.out.println(jsonInString);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

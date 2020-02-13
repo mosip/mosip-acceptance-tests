@@ -52,7 +52,7 @@ public class ValidateOTP extends Step implements StepInterface {
         }
 
         while (counter < repeats) {
-            logInfo("Checking the User email (" + person.getUserid().getValue() + ") for OTP");
+            logInfo("Checking the User email (" + person.getUserid() + ") for OTP");
             String otp = checkForOTP();
             if (otp != null && !otp.isEmpty()) {
                 logInfo("OTP retrieved: " + otp);
@@ -86,7 +86,7 @@ public class ValidateOTP extends Step implements StepInterface {
             add("Message Otp");
         }};
         String regex = "otp\\s([0-9]{6})";
-        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, person.getUserid().getValue(), 10);
+        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, person.getUserid(), 10);
         if (mailHelperResponse != null) {
             logInfo("Msg found: " + mailHelperResponse.getBody().trim());
             otp = mailHelperResponse.getRegexout();
@@ -101,7 +101,7 @@ public class ValidateOTP extends Step implements StepInterface {
 
         JSONObject request_json = new JSONObject();
         request_json.put("otp", otp.trim());
-        request_json.put("userId", person.getUserid().getValue());
+        request_json.put("userId", person.getUserid());
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.login.useridotp");
         api_input.put("version", "1.0");

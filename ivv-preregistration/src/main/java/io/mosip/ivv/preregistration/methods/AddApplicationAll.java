@@ -38,41 +38,35 @@ public class AddApplicationAll extends Step implements StepInterface {
             Person person = persons.get(index);
 
             JSONObject identity_json = new JSONObject();
-            for (Map.Entry<String, ArrayList<Person.FieldValue>> entry : person.getIdObject().entrySet()) {
+            for (Map.Entry<String, IDObjectField> entry : person.getIdObject().entrySet()) {
                 String key = entry.getKey();
-                ArrayList<Person.FieldValue> vals = entry.getValue();
-                if(vals.size() == 2){
-                    identity_json.put(key, new JSONArray() {{
-                        add(new JSONObject(
-                                        new HashMap<String, String>() {{
-                                            put("value", vals.get(0).getValue());
-                                            put("language", vals.get(0).getLang());
-                                        }}
-                                )
-                        );
-                        add(new JSONObject(
-                                        new HashMap<String, String>() {{
-                                            put("value", vals.get(1).getValue());
-                                            put("language", vals.get(1).getLang());
-                                        }}
-                                )
-                        );
-                    }});
+                IDObjectField idField = entry.getValue();
+                if(idField.getType().equals(IDObjectField.type.multilang)){
+                    JSONArray jvals = new JSONArray();
+                    if(!store.getCurrentPerson().getPrimaryLang().isEmpty()){
+                        jvals.add(new JSONObject(
+                                new HashMap<String, String>() {{
+                                    put("value", idField.getPrimaryValue());
+                                    put("language", store.getCurrentPerson().getPrimaryLang());
+                                }}
+                        ));
+                    }
+                    if(!store.getCurrentPerson().getSecondaryLang().isEmpty()){
+                        jvals.add(new JSONObject(
+                                new HashMap<String, String>() {{
+                                    put("value", idField.getSecondaryValue());
+                                    put("language", store.getCurrentPerson().getSecondaryLang());
+                                }}
+                        ));
+                    }
+                    identity_json.put(key, jvals);
                 } else {
-                    identity_json.put(key, new JSONArray() {{
-                        add(new JSONObject(
-                                        new HashMap<String, String>() {{
-                                            put("value", vals.get(0).getValue());
-                                            put("language", vals.get(0).getLang());
-                                        }}
-                                )
-                        );
-                    }});
+                    identity_json.put(key, idField.getPrimaryValue());
                 }
             }
 
             JSONObject request_json = new JSONObject();
-            request_json.put("langCode", person.getPrimaryLang().getValue());
+            request_json.put("langCode", person.getPrimaryLang());
 
             JSONObject api_input = new JSONObject();
             api_input.put("id", "mosip.pre-registration.demographic.create");

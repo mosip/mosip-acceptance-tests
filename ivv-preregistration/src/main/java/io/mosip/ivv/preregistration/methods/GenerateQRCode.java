@@ -28,12 +28,12 @@ public class GenerateQRCode extends Step implements StepInterface {
         JSONObject request_json = new JSONObject();
         JSONObject api_input = new JSONObject();
 
-        request_json.put("name", person.getName());
+        request_json.put("name", "");
         request_json.put("preId", person.getPreRegistrationId());
         request_json.put("appointmentDate", person.getSlot().getDate());
         request_json.put("appointmentTime", person.getSlot().getFrom());
         request_json.put("mobNum", person.getPhone());
-        request_json.put("emailID", person.getEmail());
+        request_json.put("emailID", "");
         api_input.put("id", "mosip.pre-registration.qrcode.generate");
         api_input.put("version", System.getProperty("apiver"));
         api_input.put("requesttime", Utils.getCurrentDateAndTimeForAPI());

@@ -1,5 +1,6 @@
 package io.mosip.ivv.core.dtos;
 
+import jdk.nashorn.internal.objects.Global;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
@@ -12,15 +13,15 @@ import java.util.List;
 @Setter
 public class Person extends PersonaDef {
     /* required */
-    private HashMap<String, ArrayList<FieldValue>> idObject = new HashMap<String, ArrayList<FieldValue>>();
-    private FieldValue id;
-    private FieldValue userid;
-    private FieldValue password;
-    private FieldValue phone;
-    private FieldValue otp;
-    private FieldValue registrationCenterId;
-    private FieldValue primaryLang;
-    private FieldValue secondaryLang;
+    private HashMap<String, IDObjectField> idObject = new HashMap<String, IDObjectField>();
+    private String id;
+    private String userid;
+    private String password;
+    private String phone;
+    private String otp;
+    private String registrationCenterId;
+    private String primaryLang;
+    private String secondaryLang;
 
     /* pre-reg store */
     private String preRegistrationId = "";
@@ -71,12 +72,4 @@ public class Person extends PersonaDef {
 
     //@Deprecated
     public ArrayList<ProofDocument> documents;
-
-    @Getter
-    @Setter
-    public static class FieldValue {
-        private Boolean mutate = false;
-        private String value;
-        private String lang = "en";
-    }
 }

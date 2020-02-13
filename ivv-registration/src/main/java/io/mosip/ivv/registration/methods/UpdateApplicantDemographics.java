@@ -53,11 +53,11 @@ public class UpdateApplicantDemographics extends Step implements StepInterface {
         String key = step.getParameters().get(0);
         switch(fields.valueOf(key)){
             case name:
-                individualIdentity.setFullName(createValueDTO(platformLanguageCode, store.getCurrentPerson().getName()));
+//                individualIdentity.setFullName(createValueDTO(platformLanguageCode, store.getCurrentPerson().getName()));
                 break;
 
             case email:
-                individualIdentity.setEmail(store.getCurrentPerson().getEmail());
+                individualIdentity.setEmail(store.getCurrentPerson().getUserid());
                 break;
 
             case dob:
@@ -77,7 +77,7 @@ public class UpdateApplicantDemographics extends Step implements StepInterface {
 
         /* Only for Child */
         if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD)){
-            individualIdentity.setParentOrGuardianName(createValueDTO(platformLanguageCode, store.getCurrentIntroducer().getName()));
+//            individualIdentity.setParentOrGuardianName(createValueDTO(platformLanguageCode, store.getCurrentIntroducer().getIdObject().get("fullName")));
             if(store.getCurrentIntroducer().getRegistrationId() != null && store.getCurrentIntroducer().getRegistrationId().length()>0){
                 individualIdentity.setParentOrGuardianRID(new BigInteger(store.getCurrentIntroducer().getRegistrationId()));
             }

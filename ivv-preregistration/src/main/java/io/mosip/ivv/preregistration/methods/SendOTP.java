@@ -30,7 +30,7 @@ public class SendOTP extends Step implements StepInterface {
         this.person = store.getScenarioData().getPersona().getPersons().get(index);
         //MailHelper.deleteOTPEmails(System.getProperty("ivv.email.server.user"), System.getProperty("ivv.email.server.pass"));
         JSONObject request_json = new JSONObject();
-        request_json.put("userId", person.getUserid().getValue());
+        request_json.put("userId", person.getUserid());
 
         JSONObject api_input = new JSONObject();
         api_input.put("id", "mosip.pre-registration.login.sendotp");

@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.IDObjectField;
+import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.dtos.Scenario;
+import org.apache.commons.lang3.EnumUtils;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -314,4 +317,31 @@ public class Utils {
         return rid+date_part;
     }
 
+    public static IDObjectField updateIDField(IDObjectField idObjectField, String value, String primaryLang, String secondaryLang){
+        IDObjectField newIDObjectField = new IDObjectField();
+        newIDObjectField.setType(idObjectField.getType());
+        newIDObjectField.setMutate(idObjectField.getMutate());
+        newIDObjectField.setPrimaryValue(idObjectField.getPrimaryValue());
+        newIDObjectField.setSecondaryValue(idObjectField.getSecondaryValue());
+        if(idObjectField.getType().equals(IDObjectField.type.multilang)){
+            String[] vals = value.split("%%");
+            switch(vals.length){
+                case 0:
+                    newIDObjectField.setPrimaryValue("");
+                    newIDObjectField.setSecondaryValue("");
+                    break;
+                case 1:
+                    newIDObjectField.setPrimaryValue(vals[0].trim());
+                    newIDObjectField.setSecondaryValue(vals[0].trim());
+                    break;
+                default:
+                    newIDObjectField.setPrimaryValue(vals[0].trim());
+                    newIDObjectField.setSecondaryValue(vals[1].trim());
+                    break;
+            }
+        } else {
+            newIDObjectField.setPrimaryValue(value);
+        }
+        return newIDObjectField;
+    }
 }

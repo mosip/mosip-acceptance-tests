@@ -2,13 +2,14 @@ package io.mosip.ivv.mutators.methods;
 
 import io.mosip.ivv.core.base.Step;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.IDObjectField;
+import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.exceptions.RigInternalError;
+import io.mosip.ivv.core.utils.Utils;
+
+import static io.mosip.ivv.core.utils.Utils.regex;
 
 public class UpdatePerson extends Step implements StepInterface {
-
-    private enum fields {
-        name, email, registrationId,uin, preRegistrationId, dob, gender, residenceStatus, zone, centerId
-    }
 
     @Override
     public void validateStep() throws RigInternalError {
@@ -19,11 +20,6 @@ public class UpdatePerson extends Step implements StepInterface {
         if(step.getParameters().get(0).isEmpty()){
             throw new RigInternalError("DSL error: key should not be empty");
         }
-        try {
-            fields.valueOf(step.getParameters().get(0));
-        } catch (IllegalArgumentException ex) {
-            throw new RigInternalError("DSL error: Key does not match a valid field");
-        }
     }
 
     @Override
@@ -33,49 +29,36 @@ public class UpdatePerson extends Step implements StepInterface {
         if(value == "null"){
             value = null;
         }
-        switch(fields.valueOf(key)){
-            case name:
-                store.getCurrentPerson().setName(value);
-                break;
-
-            case email:
-                store.getCurrentPerson().setEmail(value);
-                break;
-
-            case registrationId:
+        switch(key){
+            case "registrationId":
                 store.getCurrentPerson().setRegistrationId(value);
                 break;
 
-            case uin:
+            case "uin":
                 store.getCurrentPerson().setUin(value);
                 break;
 
-            case preRegistrationId:
+            case "preRegistrationId":
                 store.getCurrentPerson().setPreRegistrationId(value);
                 break;
 
-            case dob:
-                store.getCurrentPerson().setDateOfBirth(value);
-                break;
-
-            case gender:
-                store.getCurrentPerson().setGender(value);
-                break;
-
-            case residenceStatus:
-                store.getCurrentPerson().setResidenceStatus(value);
-                break;
-
-            case zone:
-                store.getCurrentPerson().setZone(value);
-                break;
-
-            case centerId:
-                store.getCurrentPerson().setCenter_id(value);
+            case "centerId":
+                store.getCurrentPerson().setRegistrationCenterId(value);
                 break;
 
             default:
-                logWarning("Skipping step " + step.getName() + " as key: " + key + " not found");
+                if(key.isEmpty()){
+                    return;
+                }
+                String field = regex("{\\S*}", key);
+                if(field.isEmpty()){
+                    return;
+                }
+                IDObjectField idObjectField = store.getCurrentPerson().getIdObject().get(key);
+                if(idObjectField != null){
+                    IDObjectField newIdObjectField = Utils.updateIDField(idObjectField, value, store.getCurrentPerson().getPrimaryLang(), store.getCurrentPerson().getSecondaryLang());
+                    store.getCurrentPerson().getIdObject().put(key, newIdObjectField);
+                }
                 return;
         }
     }

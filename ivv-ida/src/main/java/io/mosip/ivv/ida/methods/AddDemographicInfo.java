@@ -10,8 +10,8 @@ public class AddDemographicInfo extends Step implements StepInterface {
     public void run() {
         JSONObject demographics_json = new JSONObject();
         demographics_json.put("phoneNumber", store.getCurrentPerson().getPhone());
-        demographics_json.put("email", store.getCurrentPerson().getEmail());
-        demographics_json.put("fullName", store.getCurrentPerson().getName());
+        demographics_json.put("email", store.getCurrentPerson().getUserid());
+        demographics_json.put("fullName", store.getCurrentPerson().getUserid());
         store.getCurrentPerson().getAuthenticationJSON().put("demographics", demographics_json);
         store.getCurrentPerson().getAuthParams().add("demo");
     }

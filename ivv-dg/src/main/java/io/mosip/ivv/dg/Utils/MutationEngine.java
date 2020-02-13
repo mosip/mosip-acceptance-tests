@@ -1,11 +1,17 @@
 package io.mosip.ivv.dg.Utils;
 
 import com.google.gson.Gson;
+import io.mosip.ivv.core.dtos.IDObjectField;
 import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.dtos.Persona;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+
+import static io.mosip.ivv.core.utils.Utils.regex;
 
 public class MutationEngine {
 
@@ -23,15 +29,44 @@ public class MutationEngine {
         Persona per = gson.fromJson(gson.toJson(persona), Persona.class);
         per.setGroupName("");
         for(int i=0; i<per.getPersons().size();i++){
-            per.getPersons().get(i).setUserid(mutateUserid(per.getPersons().get(i).getUserid()));
+            per.getPersons().get(i).setUserid(mutateEmail(per.getPersons().get(i).getUserid()));
             per.getPersons().get(i).setPhone(generatePhone());
-            per.getPersons().get(i).setAddressLine1(mutateAddress(per.getPersons().get(i).getAddressLine1()));
-            per.getPersons().get(i).setAddressLine2(mutateAddress(per.getPersons().get(i).getAddressLine2()));
-            per.getPersons().get(i).setAddressLine3(mutateAddress(per.getPersons().get(i).getAddressLine3()));
-//            per.getPersons().set(i, mutateDocumentsOnly(per.getPersons().get(i)));
-//            per.getPersons().a
+            per.getPersons().get(i).setIdObject(mutateIDFields(per.getPersons().get(i).getIdObject()));
         }
         return per;
+    }
+
+    private HashMap<String, IDObjectField> mutateIDFields(HashMap<String, IDObjectField> idFields){
+        HashMap<String, IDObjectField> newIdFields = new HashMap<String, IDObjectField>();
+        for (Map.Entry<String, IDObjectField> entry : idFields.entrySet()) {
+            String key = entry.getKey();
+            IDObjectField idField = entry.getValue();
+            IDObjectField newIdField = new IDObjectField();
+            newIdField.setMutate(idField.getMutate());
+            newIdField.setType(idField.getType());
+            newIdField.setPrimaryValue(idField.getPrimaryValue());
+            newIdField.setSecondaryValue(idField.getSecondaryValue());
+            if(idField.getMutate()) {
+                if(!regex("/\\S+@\\S+\\.\\S+/", idField.getPrimaryValue()).isEmpty()){
+                    if(!idField.getPrimaryValue().isEmpty()){
+                        newIdField.setPrimaryValue(mutateEmail(idField.getPrimaryValue()));
+                    }
+                    if(!idField.getSecondaryValue().isEmpty()){
+                        newIdField.setSecondaryValue(mutateEmail(idField.getSecondaryValue()));
+                    }
+
+                } else {
+                    if(!idField.getPrimaryValue().isEmpty()){
+                        newIdField.setPrimaryValue(mutateCommon(idField.getPrimaryValue()));
+                    }
+                    if(!idField.getSecondaryValue().isEmpty()){
+                        newIdField.setSecondaryValue(mutateCommon(idField.getSecondaryValue()));
+                    }
+                }
+            }
+            newIdFields.put(key, newIdField);
+        }
+        return newIdFields;
     }
 
     public Person mutateDocumentsOnly(Person person){
@@ -44,7 +79,7 @@ public class MutationEngine {
         return person;
     }
 
-    private String mutateName(String par){
+    private String mutateCommon(String par){
         if(par.isEmpty()){
             return par;
         }
@@ -62,12 +97,7 @@ public class MutationEngine {
         return par.replace("@", this.key+"@").toLowerCase();
     }
 
-    private Person.FieldValue mutateUserid(Person.FieldValue par){
-        par.setValue(par.getValue().replace("@", this.key+"@").toLowerCase());
-        return par;
-    }
-
-    private Person.FieldValue generatePhone(){
+    private String generatePhone(){
         Random generator = new Random();
         int first_digit = generator.nextInt((9 - 6) + 1) + 6; //add 1 so there is no 0 to begin
         int second_digit = generator.nextInt(8); //randomize to 8 becuase 0 counts as a number in the generator
@@ -84,10 +114,7 @@ public class MutationEngine {
         //8999 so it wont succed 9999 when the 1000 is added
         int set2 = generator.nextInt(8999) + 1000;
 
-        Person.FieldValue fv = new Person.FieldValue(){{
-            setValue(first_digit+""+second_digit+""+third_digit+""+set1+""+set2);
-        }};
-        return fv;
+        return first_digit+""+second_digit+""+third_digit+""+set1+""+set2;
     }
 
     private String mutateAddress(String par){

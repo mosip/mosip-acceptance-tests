@@ -45,7 +45,7 @@ public class AddDocument extends Step implements StepInterface {
             JSONObject request_json = new JSONObject();
             request_json.put("docCatCode", proofDocument.getDocCatCode().toString().toUpperCase());
             request_json.put("docTypCode", proofDocument.getDocTypeCode().toUpperCase());
-            request_json.put("langCode", person.getLangCode());
+            request_json.put("langCode", person.getPrimaryLang());
 
             JSONObject api_input = new JSONObject();
             api_input.put("id", "mosip.pre-registration.document.upload");
@@ -224,7 +224,7 @@ public class AddDocument extends Step implements StepInterface {
     	StringBuilder sqlQuery= new StringBuilder();
     	sqlQuery.append("SELECT * FROM ").append("applicant_document where prereg_id =").append("'")
     	.append(person.getPreRegistrationId()).append("'").append("AND doc_cat_code =").append("'").append(proofDocument.getDocCatCode().toString())
-    	.append("'").append("AND lang_code = ").append("'").append(person.getLangCode()).append("'");
+    	.append("'").append("AND lang_code = ").append("'").append(person.getPrimaryLang()).append("'");
     	return sqlQuery.toString();
     	
     }

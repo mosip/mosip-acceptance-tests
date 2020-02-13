@@ -20,7 +20,7 @@ public class GetAuthenticationOTP extends Step implements StepInterface {
         }
 
         while(counter < repeats){
-            logInfo("Checking Authentication OTP User email ("+store.getCurrentPerson().getEmail()+") for UIN mail");
+            logInfo("Checking Authentication OTP User email ("+store.getCurrentPerson().getUserid()+") for UIN mail");
             String otp = getOTP();
             if(otp != null && !otp.isEmpty()){
                 logInfo("OTP: "+otp);
@@ -54,7 +54,7 @@ public class GetAuthenticationOTP extends Step implements StepInterface {
             add("UIN XXXXXXXX"+store.getCurrentPerson().getUin().substring(store.getCurrentPerson().getUin().length() - 2)+": OTP Request");
         }};
         String regex = "([0-9]{6})";
-        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getEmail(), 50);
+        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getUserid(), 50);
         if(mailHelperResponse != null){
             logInfo("Msg found: "+mailHelperResponse.getBody());
             otp = mailHelperResponse.getRegexout();

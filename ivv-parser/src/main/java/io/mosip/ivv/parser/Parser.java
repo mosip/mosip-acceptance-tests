@@ -2,8 +2,10 @@ package io.mosip.ivv.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.parser.Utils.Helper;
 import io.mosip.ivv.parser.Utils.StepParser;
 import io.mosip.ivv.core.dtos.*;
+import org.apache.commons.lang3.EnumUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -22,9 +24,6 @@ public class Parser implements ParserInterface {
     private String BIOMETRICS_SHEET = "";
     private static String  DOCUMENT_DATA_PATH = "";
     private String BIOMETRICS_DATA_PATH = "";
-    private enum fieldType {
-        idObject, translate, mutate
-    }
     Properties properties = null;
 
     public Parser(String USER_DIR, String CONFIG_FILE){
@@ -49,7 +48,7 @@ public class Parser implements ParserInterface {
         while (iter.hasNext()) {
             Object obj = iter.next();
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
-            System.out.println("Parsing Persona: "+data_map.get("persona_class"));
+            System.out.println("Parsing Persona: "+data_map.get("personaClass"));
             Persona main = new Persona();
 
             Person iam = new Person();
@@ -59,79 +58,28 @@ public class Parser implements ParserInterface {
             iam.setRole(PersonaDef.ROLE.valueOf("APPLICANT"));
 
             /* persona */
-            iam.setId(new Person.FieldValue(){{
-                setValue(data_map.get("id"));
-            }});
-            iam.setUserid(new Person.FieldValue(){{
-                setMutate(true);
-                setValue(data_map.get("userid"));
-            }});
-            iam.setPrimaryLang(new Person.FieldValue(){{
-                setValue(data_map.get("primaryLang"));
-            }});
-            iam.setSecondaryLang(new Person.FieldValue(){{
-                setValue(data_map.get("secondaryLang"));
-            }});
-            iam.setRegistrationCenterId(new Person.FieldValue(){{
-                setValue(data_map.get("registrationCenterId"));
-            }});
+            iam.setId(data_map.get("id"));
+            iam.setUserid(data_map.get("userid"));
+            iam.setPrimaryLang(data_map.get("primaryLang"));
+            iam.setSecondaryLang(data_map.get("secondaryLang"));
+            iam.setRegistrationCenterId(data_map.get("registrationCenterId"));
             iam.setAgeGroup(PersonaDef.AGE_GROUP.valueOf("ADULT"));
             iam.setDocuments(getDocuments());
 
             for (Map.Entry<String, String> entry : data_map.entrySet()) {
                 String key = entry.getKey();
                 String val = entry.getValue();
-                Boolean mutate = false;
-                String field = "";
-                Person.FieldValue f1 = new Person.FieldValue();
-                Person.FieldValue f2 = null;
-                ArrayList<Person.FieldValue> af = new ArrayList<>();
                 if(key.isEmpty()){
                     continue;
                 }
-                field = regex("{\\S*}", key);
+                String field = regex("\\{(\\S*)\\}", key);
                 if(field.isEmpty()){
                     continue;
                 }
-                if(!regex("[^]", key).isEmpty()){
-                    mutate = true;
+                IDObjectField idObjectField = Helper.parseField(key, val, iam.getPrimaryLang(), iam.getSecondaryLang());
+                if(idObjectField != null){
+                    iam.getIdObject().put(field, idObjectField);
                 }
-                if(!regex("[%%]", val).isEmpty()){
-                    f2 = new Person.FieldValue();
-                    String[] vals = val.split("%%");
-                    switch(vals.length){
-                        case 0:
-                            f1.setValue("");
-                            f2.setValue("");
-                            break;
-                        case 1:
-                            f1.setValue(vals[0].trim());
-                            f2.setValue(vals[0].trim());
-                            break;
-                        case 2:
-                            f1.setValue(vals[0].trim());
-                            f2.setValue(vals[1].trim());
-                            break;
-                        default:
-                            f1.setValue(vals[0].trim());
-                            f2.setValue(vals[1].trim());
-                            break;
-                    }
-                    f1.setLang(iam.getPrimaryLang().getValue());
-                    f2.setLang(iam.getSecondaryLang().getValue());
-                }
-
-                if(mutate){
-                    f1.setMutate(true);
-                    if(f2 != null){
-                        f2.setMutate(true);
-                    }
-                }
-                af.add(f1);
-                if(f2 != null){
-                    af.add(f2);
-                }
-                iam.getIdObject().put(field, af);
             }
 
             if(data_map.get("groupName") == null || data_map.get("groupName").isEmpty()){
