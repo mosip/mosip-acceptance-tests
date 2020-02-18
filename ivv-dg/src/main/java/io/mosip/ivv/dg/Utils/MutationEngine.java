@@ -47,14 +47,20 @@ public class MutationEngine {
             newIdField.setPrimaryValue(idField.getPrimaryValue());
             newIdField.setSecondaryValue(idField.getSecondaryValue());
             if(idField.getMutate()) {
-                if(!regex("/\\S+@\\S+\\.\\S+/", idField.getPrimaryValue()).isEmpty()){
+                if(!regex("(\\S+@\\S+\\.\\S+)", idField.getPrimaryValue()).isEmpty()){
                     if(!idField.getPrimaryValue().isEmpty()){
                         newIdField.setPrimaryValue(mutateEmail(idField.getPrimaryValue()));
                     }
                     if(!idField.getSecondaryValue().isEmpty()){
                         newIdField.setSecondaryValue(mutateEmail(idField.getSecondaryValue()));
                     }
-
+                } else if(!regex("^(\\d+$)", idField.getPrimaryValue()).isEmpty()) {
+                    if(!idField.getPrimaryValue().isEmpty()){
+                        newIdField.setPrimaryValue(generatePhone());
+                    }
+                    if(!idField.getSecondaryValue().isEmpty()){
+                        newIdField.setSecondaryValue(generatePhone());
+                    }
                 } else {
                     if(!idField.getPrimaryValue().isEmpty()){
                         newIdField.setPrimaryValue(mutateCommon(idField.getPrimaryValue()));
