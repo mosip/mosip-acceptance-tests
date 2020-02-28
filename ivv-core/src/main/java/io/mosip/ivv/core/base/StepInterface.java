@@ -2,10 +2,8 @@ package io.mosip.ivv.core.base;
 
 
 import com.aventstack.extentreports.ExtentTest;
+import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.dtos.CallRecord;
-import io.mosip.ivv.core.dtos.Scenario;
-import io.mosip.ivv.core.dtos.Store;
 
 public interface StepInterface {
     Boolean hasError();
@@ -16,6 +14,12 @@ public interface StepInterface {
 
     void validateStep() throws RigInternalError;
 
+    void assertAPI();
+
+    void assertStatus();
+
+    void assertHttpStatus();
+
     void setExtentInstance(ExtentTest e);
 
     void setStep(Scenario.Step s);
@@ -24,4 +28,8 @@ public interface StepInterface {
 
     CallRecord getCallRecord();
     void run();
+
+    RequestDataDTO prepare();
+    ResponseDataDTO call(RequestDataDTO requestData);
+    void process(ResponseDataDTO res);
 }

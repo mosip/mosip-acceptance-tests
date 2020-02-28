@@ -1,14 +1,21 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.operator.UserDetailService;
 
-public class SyncUserDetail extends Step implements StepInterface {
+public class SyncUserDetail extends BaseStep implements StepInterface {
+
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -32,5 +39,20 @@ public class SyncUserDetail extends Step implements StepInterface {
             SuccessResponseDTO es = responseDTO.getSuccessResponseDTO();
             logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

@@ -2,88 +2,42 @@ package io.mosip.ivv.preregistration.methods;
 
 import static io.restassured.RestAssured.given;
 
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
-
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.dtos.CallRecord;
-import io.mosip.ivv.core.dtos.Person;
-import io.mosip.ivv.core.dtos.Scenario;
-import io.mosip.ivv.core.utils.ErrorMiddleware;
-import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.preregistration.utils.Helpers;
+import io.mosip.ivv.core.dtos.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
-public class CancelAppointment extends Step implements StepInterface {
-	private Person person;
+public class CancelAppointment extends BaseStep implements StepInterface {
 
 	@Override
 	public void run() {
-		String preRegistrationID = null;
-		this.index = Utils.getPersonIndex(step);
-		/* getting active user from persons */
-		this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
+		RequestDataDTO requestData = prepare();
+		ResponseDataDTO responseData = call(requestData);
+		process(responseData);
+	}
 
-		preRegistrationID = person.getPreRegistrationId();
-
-		switch (step.getVariant()) {
-		case "InvalidPreReg":
-			preRegistrationID = "100000000";
-			break;
-
-		case "BookingDataNotFound":
-			preRegistrationID = person.getPreRegistrationId();
-			break;
-
-		case "DEFAULT":
-			break;
-
-		default:
-			logWarning("Skipping step " + step.getName() + " as variant " + step.getVariant() + " not found");
-			return;
-		}
-
+	public RequestDataDTO prepare(){
 		String url = "/preregistration/" + System.getProperty("ivv.prereg.version") + "/appointment/"
-				+ preRegistrationID;
+				+ store.getCurrentPerson().getPreRegistrationId();
+		return new RequestDataDTO(url, null);
+	}
+
+	public ResponseDataDTO call(RequestDataDTO data){
+		RestAssured.baseURI = System.getProperty("ivv.mosip.host");
 		RestAssured.useRelaxedHTTPSValidation();
-		Response api_response = (Response) given().cookie("Authorization", this.store.getHttpData().getCookie())
-				.put(url);
+		Response responseData = (Response) given().cookie("Authorization", this.store.getHttpData().getCookie())
+				.put(data.getUrl());
+		this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+		return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
+	}
 
-		this.callRecord = new CallRecord(RestAssured.baseURI + url, "PUT", "pre_reg_id: " + preRegistrationID,
-				api_response);
-		Helpers.logCallRecord(this.callRecord);
+	public void process(ResponseDataDTO res){
 
-		/* check for api status */
-		if (api_response.getStatusCode() != 200) {
-			logSevere("API HTTP status return as " + api_response.getStatusCode());
-			this.hasError = true;
-			return;
-		}
+	}
 
-		if (step.getErrors() != null && step.getErrors().size() > 0) {
-			ErrorMiddleware.MiddlewareResponse emr = new ErrorMiddleware(step, api_response, extentInstance).inject();
-			if (!emr.getStatus()) {
-				this.hasError = true;
-				return;
-			}
-		} else {
-			ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-			/* Response data parsing */
-			if (step.getAsserts().size() > 0) {
-				for (Scenario.Step.Assert pr_assert : step.getAsserts()) {
-					switch (pr_assert.type) {
-					case DONT:
-						break;
+	@Override
+	public void assertAPI() {
 
-//                         default:
-//                             extentTest.log(Status.WARNING, "Skipping assert "+assertion_type);
-//                             Utils.auditLog.warning("Skipping assert "+assertion_type);
-//                             break;
-					}
-				}
-			}
-		}
 	}
 }

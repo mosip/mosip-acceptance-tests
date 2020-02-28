@@ -1,7 +1,9 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
@@ -11,13 +13,18 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 
 import java.util.HashMap;
 
-public class AddApplicantDocuments extends Step implements StepInterface {
+public class AddApplicantDocuments extends BaseStep implements StepInterface {
 
     @Override
     public void validateStep() throws RigInternalError {
         if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD) && store.getCurrentIntroducer() == null){
             throw new RigInternalError("Introducer is required to process this step");
         }
+    }
+
+    @Override
+    public void assertAPI() {
+
     }
 
     @Override
@@ -38,6 +45,21 @@ public class AddApplicantDocuments extends Step implements StepInterface {
 
         registrationDTO.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
         this.store.setRegistrationDto(registrationDTO);
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 
     private HashMap<String, DocumentDetailsDTO> getDocuments(){

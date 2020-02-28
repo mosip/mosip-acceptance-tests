@@ -1,12 +1,21 @@
 package io.mosip.ivv.ida.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.utils.MailHelper;
 
 import java.util.ArrayList;
 
-public class GetAuthenticationOTP extends Step implements StepInterface {
+import static io.restassured.RestAssured.given;
+
+public class GetAuthenticationOTP extends BaseStep implements StepInterface {
+
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -61,4 +70,17 @@ public class GetAuthenticationOTP extends Step implements StepInterface {
         }
         return otp;
     }
+
+    public RequestDataDTO prepare(){
+        return null;
+    }
+
+    public ResponseDataDTO call(RequestDataDTO data){
+        return null;
+    }
+
+    public void process(ResponseDataDTO res){
+
+    }
+
 }

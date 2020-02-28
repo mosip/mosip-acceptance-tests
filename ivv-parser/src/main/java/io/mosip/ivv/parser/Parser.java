@@ -27,7 +27,7 @@ public class Parser implements ParserInterface {
     Properties properties = null;
 
     public Parser(String USER_DIR, String CONFIG_FILE){
-        properties = Utils.getProperties(CONFIG_FILE);
+        properties = Utils.getProperties(USER_DIR+"/"+CONFIG_FILE);
         this.PERSONA_SHEET = USER_DIR+properties.getProperty("ivv.sheet.persona");
         this.RCUSER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.rcpersona");
         this.PARTNER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.partner");
@@ -249,7 +249,7 @@ public class Parser implements ParserInterface {
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
             configs_map.put(data_map.get("key"), data_map.get("value"));
         }
-        System.out.println("total config entries parsed: "+configs_map.size());
+        System.out.println("total utils entries parsed: "+configs_map.size());
         return configs_map;
     }
 

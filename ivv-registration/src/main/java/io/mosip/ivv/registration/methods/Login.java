@@ -1,7 +1,9 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -15,8 +17,13 @@ import io.mosip.registration.service.operator.UserOnboardService;
 import java.io.IOException;
 import java.util.Map;
 
-public class Login extends Step implements StepInterface {
-    
+public class Login extends BaseStep implements StepInterface {
+
+    @Override
+    public void assertAPI() {
+
+    }
+
     @Override
     public void run() {
         String jsonInString = "";
@@ -64,5 +71,20 @@ public class Login extends Step implements StepInterface {
             logInfo("user not found in local db");
             this.hasError = true;
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

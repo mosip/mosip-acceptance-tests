@@ -3,11 +3,10 @@ package io.mosip.ivv.regprocessor.methods;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.regprocessor.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -16,7 +15,7 @@ import org.json.simple.JSONObject;
 
 import static io.restassured.RestAssured.given;
 
-public class CheckStatus extends Step implements StepInterface {
+public class CheckStatus extends BaseStep implements StepInterface {
 
     private int delay = 200;
 
@@ -41,93 +40,92 @@ public class CheckStatus extends Step implements StepInterface {
 
         while(counter < repeats){
             logInfo("Checking the statusCode of Registration");
-            Boolean funcStatus = getStatus(step);
-            if(funcStatus){
+            RequestDataDTO requestData = prepare();
+            ResponseDataDTO responseData = call(requestData);
+            process(responseData);
+            if(!hasError){
                 if (expectedStatus.isEmpty()) {
                     logInfo("Actual statusCode is [" + finalStatus + "], but can be anything");
                     return;
                 } else if (expectedStatus.equals(finalStatus)) {
                     logInfo("Expected statusCode [" + expectedStatus + "] equals Actual statusCode [" + finalStatus + "]");
                     return;
-                } else {
+                } else if(finalStatus.isEmpty()){
+
+                }else {
                     logInfo("Expected statusCode [" + expectedStatus + "] does not match Actual statusCode [" + finalStatus + "]");
                     this.hasError = true;
                     return;
                 }
             }else{
-                if(hasError){
-                    return;
-                }
+                return;
+            }
+
+            try {
+                logInfo("Retrying after 10 seconds...");
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                logSevere(e.getMessage());
+                this.hasError = true;
+                return;
             }
         }
     }
 
-    private Boolean getStatus(Scenario.Step step){
-        this.index = Utils.getPersonIndex(step);
-        String registrationId = store.getScenarioData().getPersona().getPersons().get(index).getRegistrationId();
-
+    public RequestDataDTO prepare(){
         JSONArray request_json = new JSONArray(){{
             add(new JSONObject(){{
-                put("registrationId", registrationId);
+                put("registrationId", store.getCurrentPerson().getRegistrationId());
             }});
         }};
 
-        JSONObject api_input = new JSONObject();
-        api_input.put("id", "mosip.registration.status");
-        api_input.put("version", System.getProperty("ivv.global.apiversion"));
-        api_input.put("requesttime", Utils.getCurrentDateAndTimeForAPI());
-        api_input.put("request", request_json);
+        JSONObject requestData = new JSONObject();
+        requestData.put("id", "mosip.registration.status");
+        requestData.put("version", System.getProperty("ivv.global.apiversion"));
+        requestData.put("requesttime", Utils.getCurrentDateAndTimeForAPI());
+        requestData.put("request", request_json);
 
         String url = "/registrationprocessor/" + System.getProperty("ivv.global.version") +"/registrationstatus/search";
+        return new RequestDataDTO(url, requestData.toJSONString());
+    }
+
+    public ResponseDataDTO call(RequestDataDTO data){
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
-
-        Response api_response = (Response) given()
-                .contentType(ContentType.JSON).body(api_input)
+        Response responseData = (Response) given()
+                .contentType(ContentType.JSON).body(data.getRequest())
                 .cookie("Authorization", this.store.getHttpData().getCookie())
-                .post(url);
+                .post(data.getUrl());
+        this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
+    }
 
-        this.callRecord = new CallRecord(RestAssured.baseURI+url, "POST", api_input.toString(), api_response);
-        Helpers.logCallRecord(this.callRecord);
-        ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-
-        /* check for api status */
-        if (api_response.getStatusCode() != 200) {
-            logFail("API HTTP status return as " + api_response.getStatusCode());
-            this.hasError=true;
-            return false;
-        }
+    public void process(ResponseDataDTO res){
+        ReadContext ctx = JsonPath.parse(res.getBody());
 
         try {
             if(ctx.read("$['response']") == null){
                 logInfo("Assert failed: Expected response not empty but found empty");
                 this.hasError=true;
-                return false;
+                return;
             }
         } catch (PathNotFoundException e) {
             e.printStackTrace();
             logSevere("Assert failed: Expected response not empty but found empty");
             this.hasError=true;
-            return false;
+            return;
         }
 
         logInfo("Registration id: "+ctx.read("$['response'][0]['registrationId']")+", statusCode: "+ctx.read("$['response'][0]['statusCode']"));
 
         if(ctx.read("$['response'][0]['statusCode']") != null && !ctx.read("$['response'][0]['statusCode']").equals("PROCESSING") && !ctx.read("$['response'][0]['statusCode']").equals("RECEIVED")){
             finalStatus = ctx.read("$['response'][0]['statusCode']");
-            return true;
         }
+    }
 
-        try {
-            logInfo("Retry after 10 seconds...");
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            logSevere(e.getMessage());
-            this.hasError = true;
-            return false;
-        }
+    @Override
+    public void assertAPI() {
 
-        return false;
     }
 
 }

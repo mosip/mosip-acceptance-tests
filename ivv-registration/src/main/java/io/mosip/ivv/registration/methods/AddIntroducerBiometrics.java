@@ -1,7 +1,9 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.dtos.BiometricsDTO;
 import io.mosip.ivv.core.dtos.PersonaDef;
@@ -16,7 +18,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddIntroducerBiometrics extends Step implements StepInterface {
+public class AddIntroducerBiometrics extends BaseStep implements StepInterface {
 
     private int iris_threshold = 80;
     private int slap_threshold = 80;
@@ -57,6 +59,11 @@ public class AddIntroducerBiometrics extends Step implements StepInterface {
             step.getParameters().add(includes.rightRing.toString());
             step.getParameters().add(includes.rightLittle.toString());
         }
+    }
+
+    @Override
+    public void assertAPI() {
+
     }
 
     @Override
@@ -124,6 +131,21 @@ public class AddIntroducerBiometrics extends Step implements StepInterface {
 
         registrationDTO.getBiometricDTO().setIntroducerBiometricDTO(biometricInfoDTO);
         this.store.setRegistrationDto(registrationDTO);
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 
     private FaceDetailsDTO getFace(){

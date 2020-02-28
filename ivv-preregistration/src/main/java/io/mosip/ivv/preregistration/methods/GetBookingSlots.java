@@ -1,20 +1,18 @@
 package io.mosip.ivv.preregistration.methods;
 
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.ReadContext;
-import io.mosip.ivv.core.base.Step;
+import com.google.gson.Gson;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
-import io.mosip.ivv.core.utils.Utils;
-import io.mosip.ivv.core.utils.ErrorMiddleware;
-import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
+import java.util.List;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
-public class GetBookingSlots extends Step implements StepInterface {
+public class GetBookingSlots extends BaseStep implements StepInterface {
 
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
@@ -23,64 +21,54 @@ public class GetBookingSlots extends Step implements StepInterface {
      */
     @Override
     public void run() {
-        this.index = Utils.getPersonIndex(step);
-        /* getting active user from persons */
-        Person person = this.store.getScenarioData().getPersona().getPersons().get(index);
+        RequestDataDTO requestData = prepare();
+        ResponseDataDTO responseData = call(requestData);
+        process(responseData);
+    }
 
-        String url = "/preregistration/" + System.getProperty("ivv.prereg.version") + "/appointment/availability/"+ person.getRegistrationCenterId();
+    public RequestDataDTO prepare(){
+        String url = "/preregistration/" + System.getProperty("ivv.prereg.version") + "/appointment/availability/"+ store.getCurrentPerson().getRegistrationCenterId();
+        return new RequestDataDTO(url, null);
+    }
+
+    public ResponseDataDTO call(RequestDataDTO data){
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
-        Response api_response = given().relaxedHTTPSValidation()
+        Response responseData = given().relaxedHTTPSValidation()
                 .cookie("Authorization", this.store.getHttpData().getCookie())
-                .get(url);
+                .get(data.getUrl());
+        this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
+    }
 
-        this.callRecord = new CallRecord(RestAssured.baseURI+url, "GET", "center id: "+person.getRegistrationCenterId(), api_response);
-        Helpers.logCallRecord(this.callRecord);
-        ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-
-        /* check for api status */
-        if (api_response.getStatusCode() != 200) {
-            logSevere("API HTTP status return as " + api_response.getStatusCode());
-            this.hasError = true;
-            return;
-        }
-
-        if (step.getErrors() != null && step.getErrors().size() > 0) {
-            ErrorMiddleware.MiddlewareResponse emr = new ErrorMiddleware(step, api_response, extentInstance).inject();
-            if (!emr.getStatus()) {
-                this.hasError = true;
-                return;
+    public void process(ResponseDataDTO res){
+        Gson gsn = new Gson();
+        Map<String, Object> resMap = gsn.fromJson(res.getBody(), Map.class);
+        try {
+            List center_details = (List)((Map)resMap.get("response")).get("centerDetails");
+            if(center_details.size()==0){
+                return ;
             }
-        }else {
-            /* Assertion policies execution */
-            if (step.getAsserts().size() > 0) {
-                for (Scenario.Step.Assert pr_assert : step.getAsserts()) {
-                    switch (pr_assert.type) {
-                        case DONT:
-                            break;
-
-                        case DEFAULT:
-                            try {
-                                if(ctx.read("$['response']") == null){
-                                    logInfo("Assert failed: Expected response not empty but found empty");
-                                    this.hasError=true;
-                                    return;
-                                }
-                            } catch (PathNotFoundException e) {
-                                e.printStackTrace();
-                                logSevere("Assert failed: Expected response not empty but found empty");
-                                this.hasError=true;
-                                return;
-                            }
-                           // logInfo("Assert [DEFAULT] passed");
-                            break;
-
-                        default:
-                            logInfo("API HTTP status return as " + pr_assert.type);
-                            break;
-                    }
+            for(Object center_info: center_details) {
+                String date = (String)((Map)center_info).get("date");
+                List timeSlots = (List)((Map)center_info).get("timeSlots");
+                if(timeSlots.size()>0){
+                    String from = (String)((Map)timeSlots.get(0)).get("fromTime");
+                    String to = (String)((Map)timeSlots.get(0)).get("toTime");
+                    store.getCurrentPerson().setPrevSlot(store.getCurrentPerson().getSlot());
+                    store.getCurrentPerson().setSlot(new BookingSlot(date, from, to));
                 }
             }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            logSevere("Error while running Booking slot: "+e.getMessage());
+            this.hasError = true;
+            return ;
         }
+    }
+
+    @Override
+    public void assertAPI() {
+
     }
 
 }

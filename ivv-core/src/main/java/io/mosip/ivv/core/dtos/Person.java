@@ -27,8 +27,8 @@ public class Person extends PersonaDef {
     private String preRegistrationId = "";
     private String preRegistrationCenterId = "";
     private String preRegistrationStatusCode = "";
-    private BookingSlot slot;
-    private BookingSlot prevSlot;
+    private BookingSlot slot = new BookingSlot();
+    private BookingSlot prevSlot = new BookingSlot();
 
     /* reg store */
     private String registrationId = "";

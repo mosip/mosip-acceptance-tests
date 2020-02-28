@@ -1,0 +1,8 @@
+{
+  "id": "mosip.pre-registration.login.sendotp",
+  "version": "1.0",
+  "requesttime": "2019-08-12T14:42:51.370Z",
+  "request": {
+    "userId": "abc.444@gmail.com"
+  }
+}

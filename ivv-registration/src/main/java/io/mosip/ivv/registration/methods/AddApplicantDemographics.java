@@ -2,10 +2,11 @@ package io.mosip.ivv.registration.methods;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.IDObjectField;
-import io.mosip.ivv.core.dtos.Person;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
@@ -20,13 +21,18 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class AddApplicantDemographics extends Step implements StepInterface {
+public class AddApplicantDemographics extends BaseStep implements StepInterface {
 
     @Override
     public void validateStep() throws RigInternalError{
         if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD) && store.getCurrentIntroducer() == null){
             throw new RigInternalError("Introducer is required to process this step");
         }
+    }
+
+    @Override
+    public void assertAPI() {
+
     }
 
     @Override
@@ -93,6 +99,21 @@ public class AddApplicantDemographics extends Step implements StepInterface {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 
     private ArrayList<ValuesDTO> createValueDTO(IDObjectField idObjectField){

@@ -35,8 +35,7 @@ public class Scenario {
         private ArrayList<Integer> index;
 
         public static class Error{
-            public String type;
-            public ArrayList<String> parameters = new ArrayList<>();
+            public String code;
         }
 
         public static class Assert{

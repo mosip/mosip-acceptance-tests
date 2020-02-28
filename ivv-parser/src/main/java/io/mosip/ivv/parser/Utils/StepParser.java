@@ -62,7 +62,7 @@ public class StepParser {
                 if(func.contains(errorKeys[j])){
                     Scenario.Step.Error er = new Scenario.Step.Error();
                     String ertype = Utils.regex("\\((.*?)\\)", str_split[i]);
-                    er.type = ertype;
+                    er.code = ertype;
                     errors.add(er);
                 }
             }

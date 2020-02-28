@@ -1,12 +1,19 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.dto.*;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
-public class DeletePackets extends Step implements StepInterface {
+public class DeletePackets extends BaseStep implements StepInterface {
+
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -26,5 +33,20 @@ public class DeletePackets extends Step implements StepInterface {
             SuccessResponseDTO es = responseDTO.getSuccessResponseDTO();
             logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

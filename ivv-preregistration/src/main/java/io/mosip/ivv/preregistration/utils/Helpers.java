@@ -1,5 +1,9 @@
 package io.mosip.ivv.preregistration.utils;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,6 +13,7 @@ import java.util.ArrayList;
 
 import com.aventstack.extentreports.Status;
 
+import io.mosip.ivv.core.dtos.Store;
 import io.mosip.ivv.core.policies.AssertionPolicy;
 import io.mosip.ivv.core.dtos.CallRecord;
 import io.mosip.ivv.core.dtos.ExtentLogger;
@@ -87,6 +92,16 @@ public abstract class Helpers {
         nstep.setAsserts(asserts);
         return nstep;
     }
+
+	public static String getRequestJson(String name) throws IOException {
+		String path = System.getProperty("user.dir")+"/src/test/resources/requests/"+name;
+		return Utils.readFileAsString(path);
+	}
+
+	public static String getResponseJson(String name) throws FileNotFoundException {
+		String path = System.getProperty("user.dir")+"/src/test/resources/responses/"+name;
+		return Utils.readFileAsString(path);
+	}
 
 
 }

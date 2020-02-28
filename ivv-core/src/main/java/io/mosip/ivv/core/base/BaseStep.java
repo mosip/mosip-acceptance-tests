@@ -1,13 +1,17 @@
 package io.mosip.ivv.core.base;
 
 import com.aventstack.extentreports.ExtentTest;
-import io.mosip.ivv.core.exceptions.RigInternalError;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.dtos.CallRecord;
 import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.dtos.Store;
+import io.mosip.ivv.core.exceptions.RigInternalError;
+import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 
-public class Step {
+public class BaseStep {
     public Boolean hasError = false;
     public Store store = null;
     public int index = 0;
@@ -75,5 +79,44 @@ public class Step {
     public void logSevere(String msg){
         Utils.auditLog.severe(msg);
         extentInstance.info(msg);
+    }
+
+    public void errorHandler(){
+        if(callRecord != null){
+            if (step.getErrors() != null && step.getErrors().size() > 0) {
+                ErrorMiddleware.MiddlewareResponse emr = new ErrorMiddleware(step.getErrors(), callRecord.getResponse().body().asString(), extentInstance).inject();
+                if (!emr.getStatus()) {
+                    this.hasError = true;
+                    return;
+                }
+            }
+        }
+    }
+
+    public void assertHttpStatus(){
+        if (callRecord != null && callRecord.getResponse().getStatusCode() != 200) {
+            logSevere("API HTTP status return as " + callRecord.getResponse().getStatusCode());
+            this.hasError = true;
+            return;
+        }
+    }
+
+    public void assertStatus() {
+        if(callRecord != null){
+            ReadContext ctx = JsonPath.parse(callRecord.getResponse().getBody().asString());
+            try {
+                if(ctx.read("$['response']") == null){
+                    logInfo("Assert failed: Expected response not empty but found empty");
+                    this.hasError=true;
+                    return;
+                }
+            } catch (PathNotFoundException e) {
+                e.printStackTrace();
+                logSevere("Assert failed: Expected response not empty but found empty");
+                this.hasError=true;
+                return;
+            }
+            logInfo("Assert [DEFAULT] passed");
+        }
     }
 }

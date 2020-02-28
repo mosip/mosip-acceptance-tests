@@ -1,7 +1,9 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PacketStatusDTO;
@@ -15,7 +17,12 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class UploadPacket extends Step implements StepInterface {
+public class UploadPacket extends BaseStep implements StepInterface {
+    @Override
+    public void assertAPI() {
+
+    }
+
     @Override
     public void run() {
         PacketSynchService syncserv = store.getRegApplicationContext().getBean(PacketSynchService.class);
@@ -65,5 +72,20 @@ public class UploadPacket extends Step implements StepInterface {
             SuccessResponseDTO es = responseDTO.getSuccessResponseDTO();
             logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

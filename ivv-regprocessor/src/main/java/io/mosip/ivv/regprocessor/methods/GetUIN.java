@@ -3,42 +3,45 @@ package io.mosip.ivv.regprocessor.methods;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.CallRecord;
-import io.mosip.ivv.regprocessor.utils.Helpers;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
-public class GetUIN extends Step implements StepInterface {
+public class GetUIN extends BaseStep implements StepInterface {
 
     @Override
     public void run() {
+        RequestDataDTO requestData = prepare();
+        ResponseDataDTO responseData = call(requestData);
+        process(responseData);
+    }
+
+    public RequestDataDTO prepare(){
         String registrationId = store.getCurrentPerson().getRegistrationId();
         if(step.getParameters().size() > 0){
             registrationId = step.getParameters().get(0);
         }
-
         String url = "/idrepository/" + System.getProperty("ivv.global.version") +"/identity/rid/"+registrationId+"?type=demo";
+        return new RequestDataDTO(url, null);
+    }
+
+    public ResponseDataDTO call(RequestDataDTO data){
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
-
-        Response api_response = (Response) given()
+        Response responseData = (Response) given()
                 .cookie("Authorization", this.store.getHttpData().getCookie())
-                .get(url);
+                .get(data.getUrl());
+        this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
+    }
 
-        this.callRecord = new CallRecord(RestAssured.baseURI+url, "POST", "registrationId: "+registrationId, api_response);
-        Helpers.logCallRecord(this.callRecord);
-        ReadContext ctx = JsonPath.parse(api_response.getBody().asString());
-
-        /* check for api status */
-        if (api_response.getStatusCode() != 200) {
-            logFail("API HTTP status return as " + api_response.getStatusCode());
-            this.hasError=true;
-            return;
-        }
-
+    public void process(ResponseDataDTO res){
+        ReadContext ctx = JsonPath.parse(res.getBody());
         try {
             if(ctx.read("$['response']") == null){
                 logInfo("Assert failed: Expected response not empty but found empty");
@@ -60,6 +63,10 @@ public class GetUIN extends Step implements StepInterface {
             this.hasError=true;
             return;
         }
+    }
+
+    @Override
+    public void assertAPI() {
 
     }
 

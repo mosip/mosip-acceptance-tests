@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.mosip.ivv.core.dtos.CallRecord;
 import io.mosip.ivv.core.dtos.IDObjectField;
 import io.mosip.ivv.core.dtos.Person;
@@ -344,4 +348,30 @@ public class Utils {
         }
         return newIDObjectField;
     }
+
+    public static String prettyJson(String uglyJson){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(uglyJson);
+        return gson.toJson(je);
+    }
+
+    public static String removeValuesFromJson(String json){
+        return prettyJson(json).replaceAll("[:].+\".*\"",":\"\"").replaceAll("\\s+","");
+    }
+
+    public static Boolean matchJsonOnlyKeys(String a, String b){
+        String prettya = removeValuesFromJson(prettyJson(a)).replaceAll("\\s+","");
+        String prettyb = removeValuesFromJson(prettyJson(b)).replaceAll("\\s+","");
+        System.out.println("JSON A:");
+        System.out.println(prettya);
+        System.out.println("JSON B:");
+        System.out.println(prettyb);
+        if(prettya.equals(prettyb)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
