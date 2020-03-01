@@ -1,16 +1,25 @@
 package io.mosip.ivv.regprocessor.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.MailHelper;
 
 import java.util.ArrayList;
 
-public class CheckUINMail extends Step implements StepInterface {
+import static io.restassured.RestAssured.given;
+
+public class CheckUINMail extends BaseStep implements StepInterface {
 
     private int delay = 200;
     private String finalStatus;
+
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -30,7 +39,10 @@ public class CheckUINMail extends Step implements StepInterface {
         }
 
         while(counter < repeats){
-            logInfo("Checking the User email ("+store.getCurrentPerson().getEmail()+") for UIN mail");
+            logInfo("Checking the User email ("+store.getCurrentPerson().getUserid()+") for UIN mail");
+            RequestDataDTO requestData = prepare();
+            ResponseDataDTO responseData = call(requestData);
+            process(responseData);
             String emailBody = getStatus(step);
             if(emailBody != null && !emailBody.isEmpty()){
                 logInfo("UIN mail has been found");
@@ -63,12 +75,24 @@ public class CheckUINMail extends Step implements StepInterface {
             add("UIN Generated");
         }};
         String regex = "";
-        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getEmail(), 50);
+        MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getUserid(), 50);
         if(mailHelperResponse != null){
             logInfo("Msg found: "+mailHelperResponse.getBody());
             mailReceived = mailHelperResponse.getBody();
         }
         return mailReceived;
+    }
+
+    public RequestDataDTO prepare(){
+        return null;
+    }
+
+    public ResponseDataDTO call(RequestDataDTO data){
+        return null;
+    }
+
+    public void process(ResponseDataDTO res){
+
     }
 
 }

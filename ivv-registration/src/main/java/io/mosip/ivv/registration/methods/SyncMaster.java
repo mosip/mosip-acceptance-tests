@@ -1,22 +1,21 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+public class SyncMaster extends BaseStep implements StepInterface {
 
-public class SyncMaster extends Step implements StepInterface {
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -44,5 +43,20 @@ public class SyncMaster extends Step implements StepInterface {
             SuccessResponseDTO es = responseDTO.getSuccessResponseDTO();
             logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

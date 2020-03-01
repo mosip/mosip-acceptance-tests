@@ -1,14 +1,12 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Person;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.dtos.Person;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.registration.config.Setup;
 import io.mosip.registration.context.SessionContext;
@@ -16,14 +14,16 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
-import java.util.ArrayList;
-
-public class GetPreRegistration extends Step implements StepInterface {
+public class GetPreRegistration extends BaseStep implements StepInterface {
 
     private Person person;
+
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -52,5 +52,20 @@ public class GetPreRegistration extends Step implements StepInterface {
             e.printStackTrace();
             logSevere("Jackson ObjectMapper: "+e.getMessage());
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

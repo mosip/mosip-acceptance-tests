@@ -1,7 +1,7 @@
 package io.mosip.ivv.orchestrator;
 
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.ExtentLogger;
+import io.mosip.ivv.core.dtos.Scenario;
 
 import java.util.ArrayList;
 

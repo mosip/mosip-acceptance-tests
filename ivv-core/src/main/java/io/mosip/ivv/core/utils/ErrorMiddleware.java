@@ -1,15 +1,12 @@
 package io.mosip.ivv.core.utils;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.policies.ErrorPolicy;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.core.dtos.ExtentLogger;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.restassured.response.Response;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +17,8 @@ import java.util.ArrayList;
 @Setter
 public class ErrorMiddleware {
 
-    private Scenario.Step st;
-    private Response rs;
+    private ArrayList<Scenario.Step.Error> ers;
+    private String rs;
     private ExtentTest extentInstance;
     private ArrayList<ExtentLogger> reports = new ArrayList<>();
 
@@ -33,29 +30,26 @@ public class ErrorMiddleware {
         private ArrayList<ExtentLogger> reports = new ArrayList<>();
     }
 
-    public ErrorMiddleware(Scenario.Step st, Response rs, ExtentTest extentInstance){
-        this.st = st;
+    public ErrorMiddleware(ArrayList<Scenario.Step.Error> ers, String rs, ExtentTest extentInstance){
+        this.ers = ers;
         this.rs = rs;
         this.extentInstance = extentInstance;
     }
 
     public MiddlewareResponse inject(){
         MiddlewareResponse mr = new MiddlewareResponse();
-        for(Scenario.Step.Error er: this.st.getErrors()){
-            if(er.equals(ErrorPolicy.HTTP_ERROR_CODE)){
-                Boolean resp = httpErrorCodeMiddleware(er);
-                if(!resp){
-                    mr.setStatus(resp);
-                    return mr;
-                }
+        for(Scenario.Step.Error er: this.ers){
+            Boolean resp = httpErrorCodeMiddleware(er.code);
+            if(!resp){
+                mr.setStatus(resp);
+                return mr;
             }
         }
         return mr;
     }
 
-    public Boolean httpErrorCodeMiddleware(Scenario.Step.Error er) {
-        String errorCode = er.parameters.get(0);
-        ReadContext ctx = JsonPath.parse(rs.getBody().asString());
+    public Boolean httpErrorCodeMiddleware(String errorCode) {
+        ReadContext ctx = JsonPath.parse(rs);
         if (ctx.read("$['errors']") != null) {
             try {
                 if (!ctx.read("$['errors'][0]['errorCode']").equals(errorCode)) {

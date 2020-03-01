@@ -2,27 +2,37 @@ package io.mosip.ivv.registration.methods;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.IDObjectField;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
+import org.json.simple.JSONObject;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Map;
 
-public class AddApplicantDemographics extends Step implements StepInterface {
+public class AddApplicantDemographics extends BaseStep implements StepInterface {
 
     @Override
     public void validateStep() throws RigInternalError{
         if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD) && store.getCurrentIntroducer() == null){
             throw new RigInternalError("Introducer is required to process this step");
         }
+    }
+
+    @Override
+    public void assertAPI() {
+
     }
 
     @Override
@@ -34,27 +44,31 @@ public class AddApplicantDemographics extends Step implements StepInterface {
         String platformLanguageCode = applicationContext.applicationLanguage();
         String localLanguageCode = applicationContext.localLanguage();
 
-        //TODO complete the identity refer the fields from individualIdentity.class
-        individualIdentity.setEmail(store.getCurrentPerson().getEmail());
-        individualIdentity.setAddressLine1(createValueDTO(platformLanguageCode, store.getCurrentPerson().getAddressLine1()));
-        individualIdentity.setAddressLine2(createValueDTO(platformLanguageCode, store.getCurrentPerson().getAddressLine2()));
-        individualIdentity.setAddressLine3(createValueDTO(platformLanguageCode, store.getCurrentPerson().getAddressLine3()));
-        individualIdentity.setFullName(createValueDTO(platformLanguageCode, store.getCurrentPerson().getName()));
-        individualIdentity.setDateOfBirth(store.getCurrentPerson().getDateOfBirth());
-        individualIdentity.setGender(createValueDTO(platformLanguageCode, store.getCurrentPerson().getGender()));
-        individualIdentity.setResidenceStatus(createValueDTO(platformLanguageCode, store.getCurrentPerson().getResidenceStatus()));
-        individualIdentity.setRegion(createValueDTO(platformLanguageCode, store.getCurrentPerson().getRegion()));
-        individualIdentity.setProvince(createValueDTO(platformLanguageCode, store.getCurrentPerson().getProvince()));
-        individualIdentity.setCity(createValueDTO(platformLanguageCode, store.getCurrentPerson().getCity()));
-        individualIdentity.setZone(createValueDTO(platformLanguageCode, store.getCurrentPerson().getZone()));
+        JSONObject identity_json = new JSONObject();
+        for (Map.Entry<String, IDObjectField> entry : store.getCurrentPerson().getIdObject().entrySet()) {
+            String key = entry.getKey();
+            IDObjectField vals = entry.getValue();
+        }
+        individualIdentity.setEmail(store.getCurrentPerson().getIdObject().get("email").getPrimaryValue());
+        individualIdentity.setAddressLine1(createValueDTO(store.getCurrentPerson().getIdObject().get("addressLine1")));
+        individualIdentity.setAddressLine2(createValueDTO(store.getCurrentPerson().getIdObject().get("addressLine1")));
+        individualIdentity.setAddressLine3(createValueDTO(store.getCurrentPerson().getIdObject().get("addressLine1")));
+        individualIdentity.setFullName(createValueDTO(store.getCurrentPerson().getIdObject().get("addressLine1")));
+        individualIdentity.setDateOfBirth(store.getCurrentPerson().getIdObject().get("dateOfBirth").getPrimaryValue());
+        individualIdentity.setGender(createValueDTO(store.getCurrentPerson().getIdObject().get("gender")));
+        individualIdentity.setResidenceStatus(createValueDTO(store.getCurrentPerson().getIdObject().get("residenceStatus")));
+        individualIdentity.setRegion(createValueDTO(store.getCurrentPerson().getIdObject().get("region")));
+        individualIdentity.setProvince(createValueDTO(store.getCurrentPerson().getIdObject().get("province")));
+        individualIdentity.setCity(createValueDTO(store.getCurrentPerson().getIdObject().get("city")));
+        individualIdentity.setZone(createValueDTO(store.getCurrentPerson().getIdObject().get("zone")));
         individualIdentity.setPostalCode(store.getCurrentPerson().getPostalCode());
-        individualIdentity.setPhone(store.getCurrentPerson().getPhone());
+        individualIdentity.setPhone(store.getCurrentPerson().getIdObject().get("phone").getPrimaryValue());
         individualIdentity.setReferenceIdentityNumber(store.getCurrentPerson().getReferenceIdentityNumber());
         individualIdentity.setIdSchemaVersion(1.0);
 
         /* Only for Child */
         if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD)){
-            individualIdentity.setParentOrGuardianName(createValueDTO(platformLanguageCode, store.getCurrentIntroducer().getName()));
+            individualIdentity.setParentOrGuardianName(createValueDTO(store.getCurrentIntroducer().getIdObject().get("fullName")));
             if(store.getCurrentIntroducer().getRegistrationId() != null && store.getCurrentIntroducer().getRegistrationId().length()>0){
                 individualIdentity.setParentOrGuardianRID(new BigInteger(store.getCurrentIntroducer().getRegistrationId()));
             }
@@ -87,12 +101,35 @@ public class AddApplicantDemographics extends Step implements StepInterface {
         }
     }
 
-    private ArrayList<ValuesDTO> createValueDTO(String platformLanguageCode, String value){
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
+    }
+
+    private ArrayList<ValuesDTO> createValueDTO(IDObjectField idObjectField){
+        if(idObjectField == null){
+            return new ArrayList<>();
+        }
         ArrayList<ValuesDTO> values = new ArrayList<ValuesDTO>();
-        ValuesDTO valuesDTO = new ValuesDTO();
-        valuesDTO.setLanguage(platformLanguageCode);
-        valuesDTO.setValue(value);
-        values.add(valuesDTO);
+        ValuesDTO valuesDTO1 = new ValuesDTO();
+        valuesDTO1.setLanguage(idObjectField.getPrimaryValue());
+        valuesDTO1.setValue(store.getCurrentPerson().getPrimaryLang());
+        if(!store.getCurrentPerson().getSecondaryLang().isEmpty()){
+            ValuesDTO valuesDTO2 = new ValuesDTO();
+            valuesDTO2.setLanguage(idObjectField.getPrimaryValue());
+            valuesDTO2.setValue(store.getCurrentPerson().getSecondaryLang());
+        }
+        values.add(valuesDTO1);
         return values;
     }
 }

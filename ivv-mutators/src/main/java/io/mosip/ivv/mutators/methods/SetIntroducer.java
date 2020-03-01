@@ -1,10 +1,12 @@
 package io.mosip.ivv.mutators.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
 
-public class SetIntroducer  extends Step implements StepInterface {
+public class SetIntroducer  extends BaseStep implements StepInterface {
 
     @Override
     public void validateStep() throws RigInternalError {
@@ -24,7 +26,27 @@ public class SetIntroducer  extends Step implements StepInterface {
     }
 
     @Override
+    public void assertAPI() {
+
+    }
+
+    @Override
     public void run() {
         store.setCurrentIntroducer(store.getScenarioData().getPersona().getPersons().get(Integer.parseInt(step.getParameters().get(0))));
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

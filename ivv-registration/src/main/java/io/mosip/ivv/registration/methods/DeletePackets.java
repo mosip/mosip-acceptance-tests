@@ -1,22 +1,19 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.utils.Utils;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.*;
-import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
-import java.util.ArrayList;
+public class DeletePackets extends BaseStep implements StepInterface {
 
-public class DeletePackets extends Step implements StepInterface {
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -36,5 +33,20 @@ public class DeletePackets extends Step implements StepInterface {
             SuccessResponseDTO es = responseDTO.getSuccessResponseDTO();
             logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

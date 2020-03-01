@@ -1,14 +1,18 @@
 package io.mosip.ivv.ida.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class AddBiometricInfo extends Step implements StepInterface {
+import static io.restassured.RestAssured.given;
+
+public class AddBiometricInfo extends BaseStep implements StepInterface {
     private enum includes {
         leftEye, rightEye, leftThumb, rightThumb, leftIndex, leftMiddle, leftRing, leftLittle,
         rightIndex, rightMiddle, rightRing, rightLittle
@@ -45,7 +49,19 @@ public class AddBiometricInfo extends Step implements StepInterface {
     }
 
     @Override
+    public void assertAPI() {
+
+    }
+
+    @Override
     public void run() {
+        RequestDataDTO requestData = prepare();
+        ResponseDataDTO responseData = call(requestData);
+        process(responseData);
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
         store.getCurrentPerson().getAuthenticationJSON().put("biometrics", new JSONArray());
         JSONArray encodedBiometrics = new JSONArray();
         JSONObject biometricsJSON = new JSONObject();
@@ -132,11 +148,21 @@ public class AddBiometricInfo extends Step implements StepInterface {
             JSONObject biometricsData = new JSONObject(){{
                 put("data", biometricsJSON);
             }};
-//            encodedBiometrics.add(Base64.getEncoder().encodeToString(biometricsData.toString().getBytes()));
             encodedBiometrics.add(biometricsData);
         }
 
         store.getCurrentPerson().getAuthenticationJSON().put("biometrics", encodedBiometrics);
         store.getCurrentPerson().getAuthParams().add("bio");
+        return new RequestDataDTO(null, encodedBiometrics.toJSONString());
     }
+
+    public ResponseDataDTO call(RequestDataDTO data){
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
+    }
+
 }

@@ -1,6 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.dg.DataGenerator;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class ScenarioDataTest {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String jsonInString = mapper.writeValueAsString(scenariosToRun);
+            String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(scenariosToRun);
             System.out.println(jsonInString);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

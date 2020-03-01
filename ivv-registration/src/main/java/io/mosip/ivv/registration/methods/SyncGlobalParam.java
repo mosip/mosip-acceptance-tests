@@ -1,24 +1,20 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.ivv.core.utils.Utils;
-import io.mosip.registration.context.ApplicationContext;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.operator.UserDetailService;
-import io.mosip.registration.service.sync.PolicySyncService;
 
-import java.util.ArrayList;
-import java.util.Map;
+public class SyncGlobalParam extends BaseStep implements StepInterface {
 
-public class SyncGlobalParam extends Step implements StepInterface {
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -39,5 +35,20 @@ public class SyncGlobalParam extends Step implements StepInterface {
                 logInfo("response is null");
             }
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

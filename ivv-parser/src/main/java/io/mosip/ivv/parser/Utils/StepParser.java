@@ -1,7 +1,7 @@
 package io.mosip.ivv.parser.Utils;
 
 import io.mosip.ivv.core.policies.AssertionPolicy;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.Scenario;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.parser.exceptions.StepParsingException;
 
@@ -28,7 +28,6 @@ public class StepParser {
                 if(nv_split.length < 2){
                     throw new StepParsingException("invalid step format, it should be (module_func_variant): "+func);
                 }
-                System.out.println(Scenario.Step.modules.valueOf(nv_split[0]));
                 step.setModule(Scenario.Step.modules.valueOf(nv_split[0]));
                 step.setName(nv_split[1]);
                 if(nv_split.length>2){
@@ -63,7 +62,7 @@ public class StepParser {
                 if(func.contains(errorKeys[j])){
                     Scenario.Step.Error er = new Scenario.Step.Error();
                     String ertype = Utils.regex("\\((.*?)\\)", str_split[i]);
-                    er.type = ertype;
+                    er.code = ertype;
                     errors.add(er);
                 }
             }
