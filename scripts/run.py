@@ -21,13 +21,16 @@ subparsers_run = subparsers.add_parser('run', help='Run testrig')
 args = parser.parse_args()
 print(args)
 # global variables #
-partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/authentication-partnerdemo-service.jar"
+partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/authentication-partnerdemo-service.jar"
 partnerDemoServiceJarPath = os.path.join(rootPath, "ivv-orchestrator/dependency_jars/authentication-partnerdemo-service.jar")
 
-registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/registration-services.jar"
+registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/registration-services.jar"
 registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services.jar")
 
-databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/db.zip"
+identySDKUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/identy-sdk.jar"
+identySDKJarPath = os.path.join(rootPath, "ivv-registration/services_jar/identy-sdk.jar"
+
+databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/db.zip"
 databaseLocalZipPath = os.path.join(rootPath, "ivv-orchestrator/db.zip")
 databaseLocalFolderPath = os.path.join(rootPath, "ivv-orchestrator")
 
@@ -159,6 +162,10 @@ def downloadLocalDatabase():
     logging.info("Removing "+databaseLocalZipPath)
     os.remove(databaseLocalZipPath)
 
+def downloadIdentySDK():
+    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath)
+    urllib.request.urlretrieve(identySDKUrl, identySDKJarPath, reporthook)
+    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath+" done")
 
 def buildProject():
     try:
@@ -211,6 +218,7 @@ def setup():
     downloadPartnerService()
     downloadRegistrationService()
     downloadLocalDatabase()
+    downloadIdentySDK()
 
 
 def run():
