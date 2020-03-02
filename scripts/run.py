@@ -7,6 +7,7 @@ import urllib.request
 import zipfile
 import platform
 import subprocess
+from distutils.dir_util import copy_tree
 
 logging.basicConfig(filename="debug.log", level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler())
@@ -127,8 +128,11 @@ def reporthook(blocknum, blocksize, totalsize):
 def copyDependencies():
     src = os.path.join(rootPath, "dependencies")
     dest = os.path.join(rootPath, "ivv-orchestrator", "local")
+    if not os.path.exists(dest):
+        os.makedirs(dest)
     logging.info("Coping files from "+src+" to "+dest)
-    copydir(os.path.join(rootPath, "dependencies"), os.path.join(rootPath, "ivv-orchestrator", "local"))
+    copy_tree(src, dest)
+    # copydir(os.path.join(rootPath, "dependencies"), os.path.join(rootPath, "ivv-orchestrator", "local"))
     logging.info("Coping files from "+src+" to "+dest+" done")
 
 
