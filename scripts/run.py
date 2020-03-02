@@ -29,7 +29,7 @@ registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/regist
 registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services.jar")
 
 identySDKUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/identy-sdk.jar"
-identySDKJarPath = os.path.join(rootPath, "ivv-registration/services_jar/identy-sdk.jar"
+identySDKJarPath = os.path.join(rootPath, "ivv-registration/services_jar/identy-sdk.jar")
 
 databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/db.zip"
 databaseLocalZipPath = os.path.join(rootPath, "ivv-orchestrator/db.zip")
