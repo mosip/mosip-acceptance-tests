@@ -21,13 +21,16 @@ subparsers_run = subparsers.add_parser('run', help='Run testrig')
 args = parser.parse_args()
 print(args)
 # global variables #
-partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/authentication-partnerdemo-service.jar"
+partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/authentication-partnerdemo-service.jar"
 partnerDemoServiceJarPath = os.path.join(rootPath, "ivv-orchestrator/dependency_jars/authentication-partnerdemo-service.jar")
 
-registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/registration-services.jar"
-registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services.jar")
+registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/registration-services-1.0.6-rc.jar"
+registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services-1.0.6-rc.jar")
 
-databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/db.zip"
+identySDKUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/identy-sdk.jar"
+identySDKJarPath = os.path.join(rootPath, "ivv-registration/services_jar/identy-sdk.jar")
+
+databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/db.zip"
 databaseLocalZipPath = os.path.join(rootPath, "ivv-orchestrator/db.zip")
 databaseLocalFolderPath = os.path.join(rootPath, "ivv-orchestrator")
 
@@ -42,7 +45,7 @@ def checkPlatform():
 def checkMaven():
     logging.info("Checking maven")
     try:
-        ds = subprocess.run(["mvn", "-v"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ds = subprocess.run(["mvn", "-v"], shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if ds.returncode != 0:
             logging.error("Failed to check maven version")
             return
@@ -57,7 +60,10 @@ def checkMaven():
 def checkJavaHome():
     logging.info("Checking JAVA_HOME environment variable")
     try:
-        ds = subprocess.run(["echo", "$JAVA_HOME"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if platform.system() == "Windows":
+            ds = subprocess.run(["echo", "%JAVA_HOME%"], shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else:
+            ds = subprocess.run(["echo", "$JAVA_HOME"], shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if ds.returncode != 0:
             logging.error("Failed to check JAVA_HOME env")
             return
@@ -163,9 +169,15 @@ def downloadLocalDatabase():
     os.remove(databaseLocalZipPath)
 
 
+def downloadIdentySDK():
+    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath)
+    urllib.request.urlretrieve(identySDKUrl, identySDKJarPath, reporthook)
+    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath+" done")
+
+
 def buildProject():
     try:
-        ds = subprocess.Popen(['mvn', 'clean', 'install', '-f', rootPath+'/pom.xml', '-Dmaven.test.skip=true'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ds = subprocess.Popen(['mvn', 'clean', 'install', '-f', rootPath+'/pom.xml', '-Dmaven.test.skip=true'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while True:
             output = ds.stdout.readline()
             if output == b'' and ds.poll() is not None:
@@ -180,7 +192,7 @@ def buildProject():
 
 def runTests():
     try:
-        ds = subprocess.Popen(['mvn', 'test', '-f', rootPath+'/pom.xml'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ds = subprocess.Popen(['mvn', 'test', '-f', rootPath+'/pom.xml'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         logging.error(ds.stderr)
         while True:
             output = ds.stdout.readline()
@@ -203,6 +215,7 @@ def setup():
     downloadPartnerService()
     downloadRegistrationService()
     downloadLocalDatabase()
+    downloadIdentySDK()
 
 
 def run():
