@@ -50,7 +50,7 @@ def checkPlatform():
 def checkMaven():
     logging.info("Checking maven")
     try:
-        ds = subprocess.run(["mvn", "-v"], shell = True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ds = subprocess.run(["mvn -v"], shell = True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if ds.returncode != 0:
             logging.error("Failed to check maven version")
             return
@@ -58,8 +58,8 @@ def checkMaven():
         if ds.stdout is None:
             logging.error("Maven not installed")
             return
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
 
 
 def checkJavaHome():
@@ -73,8 +73,8 @@ def checkJavaHome():
         if ds.stdout is None:
             logging.error("JAVA_HOME not set. Please set JAVA_HOME environment variable and try again.")
             return
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
 
 
 def bytesToMB(v):
@@ -187,8 +187,8 @@ def buildProject():
                 break
             if output:
                 logging.info(output.strip())
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
         exit(1)
 
 
@@ -208,8 +208,8 @@ def runTests():
                 return
             if output:
                 logging.info(output.strip())
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
         exit(1)
 
 
