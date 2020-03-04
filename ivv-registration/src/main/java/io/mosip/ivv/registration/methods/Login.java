@@ -8,12 +8,13 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.dto.UserRoleDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserOnboardService;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 public class Login extends Step implements StepInterface {
     
@@ -27,6 +28,14 @@ public class Login extends Step implements StepInterface {
         ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID, centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
         UserDTO userDTO = loginService.getUserDetail(store.getCurrentRegistrationUSer().getUserId());
+//        UserDTO userDTO = new UserDTO();
+//        UserRoleDTO roleDTO = new UserRoleDTO();
+//        roleDTO.setUsrId(store.getCurrentRegistrationUSer().getUserId());
+//        roleDTO.setRoleCode("REGISTRATION_OFFICER");
+//        roleDTO.setActive(true);
+//        roleDTO.setLangCode("en");
+//        userDTO.setUserRole(new HashSet<UserRoleDTO>());
+//        userDTO.getUserRole().add(roleDTO);
         LoginUserDTO ldto = new LoginUserDTO();
         ldto.setUserId(store.getCurrentRegistrationUSer().getUserId());
         ldto.setPassword(store.getCurrentRegistrationUSer().getPassword());

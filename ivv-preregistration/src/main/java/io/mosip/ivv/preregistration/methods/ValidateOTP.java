@@ -75,7 +75,7 @@ public class ValidateOTP extends Step implements StepInterface {
     private String checkForOTP() {
         try {
             logInfo("Retrying after 10 seconds...");
-            Thread.sleep(100);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
             logSevere(e.getMessage());
@@ -86,6 +86,7 @@ public class ValidateOTP extends Step implements StepInterface {
         String otp = "";
         ArrayList<String> subjects = new ArrayList<String>() {{
             add("Message Otp");
+            add("Otp message");
         }};
         String regex = "otp\\s([0-9]{6})";
         MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, person.getUserid(), 10);

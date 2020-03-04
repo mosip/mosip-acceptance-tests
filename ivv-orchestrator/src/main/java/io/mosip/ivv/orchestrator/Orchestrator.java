@@ -50,7 +50,6 @@ public class Orchestrator {
         htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+this.properties.getProperty("ivv.path.reports"));
         extent = new ExtentReports();
         extent.attachReporter(htmlReporter);
-        this.regClientSetup();
     }
 
     @BeforeTest
@@ -110,6 +109,9 @@ public class Orchestrator {
                     "> #[Test Step: " + step.getName()+ "] [module: "+step.getModule()+"] [variant: "+step.getVariant()+
                             "]";
             Utils.auditLog.info(identifier);
+            if(step.getModule().equals(Scenario.Step.modules.rc)){
+                regClientSetup();
+            }
             try {
                 extentTest.info(identifier+" - running");
                 //extentTest.info("parameters: "+step.getParameters().toString());
@@ -123,8 +125,9 @@ public class Orchestrator {
                 store = st.getState();
                 if(st.hasError()){
                     extentTest.fail(identifier+" - failed");
+                    Boolean assertValue = true;
                     if(System.getProperty("ivv.scenario.continueOnFailure") == null || System.getProperty("ivv.scenario.continueOnFailure").equals("N")){
-                        Assert.assertEquals(java.util.Optional.of(true), st.hasError());
+                        Assert.assertEquals(assertValue, st.hasError());
                         return;
                     }
                 }else{
