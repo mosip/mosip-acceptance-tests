@@ -22,16 +22,16 @@ subparsers_run = subparsers.add_parser('run', help='Run testrig')
 args = parser.parse_args()
 print(args)
 # global variables #
-partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/authentication-partnerdemo-service.jar"
+partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/authentication-partnerdemo-service.jar"
 partnerDemoServiceJarPath = os.path.join(rootPath, "ivv-orchestrator/dependency_jars/authentication-partnerdemo-service.jar")
 
-registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/registration-services.jar"
-registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services.jar")
+registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/registration-services-1.0.6-rc.jar"
+registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services-1.0.6-rc.jar")
 
-identySDKUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/identy-sdk.jar"
+identySDKUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/identy-sdk.jar"
 identySDKJarPath = os.path.join(rootPath, "ivv-registration/services_jar/identy-sdk.jar")
 
-databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/db.zip"
+databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.6-rc/db.zip"
 databaseLocalZipPath = os.path.join(rootPath, "ivv-orchestrator/db.zip")
 databaseLocalFolderPath = os.path.join(rootPath, "ivv-orchestrator")
 
@@ -132,7 +132,6 @@ def copyDependencies():
         os.makedirs(dest)
     logging.info("Coping files from "+src+" to "+dest)
     copy_tree(src, dest)
-    # copydir(os.path.join(rootPath, "dependencies"), os.path.join(rootPath, "ivv-orchestrator", "local"))
     logging.info("Coping files from "+src+" to "+dest+" done")
 
 
