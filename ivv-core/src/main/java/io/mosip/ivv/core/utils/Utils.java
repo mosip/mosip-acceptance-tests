@@ -4,8 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import io.mosip.ivv.core.structures.CallRecord;
-import io.mosip.ivv.core.structures.Scenario;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import io.mosip.ivv.core.dtos.CallRecord;
+import io.mosip.ivv.core.dtos.IDObjectField;
+import io.mosip.ivv.core.dtos.Person;
+import io.mosip.ivv.core.dtos.Scenario;
+import org.apache.commons.lang3.EnumUtils;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -312,6 +319,59 @@ public class Utils {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String date_part = ZonedDateTime.now(ZoneOffset.UTC).format(format);
         return rid+date_part;
+    }
+
+    public static IDObjectField updateIDField(IDObjectField idObjectField, String value, String primaryLang, String secondaryLang){
+        IDObjectField newIDObjectField = new IDObjectField();
+        newIDObjectField.setType(idObjectField.getType());
+        newIDObjectField.setMutate(idObjectField.getMutate());
+        newIDObjectField.setPrimaryValue(idObjectField.getPrimaryValue());
+        newIDObjectField.setSecondaryValue(idObjectField.getSecondaryValue());
+        if(idObjectField.getType().equals(IDObjectField.type.multilang)){
+            String[] vals = value.split("%%");
+            switch(vals.length){
+                case 0:
+                    newIDObjectField.setPrimaryValue("");
+                    newIDObjectField.setSecondaryValue("");
+                    break;
+                case 1:
+                    newIDObjectField.setPrimaryValue(vals[0].trim());
+                    newIDObjectField.setSecondaryValue(vals[0].trim());
+                    break;
+                default:
+                    newIDObjectField.setPrimaryValue(vals[0].trim());
+                    newIDObjectField.setSecondaryValue(vals[1].trim());
+                    break;
+            }
+        } else {
+            newIDObjectField.setPrimaryValue(value);
+        }
+        return newIDObjectField;
+    }
+
+    public static String prettyJson(String uglyJson){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(uglyJson);
+        return gson.toJson(je);
+    }
+
+    public static String removeValuesFromJson(String json){
+        return prettyJson(json).replaceAll("[:].+\".*\"",":\"\"").replaceAll("\\s+","");
+    }
+
+    public static Boolean matchJsonOnlyKeys(String a, String b){
+        String prettya = removeValuesFromJson(prettyJson(a)).replaceAll("\\s+","");
+        String prettyb = removeValuesFromJson(prettyJson(b)).replaceAll("\\s+","");
+        System.out.println("JSON A:");
+        System.out.println(prettya);
+        System.out.println("JSON B:");
+        System.out.println(prettyb);
+        if(prettya.equals(prettyb)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -9,6 +9,8 @@ Go to [Installation](scripts/README.md)
 * regclient services jar (installation script will auto-download it)
 
 # Support
+* [Basics](docs/developer/basics.md)
+* [How to contribute](docs/developer/howToContribute.md)
 * [DSL](docs/DSL.md)
 * [Scenarios](docs/scenarios)
 * [MOSIP website](https://www.mosip.io/)

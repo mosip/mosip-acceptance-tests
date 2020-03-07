@@ -1,8 +1,8 @@
 package io.mosip.ivv.parser;
 
-import io.mosip.ivv.core.structures.Persona;
-import io.mosip.ivv.core.structures.ProofDocument;
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.Persona;
+import io.mosip.ivv.core.dtos.ProofDocument;
+import io.mosip.ivv.core.dtos.Scenario;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,10 +2,12 @@ package io.mosip.ivv.registration.methods;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -16,7 +18,7 @@ import io.mosip.registration.dto.demographic.ValuesDTO;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class UpdateApplicantDemographics extends Step implements StepInterface {
+public class UpdateApplicantDemographics extends BaseStep implements StepInterface {
 
     private enum fields {
         name, email, dob, gender
@@ -42,6 +44,11 @@ public class UpdateApplicantDemographics extends Step implements StepInterface {
     }
 
     @Override
+    public void assertAPI() {
+
+    }
+
+    @Override
     public void run() {
         RegistrationDTO registrationDTO = (RegistrationDTO) this.store.getRegistrationDto();
         IndividualIdentity individualIdentity = new IndividualIdentity();
@@ -53,11 +60,11 @@ public class UpdateApplicantDemographics extends Step implements StepInterface {
         String key = step.getParameters().get(0);
         switch(fields.valueOf(key)){
             case name:
-                individualIdentity.setFullName(createValueDTO(platformLanguageCode, store.getCurrentPerson().getName()));
+//                individualIdentity.setFullName(createValueDTO(platformLanguageCode, store.getCurrentPerson().getName()));
                 break;
 
             case email:
-                individualIdentity.setEmail(store.getCurrentPerson().getEmail());
+                individualIdentity.setEmail(store.getCurrentPerson().getUserid());
                 break;
 
             case dob:
@@ -77,7 +84,7 @@ public class UpdateApplicantDemographics extends Step implements StepInterface {
 
         /* Only for Child */
         if(store.getCurrentPerson().getAgeGroup().equals(PersonaDef.AGE_GROUP.CHILD)){
-            individualIdentity.setParentOrGuardianName(createValueDTO(platformLanguageCode, store.getCurrentIntroducer().getName()));
+//            individualIdentity.setParentOrGuardianName(createValueDTO(platformLanguageCode, store.getCurrentIntroducer().getIdObject().get("fullName")));
             if(store.getCurrentIntroducer().getRegistrationId() != null && store.getCurrentIntroducer().getRegistrationId().length()>0){
                 individualIdentity.setParentOrGuardianRID(new BigInteger(store.getCurrentIntroducer().getRegistrationId()));
             }
@@ -108,6 +115,21 @@ public class UpdateApplicantDemographics extends Step implements StepInterface {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 
     private ArrayList<ValuesDTO> createValueDTO(String platformLanguageCode, String value){

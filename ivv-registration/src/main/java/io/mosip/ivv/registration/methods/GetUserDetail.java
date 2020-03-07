@@ -1,20 +1,18 @@
 package io.mosip.ivv.registration.methods;
 
-import com.aventstack.extentreports.Status;
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
-import io.mosip.ivv.core.structures.ExtentLogger;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.registration.dto.UserDTO;
-import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.login.LoginService;
 
-import java.util.ArrayList;
+public class GetUserDetail extends BaseStep implements StepInterface {
 
-public class GetUserDetail extends Step implements StepInterface {
+    @Override
+    public void assertAPI() {
+
+    }
 
     @Override
     public void run() {
@@ -26,5 +24,20 @@ public class GetUserDetail extends Step implements StepInterface {
         }else{
             System.out.println("user is null");
         }
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 }

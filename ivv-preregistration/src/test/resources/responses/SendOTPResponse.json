@@ -1,0 +1,10 @@
+{
+  "id": "mosip.pre-registration.login.sendotp",
+  "version": "1.0",
+  "responsetime": "2020-02-18T09:15:06.964Z",
+  "response": {
+    "message": "Email Request submitted",
+    "status": "success"
+  },
+  "errors": null
+}

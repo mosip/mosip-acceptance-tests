@@ -1,10 +1,12 @@
 package io.mosip.ivv.registration.methods;
 
-import io.mosip.ivv.core.base.Step;
+import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.RequestDataDTO;
+import io.mosip.ivv.core.dtos.ResponseDataDTO;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.BiometricsDTO;
-import io.mosip.ivv.core.structures.PersonaDef;
+import io.mosip.ivv.core.dtos.BiometricsDTO;
+import io.mosip.ivv.core.dtos.PersonaDef;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -16,7 +18,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateApplicantBiometrics extends Step implements StepInterface {
+public class UpdateApplicantBiometrics extends BaseStep implements StepInterface {
 
     private enum includes {
         face, leftEye, rightEye, leftThumb, rightThumb, leftIndex, leftMiddle, leftRing, leftLittle,
@@ -52,6 +54,11 @@ public class UpdateApplicantBiometrics extends Step implements StepInterface {
             step.getParameters().add(includes.rightRing.toString());
             step.getParameters().add(includes.rightLittle.toString());
         }
+    }
+
+    @Override
+    public void assertAPI() {
+
     }
 
     @Override
@@ -119,6 +126,21 @@ public class UpdateApplicantBiometrics extends Step implements StepInterface {
 
         registrationDTO.getBiometricDTO().setApplicantBiometricDTO(biometricInfoDTO);
         this.store.setRegistrationDto(registrationDTO);
+    }
+
+    @Override
+    public RequestDataDTO prepare() {
+        return null;
+    }
+
+    @Override
+    public ResponseDataDTO call(RequestDataDTO requestData) {
+        return null;
+    }
+
+    @Override
+    public void process(ResponseDataDTO res) {
+
     }
 
     private FaceDetailsDTO getFace(){

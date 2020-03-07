@@ -2,14 +2,15 @@ package io.mosip.ivv.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.parser.Utils.Helper;
 import io.mosip.ivv.parser.Utils.StepParser;
-import io.mosip.ivv.core.structures.*;
+import io.mosip.ivv.core.dtos.*;
+import org.apache.commons.lang3.EnumUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import static io.mosip.ivv.core.utils.Utils.regex;
 
 public class Parser implements ParserInterface {
 
@@ -26,7 +27,7 @@ public class Parser implements ParserInterface {
     Properties properties = null;
 
     public Parser(String USER_DIR, String CONFIG_FILE){
-        properties = Utils.getProperties(CONFIG_FILE);
+        properties = Utils.getProperties(USER_DIR+"/"+CONFIG_FILE);
         this.PERSONA_SHEET = USER_DIR+properties.getProperty("ivv.sheet.persona");
         this.RCUSER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.rcpersona");
         this.PARTNER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.partner");
@@ -47,7 +48,7 @@ public class Parser implements ParserInterface {
         while (iter.hasNext()) {
             Object obj = iter.next();
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
-            System.out.println("Parsing Persona: "+data_map.get("persona_class"));
+            System.out.println("Parsing Persona: "+data_map.get("personaClass"));
             Persona main = new Persona();
 
             Person iam = new Person();
@@ -59,41 +60,44 @@ public class Parser implements ParserInterface {
             /* persona */
             iam.setId(data_map.get("id"));
             iam.setUserid(data_map.get("userid"));
-            iam.setName(data_map.get("name"));
-            iam.setPreferredLang(data_map.get("preffered_lang"));
-            iam.setDefaultLang(data_map.get("default_lang"));
-            iam.setAddressLine1(data_map.get("address_line1"));
-            iam.setAddressLine2(data_map.get("address_line2"));
-            iam.setAddressLine3(data_map.get("address_line3"));
-            iam.setRegion(data_map.get("region"));
-            iam.setProvince(data_map.get("province"));
-            iam.setCity(data_map.get("city"));
-            iam.setZone(data_map.get("zone"));
+            iam.setPrimaryLang(data_map.get("primaryLang"));
+            iam.setSecondaryLang(data_map.get("secondaryLang"));
+            iam.setRegistrationCenterId(data_map.get("registrationCenterId"));
             iam.setAgeGroup(PersonaDef.AGE_GROUP.valueOf("ADULT"));
-            iam.setPostalCode(data_map.get("postal_code"));
-            iam.setEmail(data_map.get("email"));
-            iam.setPhone(data_map.get("mobile"));
-            iam.setDateOfBirth(data_map.get("dob"));
-            iam.setReferenceIdentityNumber(data_map.get("reference_identity_number"));
-            iam.setRegistrationCenterId(data_map.get("registration_center_id"));
             iam.setDocuments(getDocuments());
 
-            if(data_map.get("group_name") == null || data_map.get("group_name").isEmpty()){
-                main.setGroupName(data_map.get("group_name"));
-                main.setPersonaClass(data_map.get("persona_class"));
+            for (Map.Entry<String, String> entry : data_map.entrySet()) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                if(key.isEmpty()){
+                    continue;
+                }
+                String field = regex("\\{(\\S*)\\}", key);
+                if(field.isEmpty()){
+                    continue;
+                }
+                IDObjectField idObjectField = Helper.parseField(key, val, iam.getPrimaryLang(), iam.getSecondaryLang());
+                if(idObjectField != null){
+                    iam.getIdObject().put(field, idObjectField);
+                }
+            }
+
+            if(data_map.get("groupName") == null || data_map.get("groupName").isEmpty()){
+                main.setGroupName(data_map.get("groupName"));
+                main.setPersonaClass(data_map.get("personaClass"));
                 main.addPerson(iam);
                 persona_list.add(main);
             }else{
                 Boolean group_exist = false;
                 for(int i=0; i<persona_list.size();i++) {
-                    if(persona_list.get(i).getGroupName().equals(data_map.get("group_name"))){
+                    if(persona_list.get(i).getGroupName().equals(data_map.get("groupName"))){
                         group_exist = true;
                         persona_list.get(i).addPerson(iam);
                     }
                 }
                 if(!group_exist){
-                    main.setGroupName(data_map.get("group_name"));
-                    main.setPersonaClass(data_map.get("persona_class"));
+                    main.setGroupName(data_map.get("groupName"));
+                    main.setPersonaClass(data_map.get("personaClass"));
                     main.addPerson(iam);
                     persona_list.add(main);
                 }
@@ -245,7 +249,7 @@ public class Parser implements ParserInterface {
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
             configs_map.put(data_map.get("key"), data_map.get("value"));
         }
-        System.out.println("total config entries parsed: "+configs_map.size());
+        System.out.println("total utils entries parsed: "+configs_map.size());
         return configs_map;
     }
 

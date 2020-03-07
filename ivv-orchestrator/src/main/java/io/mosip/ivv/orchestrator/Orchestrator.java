@@ -7,14 +7,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.structures.Scenario;
-import io.mosip.ivv.core.structures.Store;
+import io.mosip.ivv.core.dtos.Scenario;
+import io.mosip.ivv.core.dtos.Store;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.dg.DataGenerator;
 import io.mosip.ivv.registration.config.Setup;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
@@ -50,7 +49,6 @@ public class Orchestrator {
         htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+this.properties.getProperty("ivv.path.reports"));
         extent = new ExtentReports();
         extent.attachReporter(htmlReporter);
-        this.regClientSetup();
     }
 
     @BeforeTest
@@ -64,7 +62,7 @@ public class Orchestrator {
     }
 
     @DataProvider(name="ScenarioDataProvider", parallel = false)
-    public static Object[][] dataProvider(ITestContext context) {
+    public static Object[][] dataProvider() {
         DataGenerator dg = new DataGenerator(System.getProperty("user.dir"), "config.properties");
         ArrayList<Scenario> scenariosToRun = dg.getScenarios();
         HashMap<String, String> configs = dg.getConfigs();
@@ -105,6 +103,9 @@ public class Orchestrator {
         store.setRegLocalContext(this.localApplicationContext);
 
         for(Scenario.Step step: scenario.getSteps()){
+            if(step.getModule().equals(Scenario.Step.modules.rc)){
+                this.regClientSetup();
+            }
             Utils.auditLog.info("" );
             String identifier =
                     "> #[Test Step: " + step.getName()+ "] [module: "+step.getModule()+"] [variant: "+step.getVariant()+
@@ -120,40 +121,49 @@ public class Orchestrator {
                 st.setup();
                 st.validateStep();
                 st.run();
-                store = st.getState();
+                st.assertHttpStatus();
                 if(st.hasError()){
                     extentTest.fail(identifier+" - failed");
-                    if(System.getProperty("ivv.scenario.continueOnFailure") == null || System.getProperty("ivv.scenario.continueOnFailure").equals("N")){
-                        Assert.assertEquals(java.util.Optional.of(true), st.hasError());
-                        return;
-                    }
+                    Assert.assertFalse(st.hasError());
+                }
+                st.assertStatus();
+                if(st.hasError()){
+                    extentTest.fail(identifier+" - failed");
+                    Assert.assertFalse(st.hasError());
+                }
+                st.assertAPI();
+                store = st.getState();
+                if(st.hasError()){
+                    Boolean failed = false;
+                    extentTest.fail(identifier+" - failed");
+                    Assert.assertEquals(failed, st.hasError());
                 }else{
                     extentTest.pass(identifier+" - passed");
                 }
             } catch (ClassNotFoundException e) {
                 extentTest.error(identifier+" - ClassNotFoundException --> "+e.toString());
                 e.printStackTrace();
-                Assert.assertEquals(java.util.Optional.of(true), false);
+                Assert.assertTrue(false);
                 return;
             } catch (IllegalAccessException e) {
                 extentTest.error(identifier+" - IllegalAccessException --> "+e.toString());
                 e.printStackTrace();
-                Assert.assertEquals(java.util.Optional.of(true), false);
+                Assert.assertTrue(false);
                 return;
             } catch (InstantiationException e) {
                 extentTest.error(identifier+" - InstantiationException --> "+e.toString());
                 e.printStackTrace();
-                Assert.assertEquals(java.util.Optional.of(true), false);
+                Assert.assertTrue(false);
                 return;
             } catch(RigInternalError e){
                 extentTest.error(identifier+" - RigInternalError --> "+e.toString());
                 e.printStackTrace();
-                Assert.assertEquals(java.util.Optional.of(true), false);
+                Assert.assertTrue(false);
                 return;
             } catch (RuntimeException e){
                 extentTest.error(identifier+" - RuntimeException --> "+e.toString());
                 e.printStackTrace();
-                Assert.assertEquals(java.util.Optional.of(true), false);
+                Assert.assertTrue(false);
                 return;
             }
         }

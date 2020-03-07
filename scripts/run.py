@@ -7,6 +7,7 @@ import urllib.request
 import zipfile
 import platform
 import subprocess
+from distutils.dir_util import copy_tree
 
 logging.basicConfig(filename="debug.log", level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler())
@@ -21,16 +22,23 @@ subparsers_run = subparsers.add_parser('run', help='Run testrig')
 args = parser.parse_args()
 print(args)
 # global variables #
-partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/authentication-partnerdemo-service.jar"
+partnerDemoServiceUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/authentication-partnerdemo-service.jar"
 partnerDemoServiceJarPath = os.path.join(rootPath, "ivv-orchestrator/dependency_jars/authentication-partnerdemo-service.jar")
 
-registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/registration-services.jar"
+registrationServicesUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/registration-services.jar"
 registrationServicesJarPath = os.path.join(rootPath, "ivv-registration/services_jar/registration-services.jar")
 
-databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/0.9.1/db.zip"
+identySDKUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/identy-sdk.jar"
+identySDKJarPath = os.path.join(rootPath, "ivv-registration/services_jar/identy-sdk.jar")
+
+databaseUrl = "https://mosip.s3-us-west-2.amazonaws.com/1.0.0/db.zip"
 databaseLocalZipPath = os.path.join(rootPath, "ivv-orchestrator/db.zip")
 databaseLocalFolderPath = os.path.join(rootPath, "ivv-orchestrator")
 
+mosipHost = "https://nginxsprod.eastus.cloudapp.azure.com"
+emailServerHost = "outlook.office365.com"
+emailServerUsername = "mosip-test@technoforte.co.in"
+emailServerPassword = "vmfWuq2b1"
 
 def checkPlatform():
     if platform.system() != 'Linux' and  platform.system() != 'Windows':
@@ -42,7 +50,7 @@ def checkPlatform():
 def checkMaven():
     logging.info("Checking maven")
     try:
-        ds = subprocess.run(["mvn", "-v"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ds = subprocess.run(["mvn -v"], shell = True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if ds.returncode != 0:
             logging.error("Failed to check maven version")
             return
@@ -50,14 +58,14 @@ def checkMaven():
         if ds.stdout is None:
             logging.error("Maven not installed")
             return
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
 
 
 def checkJavaHome():
     logging.info("Checking JAVA_HOME environment variable")
     try:
-        ds = subprocess.run(["echo", "$JAVA_HOME"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ds = subprocess.run(["echo", "$JAVA_HOME"], shell = True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if ds.returncode != 0:
             logging.error("Failed to check JAVA_HOME env")
             return
@@ -65,8 +73,8 @@ def checkJavaHome():
         if ds.stdout is None:
             logging.error("JAVA_HOME not set. Please set JAVA_HOME environment variable and try again.")
             return
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
 
 
 def bytesToMB(v):
@@ -85,6 +93,12 @@ def checkConfigFile():
             exit(0)
         else:
             logging.info("please enter y/ n")
+
+
+def runPartnerServiceInfo():
+    logging.info("If you are running scenarios with id authentication. You have to start the partner service. Go to the ivv-orchestrator dir and run java -jar dependency_jars/authentication-partnerdemo-service.jar")
+    user_input = input("Hello contributor, If you are running scenarios with id authentication. You have to start the partner service . Go to the ivv-orchestrator dir and run java -jar dependency_jars/authentication-partnerdemo-service.jar. Then press any key to continue...")
+
 
 
 def copydir(source, dest):
@@ -127,8 +141,11 @@ def reporthook(blocknum, blocksize, totalsize):
 def copyDependencies():
     src = os.path.join(rootPath, "dependencies")
     dest = os.path.join(rootPath, "ivv-orchestrator", "local")
+    if not os.path.exists(dest):
+        os.makedirs(dest)
     logging.info("Coping files from "+src+" to "+dest)
-    copytree(os.path.join(rootPath, "dependencies"), os.path.join(rootPath, "ivv-orchestrator", "local"))
+    copy_tree(src, dest)
+    # copydir(os.path.join(rootPath, "dependencies"), os.path.join(rootPath, "ivv-orchestrator", "local"))
     logging.info("Coping files from "+src+" to "+dest+" done")
 
 
@@ -162,10 +179,20 @@ def downloadLocalDatabase():
     logging.info("Removing "+databaseLocalZipPath)
     os.remove(databaseLocalZipPath)
 
+def downloadIdentySDK():
+    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath)
+    urllib.request.urlretrieve(identySDKUrl, identySDKJarPath, reporthook)
+    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath+" done")
 
 def buildProject():
     try:
-        ds = subprocess.Popen(['mvn', 'clean', 'install', '-f', rootPath+'/pom.xml', '-Dmaven.test.skip=true'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        cmdargs = []
+        cmdargs.append('-Dmaven.test.skip=true')
+        cmdargs.append('-DmosipHost='+mosipHost)
+        cmdargs.append('-DemailServerHost='+emailServerHost)
+        cmdargs.append('-DemailServerUsername='+emailServerUsername)
+        cmdargs.append('-DemailServerPassword='+emailServerPassword)
+        ds = subprocess.Popen(['mvn', 'clean', 'install', '-f', rootPath+'/pom.xml']+cmdargs, shell = True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while True:
             output = ds.stdout.readline()
             if output == b'' and ds.poll() is not None:
@@ -173,14 +200,19 @@ def buildProject():
                 break
             if output:
                 logging.info(output.strip())
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
         exit(1)
 
 
 def runTests():
     try:
-        ds = subprocess.Popen(['mvn', 'test', '-f', rootPath+'/pom.xml'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        cmdargs = []
+        cmdargs.append('-DmosipHost='+mosipHost)
+        cmdargs.append('-DemailServerHost='+emailServerHost)
+        cmdargs.append('-DemailServerUsername='+emailServerUsername)
+        cmdargs.append('-DemailServerPassword='+emailServerPassword)
+        ds = subprocess.Popen(['mvn', 'test', '-f', rootPath+'/pom.xml']+cmdargs, shell = True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         logging.error(ds.stderr)
         while True:
             output = ds.stdout.readline()
@@ -189,8 +221,8 @@ def runTests():
                 return
             if output:
                 logging.info(output.strip())
-    except subprocess.CalledProcessError:
-        logging.error(subprocess.CalledProcessError.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.output)
         exit(1)
 
 
@@ -203,6 +235,7 @@ def setup():
     downloadPartnerService()
     downloadRegistrationService()
     downloadLocalDatabase()
+    downloadIdentySDK()
 
 
 def run():
@@ -211,6 +244,7 @@ def run():
     checkJavaHome()
     checkConfigFile()
     buildProject()
+    runPartnerServiceInfo()
     runTests()
 
 

@@ -1,6 +1,6 @@
 package io.mosip.ivv.dg;
 
-import io.mosip.ivv.core.structures.Scenario;
+import io.mosip.ivv.core.dtos.Scenario;
 
 import java.util.ArrayList;
 import java.util.HashMap;
