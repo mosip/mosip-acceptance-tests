@@ -109,7 +109,20 @@ def copydir(source, dest):
         for each_file in files:
             rel_path = root.replace(source, '').lstrip(os.sep)
             dest_path = os.path.join(dest, rel_path, each_file)
-            shutil.copyfile(os.path.join(root, each_file), dest_path)
+            shutil.copy(os.path.join(root, each_file), dest_path)
+
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    for item in os.listdir(src):
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if os.path.isdir(s):
+            copytree(s, d, symlinks, ignore)
+        else:
+            if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
+                shutil.copy2(s, d)
 
 
 def reporthook(blocknum, blocksize, totalsize):
