@@ -96,8 +96,8 @@
         <dependency>
             <groupId>io.mosip.registration</groupId>
             <artifactId>registration-services</artifactId>
-            <version>1.0.0</version>
-            <systemPath>${project.basedir}/services_jar/registration-services.jar</systemPath>
+            <version>1.0.6</version>
+            <systemPath>${project.basedir}/services_jar/registration-services-1.0.6-rc.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>
