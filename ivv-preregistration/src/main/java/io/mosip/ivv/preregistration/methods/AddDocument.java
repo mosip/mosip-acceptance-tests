@@ -4,6 +4,7 @@ import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
@@ -72,6 +73,7 @@ public class AddDocument extends BaseStep implements StepInterface {
                         .contentType("multipart/form-data")
                         .post(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 

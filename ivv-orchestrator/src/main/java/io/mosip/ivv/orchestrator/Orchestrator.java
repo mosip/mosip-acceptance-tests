@@ -99,12 +99,11 @@ public class Orchestrator {
         store.setGlobals(globals);
         store.setScenarioData(scenario.getData());
         store.setProperties(this.properties);
-        store.setRegApplicationContext(this.applicationContext);
-        store.setRegLocalContext(this.localApplicationContext);
-
         for(Scenario.Step step: scenario.getSteps()){
             if(step.getModule().equals(Scenario.Step.modules.rc)){
                 this.regClientSetup();
+                store.setRegApplicationContext(this.applicationContext);
+                store.setRegLocalContext(this.localApplicationContext);
             }
             Utils.auditLog.info("" );
             String identifier =

@@ -12,7 +12,6 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
-
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;

@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import org.json.simple.JSONObject;
 
 import io.mosip.ivv.core.utils.Utils;
@@ -46,6 +47,7 @@ public class BookAppointment extends BaseStep implements StepInterface {
                 .body(data.getRequest())
                 .post(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 
