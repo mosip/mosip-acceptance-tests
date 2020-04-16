@@ -96,9 +96,7 @@
         <dependency>
             <groupId>io.mosip.registration</groupId>
             <artifactId>registration-services</artifactId>
-            <version>1.0.0</version>
-            <systemPath>services_jar/registration-services-1.0.6-rc.jar</systemPath>
-            <scope>system</scope>
+            <version>1.0.7</version>
         </dependency>
         <dependency>
             <groupId>com.identy.IdentyBioSDK</groupId>
