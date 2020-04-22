@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
@@ -37,6 +38,7 @@ public class GetBookingSlots extends BaseStep implements StepInterface {
                 .cookie("Authorization", this.store.getHttpData().getCookie())
                 .get(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 

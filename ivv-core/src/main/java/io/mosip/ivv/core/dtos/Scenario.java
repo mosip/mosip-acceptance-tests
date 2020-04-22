@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -58,19 +59,11 @@ public class Scenario {
         }
     }
 
-    @Getter
-    @Setter
-    public static class Data
-    {
-        private String personaClass,tag,groupName;
-        private Persona persona;
-        private ArrayList<RegistrationUser> registrationUsers;
-        private ArrayList<Partner> partners;
-        private Person user;
-    }
-
+    private Persona persona;
+    private ArrayList<RegistrationUser> registrationUsers;
+    private ArrayList<Partner> partners;
+    private Person user;
     private List<Step> steps = new ArrayList<Step>();
-    private Data data = null;
     private boolean continueOnFailure = false; // default
     private boolean isFailureExpected = false; // default
 

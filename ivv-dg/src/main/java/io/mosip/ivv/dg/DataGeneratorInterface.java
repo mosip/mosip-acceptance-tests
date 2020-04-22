@@ -1,13 +1,11 @@
 package io.mosip.ivv.dg;
 
+import io.mosip.ivv.core.dtos.Persona;
 import io.mosip.ivv.core.dtos.Scenario;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface DataGeneratorInterface {
-    void saveScenariosToDb();
-    ArrayList<Scenario> getScenarios();
-    HashMap<String, String> getConfigs();
-    HashMap<String, String> getGlobals();
+    ArrayList<Scenario> prepareScenarios(ArrayList<Scenario> scenarios, ArrayList<Persona> personas);
 }

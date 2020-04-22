@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class IDObjectField {
 
     public enum type {
-        string, multilang
+        string, integer, simpleType
     }
 
     private Boolean mutate = false;

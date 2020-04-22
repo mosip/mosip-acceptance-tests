@@ -13,4 +13,5 @@ public class RegistrationUser extends PersonaDef {
     private String gender = "";
     private String macAddress = "";
     private String no_Of_User="";
+    private String keyIndex="";
 }

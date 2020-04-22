@@ -1,0 +1,7 @@
+{
+  "registrationClientUrl": "http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/registration/registration-client/1.0.7/mosip-sw-1.0.7.zip",
+  "environment": "https://qa.mosip.io",
+  "emailServerHost": "outlook.office365.com",
+  "emailServerUsername": "mosip-test@technoforte.co.in",
+  "emailServerPassword": "vmfWuq2b1"
+}

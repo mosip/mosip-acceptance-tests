@@ -8,6 +8,7 @@ import java.util.Map;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -30,7 +31,7 @@ public class AddApplication extends BaseStep implements StepInterface {
         for (Map.Entry<String, IDObjectField> entry : store.getCurrentPerson().getIdObject().entrySet()) {
             String key = entry.getKey();
             IDObjectField idField = entry.getValue();
-            if(idField.getType().equals(IDObjectField.type.multilang)){
+            if(idField.getType().equals(IDObjectField.type.simpleType)){
                 JSONArray jvals = new JSONArray();
                 if(!store.getCurrentPerson().getPrimaryLang().isEmpty()){
                     jvals.add(new JSONObject(
@@ -79,6 +80,7 @@ public class AddApplication extends BaseStep implements StepInterface {
                         .cookie("Authorization", this.store.getHttpData().getCookie())
                         .post(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 

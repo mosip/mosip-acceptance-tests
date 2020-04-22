@@ -21,11 +21,10 @@
 
 # properties file #
 */config.properties
-*logs/*
 *reg
 */db
 *local*
 *services_jar/*
 *.jar
 *.log
-
+/.tmp

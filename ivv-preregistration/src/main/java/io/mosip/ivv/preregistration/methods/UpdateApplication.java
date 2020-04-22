@@ -4,6 +4,7 @@ import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.utils.Utils;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -34,7 +35,7 @@ public class UpdateApplication extends BaseStep implements StepInterface {
         for (Map.Entry<String, IDObjectField> entry : store.getCurrentPerson().getIdObject().entrySet()) {
             String key = entry.getKey();
             IDObjectField idField = entry.getValue();
-            if(idField.getType().equals(IDObjectField.type.multilang)){
+            if(idField.getType().equals(IDObjectField.type.simpleType)){
                 JSONArray jvals = new JSONArray();
                 if(!store.getCurrentPerson().getPrimaryLang().isEmpty()){
                     jvals.add(new JSONObject(
@@ -81,6 +82,7 @@ public class UpdateApplication extends BaseStep implements StepInterface {
                 .cookie("Authorization", this.store.getHttpData().getCookie())
                 .put(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 

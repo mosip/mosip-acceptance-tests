@@ -32,7 +32,7 @@ public class SetPerson extends BaseStep implements StepInterface {
 
     @Override
     public void run() {
-        store.setCurrentPerson(store.getScenarioData().getPersona().getPersons().get(Integer.parseInt(step.getParameters().get(0))));
+        store.setCurrentPerson(store.getPersona().getPersons().get(Integer.parseInt(step.getParameters().get(0))));
     }
 
     @Override

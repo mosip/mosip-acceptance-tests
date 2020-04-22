@@ -22,7 +22,7 @@ public class SyncUserSalt extends BaseStep implements StepInterface {
         UserSaltDetailsService serv = store.getRegApplicationContext().getBean(UserSaltDetailsService.class);
         ResponseDTO responseDTO = null;
         try {
-            responseDTO = serv.getUserSaltDetails(store.getCurrentRegistrationUSer().getUserId());
+            responseDTO = serv.getUserSaltDetails("system");
         } catch (RegBaseCheckedException e) {
             e.printStackTrace();
             logSevere(e.getMessage());

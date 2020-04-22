@@ -3,6 +3,7 @@ package io.mosip.ivv.preregistration.methods;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -20,8 +21,8 @@ public class CopyDocument extends BaseStep implements StepInterface {
 
     public RequestDataDTO prepare(){
         String url = "/preregistration/" + System.getProperty("ivv.prereg.version") + "/documents/" +
-                    store.getScenarioData().getPersona().getPersons().get(step.getIndex().get(1)).getPreRegistrationId() + "?catCode="
-                        + step.getParameters().get(0) + "&sourcePreId=" + store.getScenarioData().getPersona().getPersons().get(step.getIndex().get(0)).getPreRegistrationId();
+                    store.getPersona().getPersons().get(step.getIndex().get(1)).getPreRegistrationId() + "?catCode="
+                        + step.getParameters().get(0) + "&sourcePreId=" + store.getPersona().getPersons().get(step.getIndex().get(0)).getPreRegistrationId();
         return new RequestDataDTO(url, null);
     }
 
@@ -34,6 +35,7 @@ public class CopyDocument extends BaseStep implements StepInterface {
                         .cookie("Authorization", this.store.getHttpData().getCookie())
                         .put(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 

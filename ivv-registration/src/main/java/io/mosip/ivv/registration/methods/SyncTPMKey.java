@@ -9,8 +9,9 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
+import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
-public class SyncMaster extends BaseStep implements StepInterface {
+public class SyncTPMKey extends BaseStep implements StepInterface {
 
     @Override
     public void assertAPI() {
@@ -19,29 +20,24 @@ public class SyncMaster extends BaseStep implements StepInterface {
 
     @Override
     public void run() {
-        MasterSyncService ms = store.getRegApplicationContext().getBean(MasterSyncService.class);
-
-        //TODO variants needs to be added
-        String masterSyncDetails = "MDS_J00001";
-        String triggerPoint = "User";
+        String tpmKey = "";
+        TPMPublicKeySyncService ms = store.getRegApplicationContext().getBean(TPMPublicKeySyncService.class);
         ResponseDTO responseDTO = null;
         try {
-            responseDTO = ms.getMasterSync(masterSyncDetails, triggerPoint, store.getCurrentRegistrationUSer().getKeyIndex());
+            tpmKey = ms.syncTPMPublicKey();
+            this.store.getCurrentRegistrationUSer().setKeyIndex(tpmKey);
         } catch (RegBaseCheckedException e) {
             e.printStackTrace();
             logSevere(e.getMessage());
             this.hasError = true;
             return;
         }
-        if(responseDTO.getErrorResponseDTOs() != null && responseDTO.getErrorResponseDTOs().size() > 0){
-            for(ErrorResponseDTO es: responseDTO.getErrorResponseDTOs()){
-                logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
-            }
-            this.hasError = true;
+        if(tpmKey != null && !tpmKey.isEmpty()){
+            logInfo("TPM key: "+tpmKey);
             return;
         }else{
-            SuccessResponseDTO es = responseDTO.getSuccessResponseDTO();
-            logInfo("Message: "+es.getMessage()+", code: "+es.getCode()+", infoType: "+es.getInfoType());
+            this.hasError = true;
+            logInfo("Unable to get TPM key");
         }
     }
 

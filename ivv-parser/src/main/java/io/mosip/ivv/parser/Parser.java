@@ -1,50 +1,48 @@
 package io.mosip.ivv.parser;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.parser.Utils.Helper;
 import io.mosip.ivv.parser.Utils.StepParser;
 import io.mosip.ivv.core.dtos.*;
 import org.apache.commons.lang3.EnumUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import static io.mosip.ivv.core.utils.Utils.regex;
 
 public class Parser implements ParserInterface {
-
-    private String PERSONA_SHEET = "";
-    private String RCUSER_SHEET = "";
-    private String PARTNER_SHEET = "";
-    private String SCENARIO_SHEET = "";
-    private String CONFIGS_SHEET = "";
-    private String GLOBALS_SHEET = "";
-    private String DOCUMENTS_SHEET = "";
-    private String BIOMETRICS_SHEET = "";
+    private ParserInputDTO inputDTO;
     private static String  DOCUMENT_DATA_PATH = "";
     private String BIOMETRICS_DATA_PATH = "";
     Properties properties = null;
 
-    public Parser(String USER_DIR, String CONFIG_FILE){
-        properties = Utils.getProperties(USER_DIR+"/"+CONFIG_FILE);
-        this.PERSONA_SHEET = USER_DIR+properties.getProperty("ivv.sheet.persona");
-        this.RCUSER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.rcpersona");
-        this.PARTNER_SHEET = USER_DIR+properties.getProperty("ivv.sheet.partner");
-        this.SCENARIO_SHEET = USER_DIR+properties.getProperty("ivv.sheet.scenario");
-        this.CONFIGS_SHEET = USER_DIR+properties.getProperty("ivv.sheet.configs");
-        this.GLOBALS_SHEET = USER_DIR+properties.getProperty("ivv.sheet.globals");
-        this.DOCUMENTS_SHEET = USER_DIR+properties.getProperty("ivv.sheet.documents");
-        this.BIOMETRICS_SHEET = USER_DIR+properties.getProperty("ivv.sheet.biometrics");
-        this.DOCUMENT_DATA_PATH = USER_DIR+properties.getProperty("ivv.path.documents");
-        this.BIOMETRICS_DATA_PATH = USER_DIR+properties.getProperty("ivv.path.biometrics");
+    public Parser(ParserInputDTO input){
+        inputDTO = input;
     }
 
-    public ArrayList<Persona> getPersonas(){
-        ArrayList data = fetchData();
+    public ArrayList<Persona> getPersonas() throws RigInternalError {
+        JSONParser parser = new JSONParser();
+        ArrayList personaData = Utils.csvToList(inputDTO.getPersonaSheet());
+        ArrayList documentData = getDocuments();
+        ArrayList biometricData = getBiometrics();
+        String idObjectSchema = Utils.readFileAsString(inputDTO.getIdObjectSchema());
         ArrayList<Persona> persona_list = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
-        Iterator iter = data.iterator();
+        Iterator iter = personaData.iterator();
         while (iter.hasNext()) {
             Object obj = iter.next();
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
@@ -52,10 +50,6 @@ public class Parser implements ParserInterface {
             Persona main = new Persona();
 
             Person iam = new Person();
-            /* persona definition */
-            iam.setGender(data_map.get("gender"));
-            iam.setResidenceStatus(data_map.get("residence_status"));
-            iam.setRole(PersonaDef.ROLE.valueOf("APPLICANT"));
 
             /* persona */
             iam.setId(data_map.get("id"));
@@ -63,22 +57,74 @@ public class Parser implements ParserInterface {
             iam.setPrimaryLang(data_map.get("primaryLang"));
             iam.setSecondaryLang(data_map.get("secondaryLang"));
             iam.setRegistrationCenterId(data_map.get("registrationCenterId"));
-            iam.setAgeGroup(PersonaDef.AGE_GROUP.valueOf("ADULT"));
-            iam.setDocuments(getDocuments());
 
-            for (Map.Entry<String, String> entry : data_map.entrySet()) {
+            /* Adding documents */
+            iam.setProofOfAddress(getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY.POA, documentData));
+            iam.setProofOfBirth(getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY.POB, documentData));
+            iam.setProofOfIdentity(getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY.POI, documentData));
+            iam.setProofOfRelationship(getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY.POR, documentData));
+            iam.setProofOfException(getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY.POEX, documentData));
+            iam.setProofOfExemption(getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY.POEM, documentData));
+
+            /* Adding biometrics */
+            iam.setFace(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.face, biometricData));
+            iam.setLeftEye(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.leftEye, biometricData));
+            iam.setRightEye(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.rightEye, biometricData));
+            iam.setLeftThumb(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.leftThumb, biometricData));
+            iam.setRightThumb(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.rightThumb, biometricData));
+            iam.setLeftIndexFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.leftIndex, biometricData));
+            iam.setLeftMiddleFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.leftMiddle, biometricData));
+            iam.setLeftRingFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.leftRing, biometricData));
+            iam.setLeftLittleFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.leftLittle, biometricData));
+            iam.setRightIndexFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.rightIndex, biometricData));
+            iam.setRightMiddleFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.rightMiddle, biometricData));
+            iam.setRightRingFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.rightRing, biometricData));
+            iam.setRightLittleFinger(getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE.rightLittle, biometricData));
+
+            JsonNode rootNode = null;
+            try {
+                rootNode = oMapper.readTree(idObjectSchema);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RigInternalError("Parser - error in id object schema: "+e.getMessage());
+            }
+            Map<String, Object> idObjectMap = oMapper.convertValue(rootNode.path("properties").path("identity").path("properties"), new TypeReference<Map<String, Object>>(){});
+            for (Map.Entry<String, Object> entry : idObjectMap.entrySet()) {
+                IDObjectField iof = new IDObjectField();
                 String key = entry.getKey();
-                String val = entry.getValue();
+                JSONObject typeDef = new JSONObject((HashMap)entry.getValue());
                 if(key.isEmpty()){
                     continue;
                 }
-                String field = regex("\\{(\\S*)\\}", key);
-                if(field.isEmpty()){
-                    continue;
-                }
-                IDObjectField idObjectField = Helper.parseField(key, val, iam.getPrimaryLang(), iam.getSecondaryLang());
-                if(idObjectField != null){
-                    iam.getIdObject().put(field, idObjectField);
+                if(typeDef != null &&
+                        (typeDef.get("type") != null && typeDef.get("type").equals("integer")) ||
+                        (typeDef.get("type") != null && typeDef.get("type").equals("string")) ||
+                        (typeDef.get("$ref") != null && typeDef.get("$ref").equals("#/definitions/simpleType"))){
+                    String sheetVal = "";
+                    for (Map.Entry<String, String> ent: data_map.entrySet()){
+                        if(ent.getKey().contains(key)){
+                            if(ent.getKey().contains("^")){
+                                iof.setMutate(true);
+                            }
+                            sheetVal = ent.getValue();
+                            break;
+                        }
+                    }
+                    if(typeDef.get("type") != null && typeDef.get("type").equals("integer")){
+                        iof.setType(IDObjectField.type.integer);
+                        iof.setPrimaryValue(sheetVal);
+                    } else if(typeDef.get("type") != null && typeDef.get("type").equals("string")){
+                        iof.setType(IDObjectField.type.string);
+                        iof.setPrimaryValue(sheetVal);
+                    } else if(typeDef.get("$ref") != null && typeDef.get("$ref").equals("#/definitions/simpleType")){
+                        iof.setType(IDObjectField.type.simpleType);
+                        String[] sheetArr = sheetVal.split("%%");
+                        iof.setPrimaryValue(sheetArr[0]);
+                        if(sheetArr.length>1 && !iam.getSecondaryLang().isEmpty()){
+                            iof.setSecondaryValue(sheetArr[0]);
+                        }
+                    }
+                    iam.getIdObject().put(key, iof);
                 }
             }
 
@@ -107,8 +153,33 @@ public class Parser implements ParserInterface {
         return persona_list;
     }
 
+    private static ProofDocument getProofDocumentByCategory(ProofDocument.DOCUMENT_CATEGORY cat, ArrayList<ProofDocument> documents){
+        for(ProofDocument pd: documents){
+            if(pd.getDocCatCode().equals(cat)){
+                return pd;
+            }
+        }
+        return null;
+    }
+
+    private static BiometricsDTO getBiometricsByCategory(BiometricsDTO.BIOMETRIC_CAPTURE cap, ArrayList<BiometricsDTO> biometrics){
+        for(BiometricsDTO bio: biometrics){
+            if(bio.getCapture().equals(cap)){
+                return bio;
+            }
+        }
+        return null;
+    }
+
+    private String getMappedField(JSONObject mapping, String key){
+        if(mapping.containsKey(key)){
+            return mapping.get(key).toString();
+        }
+        return null;
+    }
+
     public ArrayList<RegistrationUser> getRCUsers(){
-        ArrayList data = fetchRCUsers();
+        ArrayList data = Utils.csvToList(inputDTO.getRcSheet());
         ArrayList<RegistrationUser> person_list = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
@@ -133,7 +204,7 @@ public class Parser implements ParserInterface {
     }
 
     public ArrayList<Partner> getPartners(){
-        ArrayList data = fetchPartners();
+        ArrayList data = Utils.csvToList(inputDTO.getPartnerSheet());
         ArrayList<Partner> person_list = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
@@ -157,7 +228,7 @@ public class Parser implements ParserInterface {
     }
 
     public ArrayList<Scenario> getScenarios(){
-        ArrayList data = fetchScenarios();
+        ArrayList data = Utils.csvToList(inputDTO.getScenarioSheet());
         ArrayList<Scenario> scenario_array = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
@@ -183,7 +254,7 @@ public class Parser implements ParserInterface {
     }
 
     public ArrayList<ProofDocument> getDocuments(){
-        ArrayList data = fetchDocuments();
+        ArrayList data = Utils.csvToList(inputDTO.getDocumentsSheet());
         ArrayList<ProofDocument> documents = new ArrayList<>();
         System.out.println("total documents found: "+data.size());
         ObjectMapper oMapper = new ObjectMapper();
@@ -197,7 +268,7 @@ public class Parser implements ParserInterface {
             pdoc.setDocFileFormat(data_map.get("doc_file_format"));
             pdoc.setTags(parseTags(data_map.get("tags")));
             pdoc.setName(data_map.get("name"));
-            pdoc.setPath(DOCUMENT_DATA_PATH+data_map.get("name"));
+            pdoc.setPath(Paths.get(DOCUMENT_DATA_PATH, data_map.get("name")).normalize().toString());
             documents.add(pdoc);
         }
         System.out.println("total documents parsed: "+documents.size());
@@ -205,7 +276,7 @@ public class Parser implements ParserInterface {
     }
 
     public ArrayList<BiometricsDTO> getBiometrics(){
-        ArrayList data = fetchBiometrics();
+        ArrayList data = Utils.csvToList(inputDTO.getBiometricsSheet());
         ArrayList<BiometricsDTO> biometrics = new ArrayList<>();
         System.out.println("total biometrics found: "+data.size());
         ObjectMapper oMapper = new ObjectMapper();
@@ -218,7 +289,7 @@ public class Parser implements ParserInterface {
             biom.setCapture(BiometricsDTO.BIOMETRIC_CAPTURE.valueOf(data_map.get("capture")));
             biom.setName(data_map.get("name"));
             biom.setThreshold(data_map.get("threshold"));
-            biom.setPath(BIOMETRICS_DATA_PATH+data_map.get("name"));
+            biom.setPath(Paths.get(BIOMETRICS_DATA_PATH, data_map.get("name")).normalize().toString());
             biometrics.add(biom);
         }
         System.out.println("total biometrics parsed: "+biometrics.size());
@@ -226,7 +297,7 @@ public class Parser implements ParserInterface {
     }
 
     public HashMap<String, String> getGlobals(){
-        ArrayList data = fetchGlobals();
+        ArrayList data = Utils.csvToList(inputDTO.getGlobalsSheet());
         HashMap<String, String> globals_map = new HashMap<>();
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
@@ -240,7 +311,7 @@ public class Parser implements ParserInterface {
     }
 
     public HashMap<String, String> getConfigs(){
-        ArrayList data = fetchConfigs();
+        ArrayList data = Utils.csvToList(inputDTO.getConfigsSheet());
         HashMap<String, String> configs_map = new HashMap<>();
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = data.iterator();
@@ -251,38 +322,6 @@ public class Parser implements ParserInterface {
         }
         System.out.println("total utils entries parsed: "+configs_map.size());
         return configs_map;
-    }
-
-    private ArrayList fetchData(){
-        return Utils.csvToList(PERSONA_SHEET);
-    }
-
-    private ArrayList fetchScenarios(){
-        return Utils.csvToList(SCENARIO_SHEET);
-    }
-
-    private ArrayList fetchDocuments(){
-        return Utils.csvToList(DOCUMENTS_SHEET);
-    }
-
-    private ArrayList fetchBiometrics(){
-        return Utils.csvToList(BIOMETRICS_SHEET);
-    }
-
-    private ArrayList fetchConfigs(){
-        return Utils.csvToList(CONFIGS_SHEET);
-    }
-
-    private ArrayList fetchGlobals(){
-        return Utils.csvToList(GLOBALS_SHEET);
-    }
-
-    private ArrayList fetchRCUsers(){
-        return Utils.csvToList(RCUSER_SHEET);
-    }
-
-    private ArrayList fetchPartners(){
-        return Utils.csvToList(PARTNER_SHEET);
     }
 
     private ArrayList<Scenario.Step> formatSteps(HashMap<String, String> data_map){

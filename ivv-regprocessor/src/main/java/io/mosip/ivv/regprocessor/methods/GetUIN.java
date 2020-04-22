@@ -51,7 +51,7 @@ public class GetUIN extends BaseStep implements StepInterface {
             String uin = ctx.read("$['response']['identity']['UIN']").toString();
             if(uin != null && !uin.isEmpty()){
                 logInfo("UIN generated: "+uin);
-                store.getScenarioData().getPersona().getPersons().get(index).setUin(uin);
+                store.getPersona().getPersons().get(index).setUin(uin);
             } else {
                 logInfo("UIN not found in response");
                 this.hasError=true;

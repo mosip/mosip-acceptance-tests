@@ -7,6 +7,7 @@ import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.CallRecord;
 import io.mosip.ivv.core.dtos.RequestDataDTO;
 import io.mosip.ivv.core.dtos.ResponseDataDTO;
+import io.mosip.ivv.preregistration.utils.Helpers;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
@@ -29,6 +30,7 @@ public class Logout extends BaseStep implements StepInterface {
         RestAssured.baseURI = System.getProperty("ivv.mosip.host");
         Response responseData = given().cookie("Authorization", this.store.getHttpData().getCookie()).post(data.getUrl());
         this.callRecord = new CallRecord(RestAssured.baseURI+data.getUrl(), "POST", data.getRequest(), responseData);
+        Helpers.logCallRecord(this.callRecord);
         return new ResponseDataDTO(responseData.getStatusCode(), responseData.getBody().asString(), responseData.getCookies());
     }
 
