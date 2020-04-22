@@ -28,7 +28,7 @@ public class GetPreRegistration extends BaseStep implements StepInterface {
     @Override
     public void run() {
         this.index = Utils.getPersonIndex(step);
-        this.person = this.store.getScenarioData().getPersona().getPersons().get(index);
+        this.person = this.store.getPersona().getPersons().get(index);
         SessionContext.map().put("registrationDTOContent", Setup.getRegistrationDTO());
 
         PreRegistrationDataSyncService serv = store.getRegApplicationContext().getBean(PreRegistrationDataSyncService.class);

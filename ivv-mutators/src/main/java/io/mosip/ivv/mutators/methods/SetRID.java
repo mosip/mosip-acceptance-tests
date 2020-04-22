@@ -21,9 +21,9 @@ public class SetRID extends BaseStep implements StepInterface {
         this.index = Utils.getPersonIndex(step);
         if(step.getParameters().size() > 0){
             String val = step.getParameters().get(0);
-            store.getScenarioData().getPersona().getPersons().get(index).setRegistrationId(val);
+            store.getPersona().getPersons().get(index).setRegistrationId(val);
             if(val.equals("EMPTY")){
-                store.getScenarioData().getPersona().getPersons().get(index).setRegistrationId("");
+                store.getPersona().getPersons().get(index).setRegistrationId("");
             }
         }
     }

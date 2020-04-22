@@ -25,6 +25,7 @@ public class SyncTPMKey extends BaseStep implements StepInterface {
         ResponseDTO responseDTO = null;
         try {
             tpmKey = ms.syncTPMPublicKey();
+            this.store.getCurrentRegistrationUSer().setKeyIndex(tpmKey);
         } catch (RegBaseCheckedException e) {
             e.printStackTrace();
             logSevere(e.getMessage());

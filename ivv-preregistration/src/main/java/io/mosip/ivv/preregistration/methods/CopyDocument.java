@@ -21,8 +21,8 @@ public class CopyDocument extends BaseStep implements StepInterface {
 
     public RequestDataDTO prepare(){
         String url = "/preregistration/" + System.getProperty("ivv.prereg.version") + "/documents/" +
-                    store.getScenarioData().getPersona().getPersons().get(step.getIndex().get(1)).getPreRegistrationId() + "?catCode="
-                        + step.getParameters().get(0) + "&sourcePreId=" + store.getScenarioData().getPersona().getPersons().get(step.getIndex().get(0)).getPreRegistrationId();
+                    store.getPersona().getPersons().get(step.getIndex().get(1)).getPreRegistrationId() + "?catCode="
+                        + step.getParameters().get(0) + "&sourcePreId=" + store.getPersona().getPersons().get(step.getIndex().get(0)).getPreRegistrationId();
         return new RequestDataDTO(url, null);
     }
 

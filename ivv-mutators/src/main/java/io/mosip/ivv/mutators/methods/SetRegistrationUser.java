@@ -32,7 +32,7 @@ public class SetRegistrationUser extends BaseStep implements StepInterface {
 
     @Override
     public void run() {
-        store.setCurrentRegistrationUSer(store.getScenarioData().getRegistrationUsers().get(Integer.parseInt(step.getParameters().get(0))));
+        store.setCurrentRegistrationUSer(store.getRegistrationUsers().get(Integer.parseInt(step.getParameters().get(0))));
     }
 
     @Override

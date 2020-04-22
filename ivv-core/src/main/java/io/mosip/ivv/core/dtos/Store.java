@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -19,7 +20,9 @@ public class Store {
 
     private HashMap<String, String> globals;
     private HashMap<String, String> configs;
-    private Scenario.Data scenarioData;
+    private Persona persona;
+    private ArrayList<RegistrationUser> registrationUsers;
+    private ArrayList<Partner> partners;
     private HTTPDataObject httpData = new HTTPDataObject();
     private ApplicationContext regApplicationContext;
     private Object regLocalContext;

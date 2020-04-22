@@ -21,13 +21,13 @@ public class RetainPerson extends BaseStep implements StepInterface {
     @Override
     public void run() {
         int index = -1;
-        for(int i = 0; i < store.getScenarioData().getPersona().getPersons().size(); i++){
-            if(store.getCurrentPerson().getId().equals(store.getScenarioData().getPersona().getPersons().get(i).getId())){
+        for(int i = 0; i < store.getPersona().getPersons().size(); i++){
+            if(store.getCurrentPerson().getId().equals(store.getPersona().getPersons().get(i).getId())){
                 index = i;
             }
         }
         if(index > -1){
-            store.getScenarioData().getPersona().getPersons().add(index, store.getCurrentPerson());
+            store.getPersona().getPersons().add(index, store.getCurrentPerson());
             logInfo("Retaining Person id: "+store.getCurrentPerson().getId());
         }
     }

@@ -208,24 +208,31 @@ def extractLocalDatabase():
     logging.info("Copied database to "+os.path.join(rootPath, 'ivv-orchestrator', 'db'))
 
 def downloadIdentySDK():
-    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath)
+    logging.info("[*] Downloading IdentySDK from "+identySDKUrl+" to "+identySDKJarPath)
     urllib.request.urlretrieve(identySDKUrl, identySDKJarPath, reporthook)
-    logging.info("Downloading Partner service from "+identySDKUrl+" to "+identySDKJarPath+" done")
+    # response = urllib.request.urlopen(identySDKUrl)
+    # print(response.read())
+    # with open(identySDKJarPath, "wb") as file:
+    #     file.write(response.content);
+    logging.info("[*] Downloading IdentySDK from "+identySDKUrl+" to "+identySDKJarPath+" done")
 
 def removeTempFolder():
     shutil.rmtree(tmpPath)
 
 def removeLogsAndReport():
     logging.info("Removing registration-services logs")
-    for file in os.listdir(os.path.join(rootPath, 'logs')):
-        if file.endswith(".log"):
-            os.remove(os.path.join(rootPath, 'logs', file))
+    resistrationLogs = os.path.join(rootPath, 'ivv-orchestrator', 'logs')
+    if os.path.exists(resistrationLogs):
+        for file in os.listdir(resistrationLogs):
+            if file.endswith(".log"):
+                os.remove(os.path.join(resistrationLogs, file))
 
     logging.info("Removing testrig logs")
     testRigLogs = os.path.join(rootPath, 'ivv-orchestrator', 'testRun', 'reports')
-    for file in os.listdir(testRigLogs):
-        if file.endswith(".log") or file.endswith(".html"):
-            os.remove(os.path.join(testRigLogs, file))
+    if os.path.exists(testRigLogs):
+        for file in os.listdir(testRigLogs):
+            if file.endswith(".log") or file.endswith(".html"):
+                os.remove(os.path.join(testRigLogs, file))
 
 def buildProject():
     try:
@@ -295,7 +302,15 @@ def run():
     runTests()
 
 def test():
-    downloadPartnerService()
+    # preSetup()
+    # checkPlatform()
+    # checkMaven()
+    # checkJavaHome()
+    copyDependencies()
+    # downloadIdentySDK()
+    # downloadRegClient()
+    # extractLocalDatabase()
+    # removeTempFolder()
 
 if args.mode == 'setup':
     setup()

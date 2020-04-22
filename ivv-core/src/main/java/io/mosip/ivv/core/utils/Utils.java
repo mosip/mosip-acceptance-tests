@@ -12,6 +12,7 @@ import io.mosip.ivv.core.dtos.CallRecord;
 import io.mosip.ivv.core.dtos.IDObjectField;
 import io.mosip.ivv.core.dtos.Person;
 import io.mosip.ivv.core.dtos.Scenario;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import org.apache.commons.lang3.EnumUtils;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -19,6 +20,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -321,34 +323,6 @@ public class Utils {
         return rid+date_part;
     }
 
-    public static IDObjectField updateIDField(IDObjectField idObjectField, String value, String primaryLang, String secondaryLang){
-        IDObjectField newIDObjectField = new IDObjectField();
-        newIDObjectField.setType(idObjectField.getType());
-        newIDObjectField.setMutate(idObjectField.getMutate());
-        newIDObjectField.setPrimaryValue(idObjectField.getPrimaryValue());
-        newIDObjectField.setSecondaryValue(idObjectField.getSecondaryValue());
-        if(idObjectField.getType().equals(IDObjectField.type.multilang)){
-            String[] vals = value.split("%%");
-            switch(vals.length){
-                case 0:
-                    newIDObjectField.setPrimaryValue("");
-                    newIDObjectField.setSecondaryValue("");
-                    break;
-                case 1:
-                    newIDObjectField.setPrimaryValue(vals[0].trim());
-                    newIDObjectField.setSecondaryValue(vals[0].trim());
-                    break;
-                default:
-                    newIDObjectField.setPrimaryValue(vals[0].trim());
-                    newIDObjectField.setSecondaryValue(vals[1].trim());
-                    break;
-            }
-        } else {
-            newIDObjectField.setPrimaryValue(value);
-        }
-        return newIDObjectField;
-    }
-
     public static String prettyJson(String uglyJson){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jp = new JsonParser();
@@ -371,6 +345,56 @@ public class Utils {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static IDObjectField updateIDField(IDObjectField idObjectField, String value, String primaryLang, String secondaryLang){
+        IDObjectField newIDObjectField = new IDObjectField();
+        newIDObjectField.setType(idObjectField.getType());
+        newIDObjectField.setMutate(idObjectField.getMutate());
+        newIDObjectField.setPrimaryValue(idObjectField.getPrimaryValue());
+        newIDObjectField.setSecondaryValue(idObjectField.getSecondaryValue());
+        if(idObjectField.getType().equals(IDObjectField.type.simpleType)){
+            String[] vals = value.split("%%");
+            switch(vals.length){
+                case 0:
+                    newIDObjectField.setPrimaryValue("");
+                    newIDObjectField.setSecondaryValue("");
+                    break;
+                case 1:
+                    newIDObjectField.setPrimaryValue(vals[0].trim());
+                    newIDObjectField.setSecondaryValue(vals[0].trim());
+                    break;
+                default:
+                    newIDObjectField.setPrimaryValue(vals[0].trim());
+                    newIDObjectField.setSecondaryValue(vals[1].trim());
+                    break;
+            }
+        } else {
+            newIDObjectField.setPrimaryValue(value);
+        }
+        return newIDObjectField;
+    }
+
+    public static void validateConfigFile(String configPath) throws RigInternalError {
+        Path config_path = Paths.get(configPath).normalize();
+        if(!Files.exists(config_path)){
+            throw new RigInternalError("validateConfigFile -- Invalid config file path");
+        }
+        ArrayList<String> paths = new ArrayList<>();
+        Properties properties = Utils.getProperties(config_path.toString());
+
+        ArrayList<String> props = new ArrayList<>();
+        for(String key : properties.stringPropertyNames()) {
+            String value = properties.getProperty(key);
+            if(key.startsWith("ivv.path")){
+                if(value == null){
+                    throw new RigInternalError("validateConfigFile -- "+key+" value is null");
+                }
+                if(!Files.exists(Paths.get(config_path.toString(), "..", value).normalize())){
+                    throw new RigInternalError("validateConfigFile -- "+key+" path:"+value);
+                }
+            }
         }
     }
 

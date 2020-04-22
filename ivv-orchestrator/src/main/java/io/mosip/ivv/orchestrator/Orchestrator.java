@@ -6,11 +6,11 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.base.StepInterface;
+import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.exceptions.RigInternalError;
-import io.mosip.ivv.core.dtos.Scenario;
-import io.mosip.ivv.core.dtos.Store;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.dg.DataGenerator;
+import io.mosip.ivv.parser.Parser;
 import io.mosip.ivv.registration.config.Setup;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
@@ -18,6 +18,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,9 +45,9 @@ public class Orchestrator {
     public void beforeSuite(){
         this.properties = Utils.getProperties("config.properties");
         this.configToSystemProperties();
-        Utils.setupLogger(System.getProperty("user.dir")+this.properties.getProperty("ivv.path.auditlog"));
+        Utils.setupLogger(System.getProperty("user.dir")+this.properties.getProperty("ivv._path.auditlog"));
         /* setting exentreport */
-        htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+this.properties.getProperty("ivv.path.reports"));
+        htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+this.properties.getProperty("ivv._path.reports"));
         extent = new ExtentReports();
         extent.attachReporter(htmlReporter);
     }
@@ -63,14 +64,47 @@ public class Orchestrator {
 
     @DataProvider(name="ScenarioDataProvider", parallel = false)
     public static Object[][] dataProvider() {
-        DataGenerator dg = new DataGenerator(System.getProperty("user.dir"), "config.properties");
-        ArrayList<Scenario> scenariosToRun = dg.getScenarios();
-        HashMap<String, String> configs = dg.getConfigs();
-        HashMap<String, String> globals = dg.getGlobals();
-        Object[][] dataArray = new Object[scenariosToRun.size()][4];
-        for(int i=0; i<scenariosToRun.size();i++){
+        String configFile = Paths.get(System.getProperty("user.dir"),"config.properties").normalize().toString();
+        Properties properties = Utils.getProperties(configFile);
+        try {
+            Utils.validateConfigFile(configFile);
+        } catch (RigInternalError rigInternalError) {
+            rigInternalError.printStackTrace();
+            System.exit(0);
+        }
+        ParserInputDTO parserInputDTO = new ParserInputDTO();
+        parserInputDTO.setDocumentsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.documents.folder")).normalize().toString());
+        parserInputDTO.setBiometricsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.biometrics.folder")).normalize().toString());
+        parserInputDTO.setPersonaSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.persona.sheet")).normalize().toString());
+        parserInputDTO.setScenarioSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.scenario.sheet")).normalize().toString());
+        parserInputDTO.setRcSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.rcpersona.sheet")).normalize().toString());
+        parserInputDTO.setPartnerSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.partner.sheet")).normalize().toString());
+        parserInputDTO.setIdObjectSchema(Paths.get(configFile, "..", properties.getProperty("ivv.path.idobject")).normalize().toString());
+        parserInputDTO.setDocumentsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.documents.sheet")).normalize().toString());
+        parserInputDTO.setBiometricsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.biometrics.sheet")).normalize().toString());
+        parserInputDTO.setGlobalsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.globals.sheet")).normalize().toString());
+        parserInputDTO.setConfigsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.configs.sheet")).normalize().toString());
+
+        Parser parser = new Parser(parserInputDTO);
+        DataGenerator dg = new DataGenerator();
+        ArrayList<Scenario> scenarios = new ArrayList<>();
+        try {
+            scenarios = dg.prepareScenarios(parser.getScenarios(), parser.getPersonas());
+        } catch (RigInternalError rigInternalError) {
+            rigInternalError.printStackTrace();
+        }
+
+        for(int i=0; i<scenarios.size();i++){
+            scenarios.get(i).setRegistrationUsers(parser.getRCUsers());
+            scenarios.get(i).setPartners(parser.getPartners());
+        }
+        HashMap<String, String> configs = parser.getConfigs();
+        HashMap<String, String> globals = parser.getGlobals();
+        ArrayList<RegistrationUser> rcUsers = parser.getRCUsers();
+        Object[][] dataArray = new Object[scenarios.size()][4];
+        for(int i=0; i<scenarios.size();i++){
             dataArray[i][0] = i;
-            dataArray[i][1] = scenariosToRun.get(i);
+            dataArray[i][1] = scenarios.get(i);
             dataArray[i][2] = configs;
             dataArray[i][3] = globals;
         }
@@ -97,7 +131,9 @@ public class Orchestrator {
         Store store = new Store();
         store.setConfigs(configs);
         store.setGlobals(globals);
-        store.setScenarioData(scenario.getData());
+        store.setPersona(scenario.getPersona());
+        store.setRegistrationUsers(scenario.getRegistrationUsers());
+        store.setPartners(scenario.getPartners());
         store.setProperties(this.properties);
         for(Scenario.Step step: scenario.getSteps()){
             if(step.getModule().equals(Scenario.Step.modules.rc)){
@@ -135,7 +171,7 @@ public class Orchestrator {
                 if(st.hasError()){
                     Boolean failed = false;
                     extentTest.fail(identifier+" - failed");
-                    Assert.assertEquals(failed, st.hasError());
+                    Assert.assertFalse(st.hasError());
                 }else{
                     extentTest.pass(identifier+" - passed");
                 }

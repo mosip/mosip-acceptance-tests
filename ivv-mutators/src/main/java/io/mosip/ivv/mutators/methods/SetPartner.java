@@ -32,7 +32,7 @@ public class SetPartner extends BaseStep implements StepInterface {
 
     @Override
     public void run() {
-        store.setCurrentPartner(store.getScenarioData().getPartners().get(Integer.parseInt(step.getParameters().get(0))));
+        store.setCurrentPartner(store.getPartners().get(Integer.parseInt(step.getParameters().get(0))));
     }
 
     @Override

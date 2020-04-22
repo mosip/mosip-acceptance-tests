@@ -17,6 +17,7 @@ public class Person extends PersonaDef {
     private String id;
     private String userid;
     private String password;
+    private String email;
     private String phone;
     private String otp;
     private String registrationCenterId;
@@ -67,9 +68,21 @@ public class Person extends PersonaDef {
     private ProofDocument proofOfException = null;
     private ProofDocument proofOfExemption = null;
 
+    private BiometricsDTO face;
+    private BiometricsDTO leftEye;
+    private BiometricsDTO rightEye;
+    private BiometricsDTO leftThumb;
+    private BiometricsDTO leftIndexFinger;
+    private BiometricsDTO leftMiddleFinger;
+    private BiometricsDTO leftRingFinger;
+    private BiometricsDTO leftLittleFinger;
+    private BiometricsDTO rightThumb;
+    private BiometricsDTO rightIndexFinger;
+    private BiometricsDTO rightMiddleFinger;
+    private BiometricsDTO rightRingFinger;
+    private BiometricsDTO rightLittleFinger;
+
+
     private String uin = "";
     private List<String> vids = new ArrayList<String>();
-
-    //@Deprecated
-    public ArrayList<ProofDocument> documents;
 }

@@ -26,7 +26,7 @@ public class SyncMaster extends BaseStep implements StepInterface {
         String triggerPoint = "User";
         ResponseDTO responseDTO = null;
         try {
-            responseDTO = ms.getMasterSync(masterSyncDetails, triggerPoint);
+            responseDTO = ms.getMasterSync(masterSyncDetails, triggerPoint, store.getCurrentRegistrationUSer().getKeyIndex());
         } catch (RegBaseCheckedException e) {
             e.printStackTrace();
             logSevere(e.getMessage());

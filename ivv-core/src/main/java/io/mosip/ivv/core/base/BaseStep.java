@@ -46,13 +46,13 @@ public class BaseStep {
     public void setup() throws RigInternalError {
         try {
             if(store.getCurrentPerson() == null){
-                store.setCurrentPerson(store.getScenarioData().getPersona().getPersons().get(0));
+                store.setCurrentPerson(store.getPersona().getPersons().get(0));
             }
             if(store.getCurrentRegistrationUSer() == null){
-                store.setCurrentRegistrationUSer(store.getScenarioData().getRegistrationUsers().get(0));
+                store.setCurrentRegistrationUSer(store.getRegistrationUsers().get(0));
             }
             if(store.getCurrentPartner() == null){
-                store.setCurrentPartner(store.getScenarioData().getPartners().get(0));
+                store.setCurrentPartner(store.getPartners().get(0));
             }
         } catch (RuntimeException e){
             throw new RigInternalError("Error during setup "+e.getMessage());

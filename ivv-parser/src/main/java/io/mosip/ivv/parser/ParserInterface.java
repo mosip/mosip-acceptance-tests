@@ -1,20 +1,25 @@
 package io.mosip.ivv.parser;
 
-import io.mosip.ivv.core.dtos.Persona;
-import io.mosip.ivv.core.dtos.ProofDocument;
-import io.mosip.ivv.core.dtos.Scenario;
+import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface ParserInterface {
 
-    ArrayList<Persona> getPersonas();
+    ArrayList<Persona> getPersonas() throws RigInternalError;
 
     ArrayList<Scenario> getScenarios();
+
+    ArrayList<RegistrationUser> getRCUsers();
+
+    ArrayList<Partner> getPartners();
 
     ArrayList<ProofDocument> getDocuments();
 
     HashMap<String, String> getGlobals();
+
+    HashMap<String, String> getConfigs();
 
 }
