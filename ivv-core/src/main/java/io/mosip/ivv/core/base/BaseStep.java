@@ -11,6 +11,8 @@ import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 
+import java.util.ArrayList;
+
 public class BaseStep {
     public Boolean hasError = false;
     public Store store = null;
@@ -21,6 +23,10 @@ public class BaseStep {
 
     public Boolean hasError() {
         return hasError;
+    }
+
+    public ArrayList<Scenario.Step.Error> getErrorsForAssert(){
+        return step.getErrors();
     }
 
     public void setStep(Scenario.Step s) {
@@ -119,4 +125,5 @@ public class BaseStep {
             logInfo("Assert [DEFAULT] passed");
         }
     }
+
 }

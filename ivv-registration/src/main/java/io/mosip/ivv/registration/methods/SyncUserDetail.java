@@ -13,11 +13,6 @@ import io.mosip.registration.service.operator.UserDetailService;
 public class SyncUserDetail extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         UserDetailService serv = store.getRegApplicationContext().getBean(UserDetailService.class);
         ResponseDTO responseDTO = null;

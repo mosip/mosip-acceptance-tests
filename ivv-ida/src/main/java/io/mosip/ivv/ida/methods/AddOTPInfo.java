@@ -7,10 +7,7 @@ import io.mosip.ivv.core.dtos.ResponseDataDTO;
 
 public class AddOTPInfo extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

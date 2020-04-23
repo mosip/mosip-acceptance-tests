@@ -11,11 +11,6 @@ import io.mosip.registration.service.packet.RegPacketStatusService;
 public class DeletePackets extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         /*  packets with status PROCESSED will be deleted */
         this.index = Utils.getPersonIndex(step);

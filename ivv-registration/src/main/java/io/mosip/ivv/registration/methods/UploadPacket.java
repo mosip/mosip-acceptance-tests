@@ -17,10 +17,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public class UploadPacket extends BaseStep implements StepInterface {
-    @Override
-    public void assertAPI() {
-
-    }
 
     @Override
     public void run() {

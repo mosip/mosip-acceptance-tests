@@ -13,11 +13,6 @@ import io.mosip.registration.service.operator.UserSaltDetailsService;
 public class SyncUserSalt extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         UserSaltDetailsService serv = store.getRegApplicationContext().getBean(UserSaltDetailsService.class);
         ResponseDTO responseDTO = null;

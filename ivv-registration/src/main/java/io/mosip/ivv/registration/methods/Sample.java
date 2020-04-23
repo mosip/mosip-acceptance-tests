@@ -9,10 +9,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 
 public class Sample extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

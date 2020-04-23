@@ -17,11 +17,6 @@ public class CheckUINMail extends BaseStep implements StepInterface {
     private String finalStatus;
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         int counter = 0;
         int repeats = 20;

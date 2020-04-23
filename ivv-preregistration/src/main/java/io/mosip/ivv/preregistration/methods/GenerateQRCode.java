@@ -53,8 +53,4 @@ public class GenerateQRCode extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
 }

@@ -15,11 +15,6 @@ import java.util.List;
 
 public class OperatorAuthentication extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
-
-    }
-
     /**
      * Method to create RegistrationDTO if not created and adding only demographic details to it.
      *

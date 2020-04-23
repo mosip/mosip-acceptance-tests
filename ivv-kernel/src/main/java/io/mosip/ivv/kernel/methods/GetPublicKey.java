@@ -45,9 +45,6 @@ public class GetPublicKey extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

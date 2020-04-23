@@ -13,11 +13,6 @@ import io.mosip.registration.service.sync.PolicySyncService;
 public class SyncPolicy extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         PolicySyncService pss = store.getRegApplicationContext().getBean(PolicySyncService.class);
         ResponseDTO responseDTO = null;

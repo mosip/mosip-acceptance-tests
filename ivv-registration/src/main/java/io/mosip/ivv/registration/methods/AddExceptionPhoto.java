@@ -15,10 +15,7 @@ public class AddExceptionPhoto extends BaseStep implements StepInterface {
 
     private int face_threshold = 80;
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

@@ -20,10 +20,7 @@ public class GetPreRegistration extends BaseStep implements StepInterface {
 
     private Person person;
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

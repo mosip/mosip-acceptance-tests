@@ -130,9 +130,4 @@ public class ValidateOTP extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

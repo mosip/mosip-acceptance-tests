@@ -12,10 +12,7 @@ import static io.restassured.RestAssured.given;
 
 public class GetAuthenticationOTP extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

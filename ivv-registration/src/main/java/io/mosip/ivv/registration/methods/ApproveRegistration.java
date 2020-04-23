@@ -11,11 +11,6 @@ import io.mosip.registration.service.packet.RegistrationApprovalService;
 public class ApproveRegistration extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         String registrationId =  store.getCurrentPerson().getRegistrationId();
         String comment = "";

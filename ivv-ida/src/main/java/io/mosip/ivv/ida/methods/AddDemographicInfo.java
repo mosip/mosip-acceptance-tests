@@ -10,10 +10,7 @@ import static io.restassured.RestAssured.given;
 
 public class AddDemographicInfo extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

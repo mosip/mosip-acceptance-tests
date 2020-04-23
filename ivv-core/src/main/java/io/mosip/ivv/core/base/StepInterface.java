@@ -5,6 +5,8 @@ import com.aventstack.extentreports.ExtentTest;
 import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.exceptions.RigInternalError;
 
+import java.util.ArrayList;
+
 public interface StepInterface {
     Boolean hasError();
 
@@ -12,9 +14,11 @@ public interface StepInterface {
 
     Store getState();
 
-    void validateStep() throws RigInternalError;
+    ArrayList<Scenario.Step.Error> getErrorsForAssert();
 
-    void assertAPI();
+    void errorHandler();
+
+    void validateStep() throws RigInternalError;
 
     void assertStatus();
 

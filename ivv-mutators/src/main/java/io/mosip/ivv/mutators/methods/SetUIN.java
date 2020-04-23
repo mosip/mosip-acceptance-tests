@@ -11,10 +11,7 @@ public class SetUIN extends BaseStep implements StepInterface {
 
     private Person person;
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

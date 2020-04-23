@@ -68,9 +68,4 @@ public class GetBookingSlots extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

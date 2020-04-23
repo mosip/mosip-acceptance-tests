@@ -48,10 +48,7 @@ public class AddBiometricInfo extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

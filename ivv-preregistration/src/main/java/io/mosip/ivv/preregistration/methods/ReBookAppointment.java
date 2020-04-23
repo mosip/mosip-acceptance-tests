@@ -70,10 +70,4 @@ public class ReBookAppointment extends BaseStep implements StepInterface {
     public void process(ResponseDataDTO res){
 
     }
-
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

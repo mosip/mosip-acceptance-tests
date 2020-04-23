@@ -123,9 +123,4 @@ public class CheckStatus extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

@@ -22,10 +22,7 @@ public class AddApplicantDocuments extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

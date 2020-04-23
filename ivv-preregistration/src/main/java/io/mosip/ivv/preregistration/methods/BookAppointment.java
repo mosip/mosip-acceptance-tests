@@ -55,10 +55,4 @@ public class BookAppointment extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
-
 }

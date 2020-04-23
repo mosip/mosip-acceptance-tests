@@ -44,10 +44,7 @@ public class Authentication extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     private String createAuthRequest(){
         store.getCurrentPerson().getAuthenticationJSON().put("timestamp", Utils.getCurrentDateAndTimeForAPI());

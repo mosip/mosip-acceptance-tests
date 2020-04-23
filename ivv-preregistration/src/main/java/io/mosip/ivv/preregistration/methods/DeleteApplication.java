@@ -37,10 +37,5 @@ public class DeleteApplication extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 
 }

@@ -12,11 +12,6 @@ import io.mosip.registration.service.config.GlobalParamService;
 public class SyncGlobalParam extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
 
         GlobalParamService gps = store.getRegApplicationContext().getBean(GlobalParamService.class);

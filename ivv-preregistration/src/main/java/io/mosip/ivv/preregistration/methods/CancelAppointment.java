@@ -38,8 +38,4 @@ public class CancelAppointment extends BaseStep implements StepInterface {
 
 	}
 
-	@Override
-	public void assertAPI() {
-
-	}
 }

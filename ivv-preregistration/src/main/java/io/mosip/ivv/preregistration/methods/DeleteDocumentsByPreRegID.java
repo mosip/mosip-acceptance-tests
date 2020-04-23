@@ -42,8 +42,4 @@ public class DeleteDocumentsByPreRegID extends BaseStep implements StepInterface
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
 }

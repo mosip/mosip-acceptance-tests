@@ -38,9 +38,6 @@ public class Logout extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

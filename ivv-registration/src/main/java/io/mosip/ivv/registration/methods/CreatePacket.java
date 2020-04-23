@@ -17,10 +17,7 @@ import io.mosip.registration.service.packet.PacketHandlerService;
 
 public class CreatePacket extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

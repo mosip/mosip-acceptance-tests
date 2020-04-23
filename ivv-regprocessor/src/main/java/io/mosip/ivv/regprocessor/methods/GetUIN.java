@@ -65,9 +65,4 @@ public class GetUIN extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }
