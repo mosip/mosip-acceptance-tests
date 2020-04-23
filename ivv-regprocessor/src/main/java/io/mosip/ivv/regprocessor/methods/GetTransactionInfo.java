@@ -57,9 +57,4 @@ public class GetTransactionInfo extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

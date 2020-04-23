@@ -37,9 +37,6 @@ public class GetMasterData extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

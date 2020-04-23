@@ -37,10 +37,7 @@ public class UpdateRegistrationUser extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

@@ -35,9 +35,6 @@ public class GetGlobalConfig extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

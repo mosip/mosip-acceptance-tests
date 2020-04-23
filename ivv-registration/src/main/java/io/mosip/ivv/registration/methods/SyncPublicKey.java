@@ -13,11 +13,6 @@ import io.mosip.registration.service.sync.PublicKeySync;
 public class SyncPublicKey  extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         PublicKeySync serv = store.getRegApplicationContext().getBean(PublicKeySync.class);
         ResponseDTO responseDTO = null;

@@ -12,10 +12,7 @@ import io.mosip.registration.service.sync.MasterSyncService;
 
 public class SyncMaster extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

@@ -48,9 +48,4 @@ public class SendOTP extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

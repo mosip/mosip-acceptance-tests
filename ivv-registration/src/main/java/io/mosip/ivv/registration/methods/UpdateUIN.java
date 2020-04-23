@@ -19,11 +19,6 @@ public class UpdateUIN extends BaseStep implements StepInterface {
     }
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         RegistrationDTO registrationDTO = Setup.getRegistrationDTO();
         registrationDTO.getRegistrationMetaDataDTO().setRegistrationCategory("Update");

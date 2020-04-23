@@ -90,9 +90,6 @@ public class Login extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

@@ -4,7 +4,7 @@ reportsFolder = \\testRun\\reports\\
 resultsFolder = \\testRun\\results\\
 archiveFolder = \\testRun\\archive\\
 
-ivv.mosip.host=https://${environment}
+ivv.mosip.host=https://qa.mosip.io
 ivv.prereg.version=v1
 ivv.prereg.apiversion=1.0
 ivv.global.version=v1
@@ -14,22 +14,23 @@ ivv.global.apiversion=1.0
 ivv.swagger.host=http://localhost:8081
 
 # email account #
-ivv.email.server.host=${emailServerHost}
-ivv.email.server.user=${emailServerUsername}
-ivv.email.server.pass=${emailServerPassword}
+ivv.email.server.host=
+ivv.email.server.user=
+ivv.email.server.pass=
 
 # Input data & files ** path is relative to ivv-orchestrator module #
-ivv.sheet.persona=/local/PersonaSheet.csv
-ivv.sheet.partner=/local/PartnerSheet.csv
-ivv.sheet.rcpersona=/local/RCUserSheet.csv
-ivv.sheet.scenario=/local/ScenarioSheetFull.csv
-ivv.sheet.globals=/local/GlobalsSheet.csv
-ivv.sheet.configs=/local/ConfigsSheet.csv
-ivv.sheet.documents=/local/DocumentsSheet.csv
-ivv.sheet.biometrics=/local/BiometricsSheet.csv
-ivv.path.documents=/local/documents/
-ivv.path.biometrics=/local/biometrics/
-ivv.path.generated.documents=/local/documents/
-ivv.path.generated.biometrics=/local/data/resources/generated_data/biometrics/
-ivv.path.auditlog=/testRun/reports/mosip_auditLogs.log
-ivv.path.reports=/testRun/reports/mosip_reports.html
+ivv.path.persona.sheet=local/PersonaSheet.csv
+ivv.path.partner.sheet=local/PartnerSheet.csv
+ivv.path.rcpersona.sheet=local/RCUserSheet.csv
+#ivv.sheet.scenario.sheet=local/ScenarioSheetFull.csv
+ivv.path.scenario.sheet=local/ScenarioSheetRegclient.csv
+ivv.path.globals.sheet=local/GlobalsSheet.csv
+ivv.path.configs.sheet=local/ConfigsSheet.csv
+ivv.path.documents.sheet=local/DocumentsSheet.csv
+ivv.path.biometrics.sheet=local/BiometricsSheet.csv
+ivv.path.documents.folder=local/documents/
+ivv.path.biometrics.folder=local/biometrics/
+ivv._path.auditlog=testRun/reports/mosip_auditLogs.log
+ivv._path.reports=testRun/reports/mosip_reports.html
+ivv.path.mappingfile=local/mapping.json
+ivv.path.idobject=local/IDObjectSchema.json

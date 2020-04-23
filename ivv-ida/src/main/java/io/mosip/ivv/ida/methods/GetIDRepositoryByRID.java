@@ -39,9 +39,6 @@ public class GetIDRepositoryByRID extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

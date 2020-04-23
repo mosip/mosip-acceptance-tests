@@ -43,10 +43,7 @@ public class UpdateApplicantDemographics extends BaseStep implements StepInterfa
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

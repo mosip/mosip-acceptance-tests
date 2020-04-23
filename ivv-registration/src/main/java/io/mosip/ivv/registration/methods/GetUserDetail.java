@@ -10,11 +10,6 @@ import io.mosip.registration.service.login.LoginService;
 public class GetUserDetail extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         String jsonInString = "";
         LoginService ls = store.getRegApplicationContext().getBean(LoginService.class);

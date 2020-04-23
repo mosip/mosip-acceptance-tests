@@ -60,8 +60,4 @@ public class DeleteDocument extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
 }

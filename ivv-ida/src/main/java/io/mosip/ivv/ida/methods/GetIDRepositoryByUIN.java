@@ -39,9 +39,6 @@ public class GetIDRepositoryByUIN extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }

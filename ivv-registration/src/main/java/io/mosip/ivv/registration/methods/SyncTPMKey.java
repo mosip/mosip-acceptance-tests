@@ -13,10 +13,7 @@ import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
 public class SyncTPMKey extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

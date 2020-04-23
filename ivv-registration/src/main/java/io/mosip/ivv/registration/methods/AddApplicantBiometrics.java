@@ -57,11 +57,6 @@ public class AddApplicantBiometrics extends BaseStep implements StepInterface {
     }
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         RegistrationDTO registrationDTO = (RegistrationDTO) this.store.getRegistrationDto();
         BiometricInfoDTO biometricInfoDTO = registrationDTO.getBiometricDTO().getApplicantBiometricDTO();

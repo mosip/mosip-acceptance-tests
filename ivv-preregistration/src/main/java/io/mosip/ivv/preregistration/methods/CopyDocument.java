@@ -43,8 +43,4 @@ public class CopyDocument extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
 }

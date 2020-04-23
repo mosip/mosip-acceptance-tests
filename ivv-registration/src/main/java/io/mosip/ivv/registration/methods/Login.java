@@ -20,11 +20,6 @@ import java.util.Map;
 public class Login extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         String jsonInString = "";
         LoginService loginService = store.getRegApplicationContext().getBean(LoginService.class);

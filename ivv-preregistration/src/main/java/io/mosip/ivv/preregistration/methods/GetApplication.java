@@ -38,9 +38,4 @@ public class GetApplication extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

@@ -9,10 +9,7 @@ import io.mosip.registration.service.sync.PacketSynchService;
 
 public class SyncPacket extends BaseStep implements StepInterface {
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

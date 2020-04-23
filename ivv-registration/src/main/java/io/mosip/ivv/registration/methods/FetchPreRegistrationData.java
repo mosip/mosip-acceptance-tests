@@ -17,11 +17,6 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 public class FetchPreRegistrationData extends BaseStep implements StepInterface {
 
     @Override
-    public void assertAPI() {
-
-    }
-
-    @Override
     public void run() {
         SessionContext.map().put("registrationDTOContent", Setup.getRegistrationDTO());
         String preRegistrationId = store.getCurrentPerson().getPreRegistrationId();

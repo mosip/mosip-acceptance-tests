@@ -90,9 +90,4 @@ public class UpdateApplication extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

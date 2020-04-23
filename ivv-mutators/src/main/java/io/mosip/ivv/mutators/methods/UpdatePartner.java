@@ -37,10 +37,7 @@ public class UpdatePartner extends BaseStep implements StepInterface {
         }
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
     @Override
     public void run() {

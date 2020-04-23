@@ -46,9 +46,4 @@ public class GetDocuments extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
-
-    }
-
 }

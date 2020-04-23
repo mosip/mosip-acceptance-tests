@@ -35,9 +35,6 @@ public class GetUserDetails extends BaseStep implements StepInterface {
 
     }
 
-    @Override
-    public void assertAPI() {
 
-    }
 
 }
