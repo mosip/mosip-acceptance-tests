@@ -12,18 +12,17 @@ import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.dg.DataGenerator;
 import io.mosip.ivv.parser.Parser;
 import io.mosip.ivv.registration.config.Setup;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
 import org.testng.ITestResult;
+import org.testng.SkipException;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class Orchestrator {
     private Boolean regClientSetup = false;
@@ -63,7 +62,7 @@ public class Orchestrator {
     }
 
     @DataProvider(name="ScenarioDataProvider", parallel = false)
-    public static Object[][] dataProvider() {
+    public static Object[][] dataProvider() throws RigInternalError {
         String configFile = Paths.get(System.getProperty("user.dir"),"config.properties").normalize().toString();
         Properties properties = Utils.getProperties(configFile);
         try {
@@ -73,6 +72,7 @@ public class Orchestrator {
             System.exit(0);
         }
         ParserInputDTO parserInputDTO = new ParserInputDTO();
+        parserInputDTO.setConfigProperties(properties);
         parserInputDTO.setDocumentsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.documents.folder")).normalize().toString());
         parserInputDTO.setBiometricsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.biometrics.folder")).normalize().toString());
         parserInputDTO.setPersonaSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.persona.sheet")).normalize().toString());
@@ -101,12 +101,13 @@ public class Orchestrator {
         HashMap<String, String> configs = parser.getConfigs();
         HashMap<String, String> globals = parser.getGlobals();
         ArrayList<RegistrationUser> rcUsers = parser.getRCUsers();
-        Object[][] dataArray = new Object[scenarios.size()][4];
+        Object[][] dataArray = new Object[scenarios.size()][5];
         for(int i=0; i<scenarios.size();i++){
             dataArray[i][0] = i;
             dataArray[i][1] = scenarios.get(i);
             dataArray[i][2] = configs;
             dataArray[i][3] = globals;
+            dataArray[i][4] = properties;
         }
         return dataArray;
     }
@@ -117,7 +118,12 @@ public class Orchestrator {
     }
 
     @Test(dataProvider="ScenarioDataProvider")
-    private void run(int i, Scenario scenario, HashMap<String, String> configs, HashMap<String, String> globals) throws SQLException {
+    private void run(int i, Scenario scenario, HashMap<String, String> configs, HashMap<String, String> globals, Properties properties) throws SQLException {
+        String tags = System.getProperty("ivv.tags");
+        if (!matchTags(tags, scenario.getTags())){
+            Utils.auditLog.info("Skipping Scenario #"+scenario.getId());
+            throw new SkipException("Skipping Scenario #"+scenario.getId());
+        }
         ObjectMapper mapper = new ObjectMapper();
         try {
             String stepsAsString = mapper.writeValueAsString(scenario.getSteps());
@@ -125,9 +131,9 @@ public class Orchestrator {
             e.printStackTrace();
         }
         Utils.auditLog.info("");
-        Utils.auditLog.info("-- *** Scenario "+ scenario.getName() + ": " + scenario.getDescription()+
+        Utils.auditLog.info("-- *** Scenario "+ scenario.getId() + ": " + scenario.getDescription()+
                 " *** --");
-        ExtentTest extentTest = extent.createTest("Scenario_" + scenario.getName() + ": " + scenario.getDescription());
+        ExtentTest extentTest = extent.createTest("Scenario_" + scenario.getId() + ": " + scenario.getDescription());
         Store store = new Store();
         store.setConfigs(configs);
         store.setGlobals(globals);
@@ -151,6 +157,7 @@ public class Orchestrator {
                 //extentTest.info("parameters: "+step.getParameters().toString());
                 StepInterface st = getInstanceOf(step);
                 st.setExtentInstance(extentTest);
+                st.setSystemProperties(properties);
                 st.setState(store);
                 st.setStep(step);
                 st.setup();
@@ -168,7 +175,7 @@ public class Orchestrator {
                         Assert.assertFalse(st.hasError());
                     }
                 } else {
-                    st.assertStatus();
+                    st.assertNoError();
                     if(st.hasError()){
                         extentTest.fail(identifier+" - failed");
                         Assert.assertFalse(st.hasError());
@@ -244,6 +251,11 @@ public class Orchestrator {
         for (String key : keys) {
             System.setProperty(key, this.properties.getProperty(key));
         }
+    }
+
+    private static Boolean matchTags(String systemTags, ArrayList<String> scenarioTags){
+        List<String> sys = Arrays.asList(systemTags.split(","));
+        return CollectionUtils.containsAny(sys, scenarioTags);
     }
 
 }

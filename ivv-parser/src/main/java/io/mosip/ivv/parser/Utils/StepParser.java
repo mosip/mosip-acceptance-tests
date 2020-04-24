@@ -26,7 +26,7 @@ public class StepParser {
                 String name_variant = Utils.regex("(\\w*)\\(", func);
                 String[] nv_split = name_variant.split("\\_");
                 if(nv_split.length < 2){
-                    throw new StepParsingException("invalid step format, it should be (module_func_variant): "+func);
+                    throw new StepParsingException("invalid step format, it should be (module_stepName): "+func);
                 }
                 step.setModule(Scenario.Step.modules.valueOf(nv_split[0]));
                 step.setName(nv_split[1]);

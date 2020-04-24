@@ -27,8 +27,6 @@ public abstract class Setup {
 
     public static SetupResponse init(){
         Setup.SetupResponse setupResponse = new SetupResponse();
-//        System.setProperty("file.encoding", "UTF-8");
-//        System.setProperty("spring.profiles.active", "qa");
         io.mosip.registration.context.ApplicationContext localApplicationContext = io.mosip.registration.context.ApplicationContext.getInstance();
         localApplicationContext.getApplicationMap().put(RegistrationConstants.INITIAL_SETUP, "Y");
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);

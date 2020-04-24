@@ -31,6 +31,9 @@ public class AddApplication extends BaseStep implements StepInterface {
         for (Map.Entry<String, IDObjectField> entry : store.getCurrentPerson().getIdObject().entrySet()) {
             String key = entry.getKey();
             IDObjectField idField = entry.getValue();
+            if(!idField.getPrereg()){
+                continue;
+            }
             if(idField.getType().equals(IDObjectField.type.simpleType)){
                 JSONArray jvals = new JSONArray();
                 if(!store.getCurrentPerson().getPrimaryLang().isEmpty()){

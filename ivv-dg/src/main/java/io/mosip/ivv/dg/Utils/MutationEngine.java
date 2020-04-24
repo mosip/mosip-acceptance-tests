@@ -37,15 +37,12 @@ public class MutationEngine {
     }
 
     private HashMap<String, IDObjectField> mutateIDFields(HashMap<String, IDObjectField> idFields){
+        Gson gson = new Gson();
         HashMap<String, IDObjectField> newIdFields = new HashMap<String, IDObjectField>();
         for (Map.Entry<String, IDObjectField> entry : idFields.entrySet()) {
             String key = entry.getKey();
             IDObjectField idField = entry.getValue();
-            IDObjectField newIdField = new IDObjectField();
-            newIdField.setMutate(idField.getMutate());
-            newIdField.setType(idField.getType());
-            newIdField.setPrimaryValue(idField.getPrimaryValue());
-            newIdField.setSecondaryValue(idField.getSecondaryValue());
+            IDObjectField newIdField = gson.fromJson(gson.toJson(idField), IDObjectField.class);
             if(idField.getMutate()) {
                 if(!regex("(\\S+@\\S+\\.\\S+)", idField.getPrimaryValue()).isEmpty()){
                     if(!idField.getPrimaryValue().isEmpty()){

@@ -3,9 +3,12 @@ package io.mosip.ivv.core.dtos;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Properties;
+
 @Getter
 @Setter
 public class ParserInputDTO {
+    private Properties configProperties;
     private String personaSheet;
     private String rcSheet;
     private String partnerSheet;

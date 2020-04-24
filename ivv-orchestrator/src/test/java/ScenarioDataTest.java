@@ -2,6 +2,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.ivv.core.dtos.ParserInputDTO;
 import io.mosip.ivv.core.dtos.Scenario;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.dg.DataGenerator;
 import io.mosip.ivv.parser.Parser;
@@ -20,19 +21,13 @@ public class ScenarioDataTest {
         String configFile = Paths.get(System.getProperty("user.dir"),"..", "ivv-orchestrator","config.properties").normalize().toString();
         Properties properties = Utils.getProperties(configFile);
         ParserInputDTO parserInputDTO = new ParserInputDTO();
-        parserInputDTO.setDocumentsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.documents.folder")).normalize().toString());
-        parserInputDTO.setBiometricsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.biometrics.folder")).normalize().toString());
-        parserInputDTO.setPersonaSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.persona.sheet")).normalize().toString());
-        parserInputDTO.setIdObjectSchema(Paths.get(configFile, "..", properties.getProperty("ivv.path.idobject")).normalize().toString());
-        parserInputDTO.setDocumentsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.documents.sheet")).normalize().toString());
-        parserInputDTO.setBiometricsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.biometrics.sheet")).normalize().toString());
-        parserInputDTO.setGlobalsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.globals.sheet")).normalize().toString());
-        parserInputDTO.setConfigsSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.configs.sheet")).normalize().toString());
+        parserInputDTO.setConfigProperties(properties);
+        parserInputDTO.setScenarioSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.scenario.sheet")).normalize().toString());
         parser = new Parser(parserInputDTO);
     }
 
     @Test
-    public void scenarioData(){
+    public void scenarioData() throws RigInternalError {
         ArrayList<Scenario> scenariosToRun = parser.getScenarios();
         ObjectMapper mapper = new ObjectMapper();
         try {

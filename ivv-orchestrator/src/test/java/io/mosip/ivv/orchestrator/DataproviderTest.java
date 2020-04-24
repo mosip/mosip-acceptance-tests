@@ -1,6 +1,7 @@
 package io.mosip.ivv.orchestrator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 public class DataproviderTest {
 
     @Test(expected = Test.None.class)
-    public void dataproviderOutput(){
+    public void dataproviderOutput() throws RigInternalError {
         Object[][] dataArray = Orchestrator.dataProvider();
         for(int i=0; i<dataArray.length; i++){
             Object [] scenarioRow = dataArray[i];

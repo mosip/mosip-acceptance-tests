@@ -10,16 +10,14 @@ public interface ParserInterface {
 
     ArrayList<Persona> getPersonas() throws RigInternalError;
 
-    ArrayList<Scenario> getScenarios();
+    ArrayList<Scenario> getScenarios() throws RigInternalError;
 
-    ArrayList<RegistrationUser> getRCUsers();
+    ArrayList<RegistrationUser> getRCUsers() throws RigInternalError;
 
-    ArrayList<Partner> getPartners();
+    ArrayList<Partner> getPartners() throws RigInternalError;
 
-    ArrayList<ProofDocument> getDocuments();
+    HashMap<String, String> getGlobals() throws RigInternalError;
 
-    HashMap<String, String> getGlobals();
-
-    HashMap<String, String> getConfigs();
+    HashMap<String, String> getConfigs() throws RigInternalError;
 
 }

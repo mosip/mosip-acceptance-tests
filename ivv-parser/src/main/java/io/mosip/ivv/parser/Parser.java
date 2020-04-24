@@ -26,8 +26,6 @@ import static io.mosip.ivv.core.utils.Utils.regex;
 
 public class Parser implements ParserInterface {
     private ParserInputDTO inputDTO;
-    private static String  DOCUMENT_DATA_PATH = "";
-    private String BIOMETRICS_DATA_PATH = "";
     Properties properties = null;
 
     public Parser(ParserInputDTO input){
@@ -35,12 +33,27 @@ public class Parser implements ParserInterface {
     }
 
     public ArrayList<Persona> getPersonas() throws RigInternalError {
+        validatePersonaFiles();
         JSONParser parser = new JSONParser();
         ArrayList personaData = Utils.csvToList(inputDTO.getPersonaSheet());
         ArrayList documentData = getDocuments();
         ArrayList biometricData = getBiometrics();
         String idObjectSchema = Utils.readFileAsString(inputDTO.getIdObjectSchema());
         ArrayList<Persona> persona_list = new ArrayList();
+
+        /* Prereg skip fields */
+        List<String> preregSkipFields = new ArrayList<>();
+        if(inputDTO.getConfigProperties() != null && !inputDTO.getConfigProperties().isEmpty()){
+            String preregSkip = inputDTO.getConfigProperties().getProperty("ivv.prereg.skip");
+            preregSkipFields = Arrays.asList(preregSkip.split(","));
+        }
+        /* Regclient skip fields */
+        List<String> regclientSkipFields = new ArrayList<>();
+        if(inputDTO.getConfigProperties() != null && !inputDTO.getConfigProperties().isEmpty()){
+            String regclientSkip = inputDTO.getConfigProperties().getProperty("ivv.regclient.skip");
+            regclientSkipFields = Arrays.asList(regclientSkip.split(","));
+        }
+
         ObjectMapper oMapper = new ObjectMapper();
         Iterator iter = personaData.iterator();
         while (iter.hasNext()) {
@@ -101,6 +114,12 @@ public class Parser implements ParserInterface {
                         (typeDef.get("type") != null && typeDef.get("type").equals("string")) ||
                         (typeDef.get("$ref") != null && typeDef.get("$ref").equals("#/definitions/simpleType"))){
                     String sheetVal = "";
+                    if(!preregSkipFields.contains(key)){
+                        iof.setPrereg(true);
+                    }
+                    if(!regclientSkipFields.contains(key)){
+                        iof.setRegclient(true);
+                    }
                     for (Map.Entry<String, String> ent: data_map.entrySet()){
                         if(ent.getKey().contains(key)){
                             if(ent.getKey().contains("^")){
@@ -178,7 +197,8 @@ public class Parser implements ParserInterface {
         return null;
     }
 
-    public ArrayList<RegistrationUser> getRCUsers(){
+    public ArrayList<RegistrationUser> getRCUsers() throws RigInternalError {
+        validateRCUserFiles();
         ArrayList data = Utils.csvToList(inputDTO.getRcSheet());
         ArrayList<RegistrationUser> person_list = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
@@ -203,7 +223,8 @@ public class Parser implements ParserInterface {
         return person_list;
     }
 
-    public ArrayList<Partner> getPartners(){
+    public ArrayList<Partner> getPartners() throws RigInternalError {
+        validatePartnerFiles();
         ArrayList data = Utils.csvToList(inputDTO.getPartnerSheet());
         ArrayList<Partner> person_list = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
@@ -227,7 +248,8 @@ public class Parser implements ParserInterface {
         return person_list;
     }
 
-    public ArrayList<Scenario> getScenarios(){
+    public ArrayList<Scenario> getScenarios() throws RigInternalError {
+        validateScenarioFiles();
         ArrayList data = Utils.csvToList(inputDTO.getScenarioSheet());
         ArrayList<Scenario> scenario_array = new ArrayList();
         ObjectMapper oMapper = new ObjectMapper();
@@ -236,7 +258,7 @@ public class Parser implements ParserInterface {
             Object obj = iter.next();
             HashMap<String, String> data_map = oMapper.convertValue(obj, HashMap.class);
             Scenario scenario = new Scenario();
-            scenario.setName(data_map.get("tc_no"));
+            scenario.setId(data_map.get("tc_no"));
             scenario.setDescription(data_map.get("description"));
             scenario.setPersonaClass(data_map.get("persona_class"));
             scenario.setGroupName(data_map.get("group_name"));
@@ -253,7 +275,7 @@ public class Parser implements ParserInterface {
         return scenario_array;
     }
 
-    public ArrayList<ProofDocument> getDocuments(){
+    private ArrayList<ProofDocument> getDocuments(){
         ArrayList data = Utils.csvToList(inputDTO.getDocumentsSheet());
         ArrayList<ProofDocument> documents = new ArrayList<>();
         System.out.println("total documents found: "+data.size());
@@ -268,14 +290,14 @@ public class Parser implements ParserInterface {
             pdoc.setDocFileFormat(data_map.get("doc_file_format"));
             pdoc.setTags(parseTags(data_map.get("tags")));
             pdoc.setName(data_map.get("name"));
-            pdoc.setPath(Paths.get(DOCUMENT_DATA_PATH, data_map.get("name")).normalize().toString());
+            pdoc.setPath(Paths.get(inputDTO.getDocumentsFolder(), data_map.get("name")).normalize().toString());
             documents.add(pdoc);
         }
         System.out.println("total documents parsed: "+documents.size());
         return documents;
     }
 
-    public ArrayList<BiometricsDTO> getBiometrics(){
+    private ArrayList<BiometricsDTO> getBiometrics(){
         ArrayList data = Utils.csvToList(inputDTO.getBiometricsSheet());
         ArrayList<BiometricsDTO> biometrics = new ArrayList<>();
         System.out.println("total biometrics found: "+data.size());
@@ -289,14 +311,15 @@ public class Parser implements ParserInterface {
             biom.setCapture(BiometricsDTO.BIOMETRIC_CAPTURE.valueOf(data_map.get("capture")));
             biom.setName(data_map.get("name"));
             biom.setThreshold(data_map.get("threshold"));
-            biom.setPath(Paths.get(BIOMETRICS_DATA_PATH, data_map.get("name")).normalize().toString());
+            biom.setPath(Paths.get(inputDTO.getBiometricsFolder(), data_map.get("name")).normalize().toString());
             biometrics.add(biom);
         }
         System.out.println("total biometrics parsed: "+biometrics.size());
         return biometrics;
     }
 
-    public HashMap<String, String> getGlobals(){
+    public HashMap<String, String> getGlobals() throws RigInternalError {
+        validateGlobalsFiles();
         ArrayList data = Utils.csvToList(inputDTO.getGlobalsSheet());
         HashMap<String, String> globals_map = new HashMap<>();
         ObjectMapper oMapper = new ObjectMapper();
@@ -310,7 +333,8 @@ public class Parser implements ParserInterface {
         return globals_map;
     }
 
-    public HashMap<String, String> getConfigs(){
+    public HashMap<String, String> getConfigs() throws RigInternalError {
+        validateConfigsFiles();
         ArrayList data = Utils.csvToList(inputDTO.getConfigsSheet());
         HashMap<String, String> configs_map = new HashMap<>();
         ObjectMapper oMapper = new ObjectMapper();
@@ -346,6 +370,57 @@ public class Parser implements ParserInterface {
             tag.add(split[i].trim());
         }
         return tag;
+    }
+
+    private void validatePersonaFiles() throws RigInternalError {
+        if (inputDTO.getBiometricsFolder() == null || inputDTO.getBiometricsFolder().isEmpty()){
+            throw new RigInternalError("Biometrics folder path is empty");
+        }
+        if(inputDTO.getDocumentsFolder() == null || inputDTO.getDocumentsFolder().isEmpty()){
+            throw new RigInternalError("Documents folder path is empty");
+        }
+        if(inputDTO.getBiometricsSheet() == null || inputDTO.getBiometricsSheet().isEmpty()){
+            throw new RigInternalError("Biometrics sheet path is empty");
+        }
+        if(inputDTO.getDocumentsSheet() == null || inputDTO.getDocumentsSheet().isEmpty()){
+            throw new RigInternalError("Documents sheet path is empty");
+        }
+        if(inputDTO.getPersonaSheet() == null || inputDTO.getPersonaSheet().isEmpty()){
+            throw new RigInternalError("Persona sheet path is empty");
+        }
+        if(inputDTO.getIdObjectSchema() == null || inputDTO.getIdObjectSchema().isEmpty()){
+            throw new RigInternalError("ID schema json path is empty");
+        }
+    }
+
+    private void validatePartnerFiles() throws RigInternalError {
+        if (inputDTO.getPartnerSheet() == null || inputDTO.getPartnerSheet().isEmpty()){
+            throw new RigInternalError("Partner sheet path is empty");
+        }
+    }
+
+    private void validateRCUserFiles() throws RigInternalError {
+        if (inputDTO.getRcSheet() == null || inputDTO.getRcSheet().isEmpty()){
+            throw new RigInternalError("Registration user sheet path is empty");
+        }
+    }
+
+    private void validateScenarioFiles() throws RigInternalError {
+        if (inputDTO.getScenarioSheet() == null || inputDTO.getScenarioSheet().isEmpty()){
+            throw new RigInternalError("Scenario sheet path is empty");
+        }
+    }
+
+    private void validateGlobalsFiles() throws RigInternalError {
+        if (inputDTO.getGlobalsSheet() == null || inputDTO.getGlobalsSheet().isEmpty()){
+            throw new RigInternalError("Globals sheet path is empty");
+        }
+    }
+
+    private void validateConfigsFiles() throws RigInternalError {
+        if (inputDTO.getConfigsSheet() == null || inputDTO.getConfigsSheet().isEmpty()){
+            throw new RigInternalError("Configs sheet path is empty");
+        }
     }
 
 }
