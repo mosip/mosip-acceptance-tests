@@ -1,10 +1,4 @@
-# Folder structure
-logsFolder = \\testRun\\logs\\
-reportsFolder = \\testRun\\reports\\
-resultsFolder = \\testRun\\results\\
-archiveFolder = \\testRun\\archive\\
-
-ivv.mosip.host=https://qa.mosip.io
+ivv.mosip.host=https://int.mosip.io
 ivv.prereg.version=v1
 ivv.prereg.apiversion=1.0
 ivv.global.version=v1
@@ -18,12 +12,19 @@ ivv.email.server.host=
 ivv.email.server.user=
 ivv.email.server.pass=
 
+# text for finding otp message in mail
+ivv.prereg.otp.subject=Otp message
+
+# skip id fields in prereg, regclient, ida
+ivv.prereg.skip=age,IDSchemaVersion,UIN,localAdministrativeAuthority,parentOrGuardianName,parentOrGuardianRID,parentOrGuardianUIN,CNIENumber
+ivv.regclient.skip=
+
 # Input data & files ** path is relative to ivv-orchestrator module #
 ivv.path.persona.sheet=local/PersonaSheet.csv
 ivv.path.partner.sheet=local/PartnerSheet.csv
 ivv.path.rcpersona.sheet=local/RCUserSheet.csv
 #ivv.sheet.scenario.sheet=local/ScenarioSheetFull.csv
-ivv.path.scenario.sheet=local/ScenarioSheetRegclient.csv
+ivv.path.scenario.sheet=local/ScenarioSheetPrereg.csv
 ivv.path.globals.sheet=local/GlobalsSheet.csv
 ivv.path.configs.sheet=local/ConfigsSheet.csv
 ivv.path.documents.sheet=local/DocumentsSheet.csv

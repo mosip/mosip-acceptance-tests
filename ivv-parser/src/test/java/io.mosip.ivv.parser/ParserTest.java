@@ -18,6 +18,7 @@ public class ParserTest {
         String configFile = Paths.get(System.getProperty("user.dir"), "..", "ivv-orchestrator","config.properties").normalize().toString();
         Properties properties = Utils.getProperties(configFile);
         ParserInputDTO parserInputDTO = new ParserInputDTO();
+        parserInputDTO.setConfigProperties(properties);
         parserInputDTO.setDocumentsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.documents.folder")).normalize().toString());
         parserInputDTO.setBiometricsFolder(Paths.get(configFile, "..", properties.getProperty("ivv.path.biometrics.folder")).normalize().toString());
         parserInputDTO.setPersonaSheet(Paths.get(configFile, "..", properties.getProperty("ivv.path.persona.sheet")).normalize().toString());

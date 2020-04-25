@@ -64,7 +64,6 @@ public class DataGenerator implements DataGeneratorInterface {
     }
 
     private Persona addPersonaData(Scenario scenario, ArrayList<Persona> personas){
-        Persona per = new Persona();
         for (Persona persona : personas) {
             if(scenario.getGroupName() != null && !scenario.getGroupName().isEmpty()
                     && persona.getPersonaClass().equals(scenario.getPersonaClass())

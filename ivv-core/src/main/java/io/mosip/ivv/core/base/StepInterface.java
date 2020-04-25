@@ -6,6 +6,7 @@ import io.mosip.ivv.core.dtos.*;
 import io.mosip.ivv.core.exceptions.RigInternalError;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 public interface StepInterface {
     Boolean hasError();
@@ -14,13 +15,15 @@ public interface StepInterface {
 
     Store getState();
 
+    void setSystemProperties(Properties props);
+
     ArrayList<Scenario.Step.Error> getErrorsForAssert();
 
     void errorHandler();
 
     void validateStep() throws RigInternalError;
 
-    void assertStatus();
+    void assertNoError();
 
     void assertHttpStatus();
 
@@ -31,7 +34,7 @@ public interface StepInterface {
     void setup() throws RigInternalError;
 
     CallRecord getCallRecord();
-    void run();
+    void run() throws RigInternalError;
 
     RequestDataDTO prepare();
     ResponseDataDTO call(RequestDataDTO requestData);

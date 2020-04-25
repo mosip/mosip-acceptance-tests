@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 public class Scenario {
     private String id = "";
-    private String name = "";
     private String description = "";
     private ArrayList<String> tags = new ArrayList();
     private String personaClass, groupName;

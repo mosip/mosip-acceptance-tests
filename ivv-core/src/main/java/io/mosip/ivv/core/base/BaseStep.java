@@ -12,9 +12,11 @@ import io.mosip.ivv.core.utils.ErrorMiddleware;
 import io.mosip.ivv.core.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class BaseStep {
     public Boolean hasError = false;
+    public Properties properties;
     public Store store = null;
     public int index = 0;
     public CallRecord callRecord;
@@ -23,6 +25,10 @@ public class BaseStep {
 
     public Boolean hasError() {
         return hasError;
+    }
+
+    public void setSystemProperties(Properties props){
+        properties = props;
     }
 
     public ArrayList<Scenario.Step.Error> getErrorsForAssert(){
@@ -100,29 +106,36 @@ public class BaseStep {
     }
 
     public void assertHttpStatus(){
-        if (callRecord != null && callRecord.getResponse().getStatusCode() != 200) {
-            logSevere("API HTTP status return as " + callRecord.getResponse().getStatusCode());
+        if (callRecord != null && callRecord.getResponse().getStatusCode() == 200) {
+            logInfo("Assert [passed]: HTTP status code assert passed - expected [200], actual [" + callRecord.getResponse().getStatusCode()+"]");
+        } else if (callRecord != null && callRecord.getResponse().getStatusCode() != 200){
+            logSevere("Assert [failed]: HTTP status code assert failed - expected [200], actual [" + callRecord.getResponse().getStatusCode()+"]");
             this.hasError = true;
             return;
         }
     }
 
-    public void assertStatus() {
+    public void assertNoError() {
         if(callRecord != null){
             ReadContext ctx = JsonPath.parse(callRecord.getResponse().getBody().asString());
             try {
+                if(ctx.read("$['errors']") != null){
+                    logSevere("Assert [failed]: Response error object - expected [null], actual ["+ctx.read("$['errors']")+"]");
+                    this.hasError=true;
+                    return;
+                }
                 if(ctx.read("$['response']") == null){
-                    logInfo("Assert failed: Expected response not empty but found empty");
+                    logSevere("Assert [failed]: Response status - response expected [not null], actual ["+ctx.read("$['response']")+"]");
                     this.hasError=true;
                     return;
                 }
             } catch (PathNotFoundException e) {
                 e.printStackTrace();
-                logSevere("Assert failed: Expected response not empty but found empty");
+                logSevere("Assert [failed]: Response status - "+e.getMessage());
                 this.hasError=true;
                 return;
             }
-            logInfo("Assert [DEFAULT] passed");
+            logInfo("Assert [passed]: Response object - error object is null and response object is not null");
         }
     }
 

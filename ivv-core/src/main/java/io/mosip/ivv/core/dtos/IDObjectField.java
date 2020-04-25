@@ -13,6 +13,9 @@ public class IDObjectField {
         string, integer, simpleType
     }
 
+    private Boolean prereg = false;
+    private Boolean regclient = false;
+    private Boolean ida = false;
     private Boolean mutate = false;
     private IDObjectField.type type;
     private String primaryValue = "";

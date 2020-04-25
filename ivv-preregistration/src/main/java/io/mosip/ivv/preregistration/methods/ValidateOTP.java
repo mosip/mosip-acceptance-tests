@@ -5,6 +5,7 @@ import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
+import io.mosip.ivv.core.exceptions.RigInternalError;
 import io.mosip.ivv.core.utils.MailHelper;
 import io.mosip.ivv.core.utils.Utils;
 import io.mosip.ivv.preregistration.utils.Helpers;
@@ -20,7 +21,7 @@ public class ValidateOTP extends BaseStep implements StepInterface {
     private String otp;
 
     @Override
-    public void run() {
+    public void run() throws RigInternalError {
         int counter = 0;
         int repeats = 10;
         String expectedStatus = "";
@@ -65,7 +66,7 @@ public class ValidateOTP extends BaseStep implements StepInterface {
 
     }
 
-    private String checkForOTP() {
+    private String checkForOTP() throws RigInternalError {
         try {
             logInfo("Retrying after 10 seconds...");
             Thread.sleep(10000);
@@ -78,7 +79,11 @@ public class ValidateOTP extends BaseStep implements StepInterface {
 
         String otp = "";
         ArrayList<String> subjects = new ArrayList<String>() {{
-            add("Message Otp");
+            if(properties.getProperty("ivv.prereg.otp.subject") != null && !properties.getProperty("ivv.prereg.otp.subject").isEmpty()){
+                add(properties.getProperty("ivv.prereg.otp.subject"));
+            } else {
+                throw new RigInternalError("ivv.prereg.otp.subject property cannot be empty. Its is used to identify the OTP message");
+            }
         }};
         String regex = "otp\\s([0-9]{6})";
         MailHelper.MailHelperResponse mailHelperResponse = MailHelper.readviaRegex(subjects, regex, store.getCurrentPerson().getUserid(), 10);
