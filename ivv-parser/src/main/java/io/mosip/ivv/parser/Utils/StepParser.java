@@ -11,18 +11,18 @@ import java.util.regex.Pattern;
 public class StepParser {
 
     public static Scenario.Step parse(String cell){
-        String[] assertKeys = new String[]{"Assert", "assert", "ASSERT"};
         String[] errorKeys = new String[]{"Error", "error", "ERROR"};
         ArrayList<Scenario.Step.Assert> asserts = new ArrayList<>();
         ArrayList<Scenario.Step.Error> errors = new ArrayList<>();
         ArrayList<String> parameters = new ArrayList<>();
         ArrayList<Integer> indexes = new ArrayList<>();
         Scenario.Step step = new Scenario.Step();
-        Pattern pattern = Pattern.compile("\\)(.)");
+        Pattern pattern = Pattern.compile("\\.");
         String[] str_split = pattern.split(cell);
         for( int i = 0; i < str_split.length; i++) {
             String func = str_split[i];
             if(i==0){
+                System.out.println(func);
                 String name_variant = Utils.regex("(\\w*)\\(", func);
                 String[] nv_split = name_variant.split("\\_");
                 if(nv_split.length < 2){
@@ -48,14 +48,6 @@ public class StepParser {
                     }catch (NumberFormatException e){
 
                     }
-                }
-            }
-            for( int j = 0; j < assertKeys.length; j++) {
-                if(func.contains(assertKeys[j])){
-                    Scenario.Step.Assert as = new Scenario.Step.Assert();
-                    String astype = Utils.regex("\\((.*?)\\)", str_split[i]);
-                    as.type = AssertionPolicy.valueOf(astype);
-                    asserts.add(as);
                 }
             }
             for( int j = 0; j < errorKeys.length; j++) {
