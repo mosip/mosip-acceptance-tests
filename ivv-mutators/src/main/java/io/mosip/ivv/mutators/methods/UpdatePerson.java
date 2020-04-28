@@ -33,6 +33,24 @@ public class UpdatePerson extends BaseStep implements StepInterface {
             value = null;
         }
         switch(key){
+            case "docTypecode":
+                store.getCurrentPerson().getProofOfAddress().setDocTypeCode(value);
+                break;
+            case "langCode":
+                store.getCurrentPerson().setLangCode(value);
+                break;
+            case "userid":
+                store.getCurrentPerson().setUserid(value);
+                break;
+            case "date":
+                store.getCurrentPerson().getSlot().setDate(value);
+                break;
+            case "fromDate":
+                store.getCurrentPerson().getSlot().setFrom(value);
+                break;
+            case "toDate":
+                store.getCurrentPerson().getSlot().setTo(value);
+                break;
             case "registrationId":
                 store.getCurrentPerson().setRegistrationId(value);
                 break;
