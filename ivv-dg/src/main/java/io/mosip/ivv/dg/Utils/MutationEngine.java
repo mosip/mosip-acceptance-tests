@@ -30,7 +30,6 @@ public class MutationEngine {
         per.setGroupName("");
         for(int i=0; i<per.getPersons().size();i++){
             per.getPersons().get(i).setUserid(mutateEmail(per.getPersons().get(i).getUserid()));
-            per.getPersons().get(i).setPhone(generatePhone());
             per.getPersons().get(i).setIdObject(mutateIDFields(per.getPersons().get(i).getIdObject()));
         }
         return per;

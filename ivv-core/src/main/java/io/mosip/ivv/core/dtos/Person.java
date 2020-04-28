@@ -17,8 +17,8 @@ public class Person extends PersonaDef {
     private String id;
     private String userid;
     private String password;
-    private String email;
-    private String phone;
+    //private String email;
+   // private String phone;
     private String otp;
     private String registrationCenterId;
     private String primaryLang;

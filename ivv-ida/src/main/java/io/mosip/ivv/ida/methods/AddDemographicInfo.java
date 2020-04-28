@@ -21,7 +21,7 @@ public class AddDemographicInfo extends BaseStep implements StepInterface {
 
     public RequestDataDTO prepare(){
         JSONObject demographics_json = new JSONObject();
-        demographics_json.put("phoneNumber", store.getCurrentPerson().getPhone());
+        demographics_json.put("phoneNumber", store.getCurrentPerson().getIdObject().get("phone"));
         demographics_json.put("email", store.getCurrentPerson().getUserid());
         demographics_json.put("fullName", store.getCurrentPerson().getUserid());
         store.getCurrentPerson().getAuthenticationJSON().put("demographics", demographics_json);
