@@ -350,6 +350,8 @@ public class Utils {
 
     public static IDObjectField updateIDField(IDObjectField idObjectField, String value, String primaryLang, String secondaryLang){
         IDObjectField newIDObjectField = new IDObjectField();
+        newIDObjectField.setPrereg(idObjectField.getPrereg());
+        newIDObjectField.setRegclient(idObjectField.getRegclient());
         newIDObjectField.setType(idObjectField.getType());
         newIDObjectField.setMutate(idObjectField.getMutate());
         newIDObjectField.setPrimaryValue(idObjectField.getPrimaryValue());

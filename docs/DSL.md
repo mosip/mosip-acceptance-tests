@@ -3,86 +3,42 @@
 #### pr_sendOTP()
 Person enters an email and OTP is sent on his email
 
-**Asserts**: 
-* status
-
 #### pr_validateOTP()
 Person copies his OTP from his email and gets logged in after validating the OTP
-
-**Asserts**: 
-* status
 
 #### pr_addApplication()
 Person fills his demographic data and creates a new application
 
-**Asserts**: 
-* status
-* API_CALL (getApplication will be used to assert)
-
 #### pr_getApplication()
 Person gets his application
-
-**Asserts**: 
-* status
 
 #### pr_updateApplication()
 Person updates his demographic data
 
-**Asserts**: 
-* status
-* API_CALL (getApplication will be used to assert)
-
 #### pr_deleteApplication()
 Person deletes his application
-
-**Asserts**:
-* status
-* API_CALL (getApplication will be used to assert)
 
 #### pr_addDocument()
 Person uploads proof documents
 
-**Asserts**:
-* status
-* API_CALL (getDocument will be used to assert)
-
 #### pr_getDocument()
 Person gets his document data via document id
-
-**Asserts**:
-* status
 
 #### pr_getDocumentByPreRegID()
 Person gets all his documents via the pre-registration id
 
-**Asserts**:
-* status
-
 #### pr_bookAppointment()
 Person books an appointment
-
-**Asserts**:
-* status
-* API_CALL (getAppointment will be used to assert)
 
 #### pr_getAppointment()
 Person gets his appointment details
 
-**Asserts**:
-* status
-
 #### pr_reBookAppointment()
 Person re-books his appointment with new details
-
-**Asserts**:
-* status
-* API_CALL (getAppointment will be used to assert)
 
 #### pr_getBookingSlots()
 Person gets available booking slots. It will be used in bookAppointment & reBookAppointment
 
-**Asserts**:
-* status
 
 # Registration
 

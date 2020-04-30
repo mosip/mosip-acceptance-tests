@@ -28,7 +28,7 @@ public class GenerateQRCode extends BaseStep implements StepInterface {
         request_json.put("preId", store.getCurrentPerson().getPreRegistrationId());
         request_json.put("appointmentDate", store.getCurrentPerson().getSlot().getDate());
         request_json.put("appointmentTime", store.getCurrentPerson().getSlot().getFrom());
-        request_json.put("mobNum", store.getCurrentPerson().getPhone());
+        request_json.put("mobNum", store.getCurrentPerson().getIdObject().get("phone"));
         request_json.put("emailID", "");
         requestData.put("id", "mosip.pre-registration.qrcode.generate");
         requestData.put("version", System.getProperty("apiver"));

@@ -120,7 +120,10 @@ public class Orchestrator {
     @Test(dataProvider="ScenarioDataProvider")
     private void run(int i, Scenario scenario, HashMap<String, String> configs, HashMap<String, String> globals, Properties properties) throws SQLException {
         String tags = System.getProperty("ivv.tags");
-        if (!matchTags(tags, scenario.getTags())){
+        if(tags==null || tags.isEmpty()){
+            Utils.auditLog.info("Running Scenario #"+scenario.getId());
+        }
+       else if (!matchTags(tags, scenario.getTags())){
             Utils.auditLog.info("Skipping Scenario #"+scenario.getId());
             throw new SkipException("Skipping Scenario #"+scenario.getId());
         }

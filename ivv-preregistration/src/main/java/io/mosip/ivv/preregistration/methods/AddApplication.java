@@ -5,6 +5,8 @@ import static io.restassured.RestAssured.given;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
@@ -59,7 +61,7 @@ public class AddApplication extends BaseStep implements StepInterface {
         }
 
         JSONObject request_json = new JSONObject();
-        request_json.put("langCode", store.getCurrentPerson().getPrimaryLang());
+        request_json.put("langCode", store.getCurrentPerson().getLangCode());
 
         JSONObject requestData = new JSONObject();
         requestData.put("id", "mosip.pre-registration.demographic.create");
@@ -88,7 +90,10 @@ public class AddApplication extends BaseStep implements StepInterface {
     }
 
     public void process(ResponseDataDTO res){
-
+        ReadContext ctx = JsonPath.parse(res.getBody());
+        if(ctx.read("$['response']")!=null) {
+            this.store.getPersona().getPersons().get(index).setPreRegistrationId(ctx.read("$['response']['preRegistrationId']"));
+        }
     }
 
 

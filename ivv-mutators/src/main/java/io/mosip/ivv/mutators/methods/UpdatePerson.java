@@ -14,7 +14,7 @@ public class UpdatePerson extends BaseStep implements StepInterface {
 
     @Override
     public void validateStep() throws RigInternalError {
-        if(step.getParameters().size() < 2){
+        if(step.getParameters().size() < 1){
             throw new RigInternalError("DSL error: Expect key and its value");
         }
 
@@ -28,11 +28,32 @@ public class UpdatePerson extends BaseStep implements StepInterface {
     @Override
     public void run() {
         String key = step.getParameters().get(0);
-        String value = step.getParameters().get(1);
+        String value = "";
+        if(step.getParameters().size()>1){
+            value = step.getParameters().get(1);
+        }
         if(value == "null"){
             value = null;
         }
         switch(key){
+            case "docTypecode":
+                store.getCurrentPerson().getProofOfAddress().setDocTypeCode(value);
+                break;
+            case "langCode":
+                store.getCurrentPerson().setLangCode(value);
+                break;
+            case "userid":
+                store.getCurrentPerson().setUserid(value);
+                break;
+            case "date":
+                store.getCurrentPerson().getSlot().setDate(value);
+                break;
+            case "fromDate":
+                store.getCurrentPerson().getSlot().setFrom(value);
+                break;
+            case "toDate":
+                store.getCurrentPerson().getSlot().setTo(value);
+                break;
             case "registrationId":
                 store.getCurrentPerson().setRegistrationId(value);
                 break;
@@ -50,19 +71,20 @@ public class UpdatePerson extends BaseStep implements StepInterface {
                 break;
 
             default:
-                if(key.isEmpty()){
+                if(key==null || key.isEmpty()){
+                    this.hasError=true;
+                    logSevere("Update Person first parameter cannot be empty ");
                     return;
                 }
-                String field = regex("{\\S*}", key);
-                if(field.isEmpty()){
+                if(store.getCurrentPerson().getIdObject().containsKey(key)){
+                    IDObjectField idObjectField = store.getCurrentPerson().getIdObject().get(key);
+                    if(idObjectField != null){
+                        IDObjectField newIdObjectField = Utils.updateIDField(idObjectField, value, store.getCurrentPerson().getPrimaryLang(), store.getCurrentPerson().getSecondaryLang());
+                        store.getCurrentPerson().getIdObject().put(key, newIdObjectField);
+                    }
                     return;
                 }
-                IDObjectField idObjectField = store.getCurrentPerson().getIdObject().get(key);
-                if(idObjectField != null){
-                    IDObjectField newIdObjectField = Utils.updateIDField(idObjectField, value, store.getCurrentPerson().getPrimaryLang(), store.getCurrentPerson().getSecondaryLang());
-                    store.getCurrentPerson().getIdObject().put(key, newIdObjectField);
-                }
-                return;
+
         }
     }
 

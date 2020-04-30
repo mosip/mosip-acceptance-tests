@@ -1,5 +1,7 @@
 package io.mosip.ivv.preregistration.methods;
 
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import io.mosip.ivv.core.base.BaseStep;
 import io.mosip.ivv.core.base.StepInterface;
 import io.mosip.ivv.core.dtos.*;
@@ -27,6 +29,9 @@ public class AddDocument extends BaseStep implements StepInterface {
         JSONObject request_json = new JSONObject();
         JSONObject requestData = new JSONObject();
 
+        if(step.getParameters()==null ||step.getParameters().isEmpty()){
+            throw new RuntimeException("Parameter is Missing for AddDocument");
+        }
         switch(step.getParameters().get(0)){
             case "POA":
                 request_json.put("docCatCode", store.getCurrentPerson().getProofOfAddress().getDocCatCode().name().toUpperCase());
@@ -48,6 +53,8 @@ public class AddDocument extends BaseStep implements StepInterface {
                 request_json.put("docTypCode", store.getCurrentPerson().getProofOfBirth().getDocTypeCode().toUpperCase());
                 filePath = store.getCurrentPerson().getProofOfBirth().getPath();
                 break;
+            default:
+                throw new RuntimeException("Invalid DocCategory :"+step.getParameters().get(0));
         }
 
         request_json.put("langCode", store.getCurrentPerson().getPrimaryLang());
@@ -78,7 +85,30 @@ public class AddDocument extends BaseStep implements StepInterface {
     }
 
     public void process(ResponseDataDTO res){
+        ReadContext ctx = JsonPath.parse(res.getBody());
+        String docCatCode="";
+        String docId="";
+        if(ctx.read("$['response']")!=null) {
+            docCatCode = ctx.read("$['response']['docCatCode']");
+            docId = ctx.read("$['response']['docId']");
+            switch (docCatCode) {
+                case "POA":
+                    this.store.getPersona().getPersons().get(index).getProofOfAddress().setDocId(docId);
+                    break;
 
+                case "POB":
+                    this.store.getPersona().getPersons().get(index).getProofOfBirth().setDocId(docId);
+                    break;
+
+                case "POR":
+                    this.store.getPersona().getPersons().get(index).getProofOfRelationship().setDocId(docId);
+                    break;
+
+                case "POI":
+                    this.store.getPersona().getPersons().get(index).getProofOfIdentity().setDocId(docId);
+                    break;
+            }
+        }
     }
 
 }
