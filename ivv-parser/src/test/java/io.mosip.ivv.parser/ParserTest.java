@@ -1,4 +1,4 @@
-package io.mosip.ivv.parser;
+/*package io.mosip.ivv.parser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,3 +72,4 @@ public class ParserTest {
         }
     }
 }
+*/

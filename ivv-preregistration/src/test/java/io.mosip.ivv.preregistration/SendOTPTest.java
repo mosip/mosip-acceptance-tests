@@ -1,4 +1,4 @@
-package io.mosip.ivv.preregistration;
+/*package io.mosip.ivv.preregistration;
 
 import io.mosip.ivv.core.base.StepAPITestInterface;
 import io.mosip.ivv.core.dtos.*;
@@ -50,17 +50,17 @@ public class SendOTPTest implements StepAPITestInterface {
         store.setCurrentPerson(parser.getPersonas().get(0).getPersons().get(0));
         String expectedRequest = "";
         try {
-            /* Change the json filename with your request file */
+             Change the json filename with your request file 
             expectedRequest = (String) Helpers.getRequestJson("SendOTPRequest.json");
-            /* Change the json filename with your request file */
+             Change the json filename with your request file 
         } catch (IOException e) {
             e.printStackTrace();
             throw new RigInternalError(e.getMessage());
         }
 
-        /* Change this class according to the Step to test*/
+         Change this class according to the Step to test
         SendOTP sc = new SendOTP();
-        /* Change this class according to the Step to test */
+         Change this class according to the Step to test 
 
         sc.setState(store);
         RequestDataDTO request = sc.prepare();
@@ -83,18 +83,19 @@ public class SendOTPTest implements StepAPITestInterface {
         store.setCurrentPerson(parser.getPersonas().get(0).getPersons().get(0));
         String response = "";
         try {
-            /* Change the json filename with your response template file */
+             Change the json filename with your response template file 
             response = (String) Helpers.getResponseJson("SendOTPResponse.json");
-            /* Change the json filename with your response template file */
+             Change the json filename with your response template file 
         } catch (IOException e) {
             e.printStackTrace();
             throw new RigInternalError(e.getMessage());
         }
-        /* Change this class according to the Step to test*/
+         Change this class according to the Step to test
         SendOTP sc = new SendOTP();
-        /* Change this class according to the Step to test*/
+         Change this class according to the Step to test
         sc.setState(store);
         sc.process(new ResponseDataDTO(200, response, new HashMap<>()));
         Assert.assertFalse(sc.hasError);
     }
 }
+*/
